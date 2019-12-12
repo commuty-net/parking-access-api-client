@@ -1,11 +1,14 @@
 package net.commuty.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class Message {
 
     private final String reason;
 
     private String message;
 
+    @JsonCreator
     Message(String reason, String message) {
         this.reason = reason;
         this.message = message;
@@ -17,5 +20,13 @@ public class Message {
 
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "reason='" + reason + '\'' +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

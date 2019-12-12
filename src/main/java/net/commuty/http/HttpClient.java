@@ -1,6 +1,6 @@
 package net.commuty.http;
 
-import com.google.gson.Gson;
+import net.commuty.configuration.JsonMapper;
 import net.commuty.exception.HttpClientException;
 import net.commuty.exception.HttpRequestException;
 import net.commuty.http.request.Requestable;
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
@@ -34,12 +33,12 @@ public class HttpClient {
     private static final String TOKEN_TEMPLATE = "Bearer %s";
     private static final int TIMEOUT_IN_MS = 5000;
 
-    private final URI baseUri;
-    private final Gson mapper;
+    private final URL baseUrl;
+    private final JsonMapper mapper;
 
 
-    public HttpClient(URI baseUri, Gson mapper) {
-        this.baseUri = baseUri;
+    public HttpClient(URL baseUrl, JsonMapper mapper) {
+        this.baseUrl = baseUrl;
         this.mapper = mapper;
     }
 
@@ -49,15 +48,7 @@ public class HttpClient {
             URL url = buildUrl(path, toQueryString(requestParams));
             HttpURLConnection connection = createGetConnection(url, token);
 
-            connection.connect();
-            try (InputStreamReader reader = new InputStreamReader(connection.getInputStream(), UTF_8);
-                 BufferedReader buffer = new BufferedReader(reader)) {
-                LOG.trace("GET [{}] {}", connection.getResponseCode(), url.toString());
-                return mapper.fromJson(buffer, clazz);
-            } catch (IOException e) {
-                LOG.trace("GET [{}] {}", connection.getResponseCode(), url.toString());
-                throw wrapToHttpRequestException(connection);
-            }
+            return executeMethod(connection, clazz);
         } catch (IOException e) {
             LOG.trace("Unrecoverable issue when trying to build the HTTP Client");
             throw new HttpClientException(e);
@@ -70,37 +61,44 @@ public class HttpClient {
             HttpURLConnection connection = createPostConnection(url, token);
 
             try (DataOutputStream payloadStream = new DataOutputStream(connection.getOutputStream())) {
-                payloadStream.writeBytes(mapper.toJson(body));
+                payloadStream.writeBytes(mapper.write(body));
             } catch (IOException e) {
                 LOG.trace("Unrecoverable issue when creating a message body for the HTTP Client");
                 throw new HttpClientException(e);
             }
 
-            connection.connect();
-            try (InputStreamReader reader = new InputStreamReader(connection.getInputStream(), UTF_8);
-                 BufferedReader buffer = new BufferedReader(reader)) {
-                LOG.trace("POST [{}] {}", connection.getResponseCode(), url.toString());
-                return mapper.fromJson(buffer, clazz);
-            } catch (IOException e) {
-                LOG.trace("POST [{}] {}", connection.getResponseCode(), url.toString());
-                throw wrapToHttpRequestException(connection);
-            }
+            return executeMethod(connection, clazz);
         } catch (IOException e) {
             LOG.trace("Unrecoverable issue when trying to build the HTTP Client");
             throw new HttpClientException(e);
         }
     }
 
+    private <T> T executeMethod(HttpURLConnection connection, Class<T> clazz) throws IOException, HttpRequestException {
+        connection.connect();
+        try (InputStreamReader reader = new InputStreamReader(connection.getInputStream(), UTF_8);
+             BufferedReader buffer = new BufferedReader(reader)) {
+            LOG.trace("{} [{}] {}", connection.getRequestMethod(), connection.getResponseCode(), connection.getURL());
+            return mapper.read(buffer, clazz);
+        } catch (IOException e) {
+            LOG.trace("{} [{}] {}", connection.getRequestMethod(), connection.getResponseCode(), connection.getURL());
+            throw wrapToHttpRequestException(connection);
+        }
+    }
+
     private HttpRequestException wrapToHttpRequestException(HttpURLConnection connection) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(connection.getErrorStream(), UTF_8);
              BufferedReader buffer = new BufferedReader(reader)) {
-            return new HttpRequestException(connection.getResponseCode(), mapper.fromJson(buffer, Message.class));
+            return new HttpRequestException(connection.getResponseCode(), mapper.read(buffer, Message.class));
+        } catch (IOException | NullPointerException e) {
+            LOG.trace("Error stream is empty or not readable, returning only the response code");
+            return new HttpRequestException(connection.getResponseCode(), null);
         }
     }
 
     private String toQueryString(Map<String, String> queryParameters) {
-        String params =  queryParameters.entrySet().stream().map(HttpClient::toQueryParam).collect(joining("$"));
-        return params.trim().isEmpty() ? "" : "&" + params.trim();
+        String params = queryParameters.entrySet().stream().map(HttpClient::toQueryParam).collect(joining("&"));
+        return params.trim().isEmpty() ? "" : "?" + params.trim();
     }
 
     private static String toQueryParam(Map.Entry<String, String> entry) {
@@ -112,7 +110,7 @@ public class HttpClient {
     }
 
     private URL buildUrl(String path, String queryParams) throws MalformedURLException {
-        return baseUri.resolve(path + queryParams).toURL();
+        return new URL(baseUrl, path + queryParams);
     }
 
     private HttpURLConnection createGetConnection(URL url, String token) throws IOException {

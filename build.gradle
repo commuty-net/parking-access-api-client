@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.commuty'
@@ -13,7 +13,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1'
+    implementation 'com.fasterxml.jackson.module:jackson-module-paranamer:2.10.1'
     implementation 'org.slf4j:slf4j-api:1.7.29'
     implementation 'org.apache.logging.log4j:log4j-api:2.12.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.12.1'

@@ -2,13 +2,14 @@ package net.commuty.configuration;
 
 import net.commuty.exception.ClientBuilderException;
 
-import java.net.URI;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class ClientBuilder {
 
     private static final String DEFAULT_HOST = "https://parking-access.commuty.net";
 
-    private URI host;
+    private URL host;
     private String username;
     private String password;
     // proxybrol
@@ -22,7 +23,7 @@ public class ClientBuilder {
     }
 
     public ClientBuilder withCredentials(String username, String password) {
-        if (username == null || "".equals(username.trim())) {
+        if (username == null || username.trim().isEmpty()) {
             throw new ClientBuilderException("You must provide a valid username");
         }
         if (password == null) {
@@ -34,12 +35,12 @@ public class ClientBuilder {
     }
 
     public ClientBuilder withHost(String host) {
-        if (host == null || "".equals(host.trim())) {
+        if (host == null || host.trim().isEmpty()) {
             throw new ClientBuilderException("You must provide a valid host URL.");
         }
         try {
-            this.host = URI.create(host);
-        } catch (IllegalArgumentException e) {
+            this.host = new URL(host);
+        } catch (MalformedURLException e) {
             throw new ClientBuilderException("The host provided is not a valid URL.");
         }
         return this;
@@ -64,7 +65,7 @@ public class ClientBuilder {
         }
     }
 
-    public URI getHost() {
+    public URL getHost() {
         return host;
     }
 

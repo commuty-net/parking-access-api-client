@@ -2,8 +2,6 @@ package net.commuty.exception;
 
 import net.commuty.model.Message;
 
-import java.net.HttpURLConnection;
-
 import static java.net.HttpURLConnection.*;
 
 public class HttpRequestException extends Exception {

@@ -1,6 +1,6 @@
 package net.commuty.model;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import static net.commuty.model.UserIdType.*;
 
@@ -10,6 +10,7 @@ public class UserId {
 
     private final String type;
 
+    @JsonCreator
     private UserId(String type, String id) {
         this.type = type;
         this.id = id;
@@ -57,16 +58,10 @@ public class UserId {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserId userId = (UserId) o;
-        return Objects.equals(id, userId.id) &&
-                Objects.equals(type, userId.type);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, type);
+    public String toString() {
+        return "UserId{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }
