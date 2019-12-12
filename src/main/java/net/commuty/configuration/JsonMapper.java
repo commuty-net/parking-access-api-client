@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paranamer.ParanamerModule;
+import com.fasterxml.jackson.databind.Module;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ServiceLoader;
 
 public class JsonMapper {
 
@@ -19,10 +19,11 @@ public class JsonMapper {
     }
 
     private ObjectMapper initMapper() {
+
+
         return new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .registerModule(new JavaTimeModule())
-                .registerModule(new ParanamerModule())
+                .registerModules(ServiceLoader.load(Module.class))
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);

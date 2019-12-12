@@ -54,6 +54,13 @@ public class ParkingAccess {
         return new ParkingAccess(Client.Builder.buildDefault(username, password));
     }
 
+    public static ParkingAccess create(String username, String password, String host) {
+        return new ParkingAccess(new Client.Builder()
+                .withCredentials(username, password)
+                .withHost(host)
+                .build());
+    }
+
     public static ParkingAccess create(Client client) {
         LOG.trace("Call to create a custom ParkingAccess client");
         return new ParkingAccess(client);

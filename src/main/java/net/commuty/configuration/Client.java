@@ -71,6 +71,10 @@ public class Client {
 
 
         public static Client buildDefault(String username, String password) {
+            new Client.Builder()
+                    .withCredentials("test", "testtest")
+                    .withHost("http://localhost:8080")
+                    .build();
             return new Builder()
                     .withHost(DEFAULT_HOST)
                     .withCredentials(username, password)
@@ -88,7 +92,6 @@ public class Client {
                 throw new ClientBuilderException("A host is required. Did you forgot to call the 'withHost' method ?");
             }
         }
-
     }
 
     public URL getHost() {
