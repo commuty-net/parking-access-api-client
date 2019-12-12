@@ -1,9 +1,12 @@
 package net.commuty;
 
 import net.commuty.configuration.ClientBuilder;
-import net.commuty.model.AccessRight;
+import net.commuty.exception.HttpRequestException;
+import net.commuty.model.AccessLog;
+import net.commuty.model.UserId;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class Main {
@@ -12,9 +15,16 @@ public class Main {
         ClientBuilder builder = ClientBuilder.create().withCredentials("test", "testtest").withHost("http://localhost:8080");
         ParkingAccess client = ParkingAccess.create(builder);
         try {
-            Collection<AccessRight> accesses = client.listAccessRights(LocalDate.of(2019, 11, 29), false);
-            System.out.println(accesses.size());
+            Collection<AccessLog> logs = Arrays.asList(
+                    AccessLog.createInAccessLog(UserId.fromBadgeNumber("123345"), LocalDateTime.now()),
+                    AccessLog.createOutAccessLog(UserId.fromQrCode("toto"), LocalDateTime.now())
+            );
+            String logId = client.reportAccessLog("d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4", logs);
+            System.out.println(logId);
 
+        } catch(HttpRequestException h) {
+            h.printStackTrace();
+            System.err.println(h.getErrorResponse());
         } catch (Exception e) {
             e.printStackTrace();
         }

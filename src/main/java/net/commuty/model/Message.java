@@ -9,7 +9,7 @@ public class Message {
     private String message;
 
     @JsonCreator
-    Message(String reason, String message) {
+    private Message(String reason, String message) {
         this.reason = reason;
         this.message = message;
     }

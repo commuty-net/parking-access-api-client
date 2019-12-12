@@ -4,12 +4,13 @@ import net.commuty.model.Message;
 
 import static java.net.HttpURLConnection.*;
 
-public class HttpRequestException extends Exception {
+public class HttpRequestException extends ApiException {
 
     private final int httpResponseCode;
     private final Message errorResponse;
 
     public HttpRequestException(int httpResponseCode, Message errorResponse) {
+        super("The request failed with an error code "+ httpResponseCode);
         this.httpResponseCode = httpResponseCode;
         this.errorResponse = errorResponse;
     }

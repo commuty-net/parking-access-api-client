@@ -1,8 +1,8 @@
 package net.commuty.exception;
 
-public class HttpClientException extends Exception {
+public class HttpClientException extends ApiException {
 
     public HttpClientException(Exception cause) {
-        super(cause);
+        super("The client was unable to send the query", cause);
     }
 }

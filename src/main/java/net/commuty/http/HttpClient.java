@@ -1,5 +1,6 @@
 package net.commuty.http;
 
+import net.commuty.configuration.ClientBuilder;
 import net.commuty.configuration.JsonMapper;
 import net.commuty.exception.HttpClientException;
 import net.commuty.exception.HttpRequestException;
@@ -14,8 +15,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
@@ -35,11 +38,13 @@ public class HttpClient {
 
     private final URL baseUrl;
     private final JsonMapper mapper;
+    private final Optional<Proxy> proxy;
 
 
-    public HttpClient(URL baseUrl, JsonMapper mapper) {
-        this.baseUrl = baseUrl;
+    public HttpClient(ClientBuilder builder, JsonMapper mapper) {
+        this.baseUrl = builder.getHost();
         this.mapper = mapper;
+        this.proxy = builder.getProxy();
     }
 
 
@@ -114,7 +119,7 @@ public class HttpClient {
     }
 
     private HttpURLConnection createGetConnection(URL url, String token) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = openConnection(url);
         connection.setRequestMethod(GET);
         connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
         if (token != null && !"".equals(token)) {
@@ -126,7 +131,7 @@ public class HttpClient {
     }
 
     private HttpURLConnection createPostConnection(URL url, String token) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = openConnection(url);
         connection.setRequestMethod(POST);
         connection.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
         connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
@@ -136,5 +141,9 @@ public class HttpClient {
         connection.setConnectTimeout(TIMEOUT_IN_MS);
         connection.setDoOutput(true);
         return connection;
+    }
+
+    private HttpURLConnection openConnection(URL url) throws IOException {
+        return proxy.isPresent() ? (HttpURLConnection) url.openConnection(proxy.get()) : (HttpURLConnection) url.openConnection();
     }
 }

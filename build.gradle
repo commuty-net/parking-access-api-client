@@ -19,6 +19,14 @@ jar {
     archiveBaseName = "parking-access-api-client"
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
 build.finalizedBy publishToMavenLocal
 
 dependencies {
@@ -26,11 +34,10 @@ dependencies {
             "com.fasterxml.jackson.core:jackson-databind:2.10.1",
             "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1",
             "com.fasterxml.jackson.module:jackson-module-paranamer:2.10.1",
-            "org.slf4j:slf4j-api:1.7.29",
-            "org.apache.logging.log4j:log4j-api:2.12.1",
-            "org.apache.logging.log4j:log4j-core:2.12.1",
-            "org.apache.logging.log4j:log4j-slf4j-impl:2.12.1"
+            "org.slf4j:slf4j-api:1.7.29"
     )
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation (
+            "junit:junit:4.12"
+    )
 }

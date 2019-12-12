@@ -9,12 +9,7 @@ Supported features are:
 
 ## TODO
 
-
-* Report who entered/exited the parking
-* Report a user that is known by the client but not by Commuty
-
-
+* clean gradle
 * javadoc
 * this readme
-* cleanup code
 * test

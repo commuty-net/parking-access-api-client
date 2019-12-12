@@ -3,7 +3,9 @@ package net.commuty.configuration;
 import net.commuty.exception.ClientBuilderException;
 
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
+import java.util.Optional;
 
 public class ClientBuilder {
 
@@ -12,7 +14,7 @@ public class ClientBuilder {
     private URL host;
     private String username;
     private String password;
-    // proxybrol
+    private Proxy proxy;
 
     private ClientBuilder() {
 
@@ -46,6 +48,14 @@ public class ClientBuilder {
         return this;
     }
 
+    public ClientBuilder withProxy(Proxy proxy) {
+        if (proxy == null) {
+            throw new ClientBuilderException("Proxy cannot be null.");
+        }
+        this.proxy = proxy;
+        return this;
+    }
+
 
     public static ClientBuilder defaultClient(String username, String password) {
         return create()
@@ -75,5 +85,9 @@ public class ClientBuilder {
 
     public String getPassword() {
         return password;
+    }
+
+    public Optional<Proxy> getProxy() {
+        return Optional.ofNullable(proxy);
     }
 }

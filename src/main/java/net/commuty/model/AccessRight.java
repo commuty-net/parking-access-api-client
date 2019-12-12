@@ -18,7 +18,7 @@ public class AccessRight {
     private final boolean granted;
 
     @JsonCreator
-    public AccessRight(Collection<UserId> userIds, String parkingSiteId, OffsetDateTime startTime, OffsetDateTime endTime, boolean granted) {
+    private AccessRight(Collection<UserId> userIds, String parkingSiteId, OffsetDateTime startTime, OffsetDateTime endTime, boolean granted) {
         this.userIds = userIds;
         this.parkingSiteId = parkingSiteId;
         this.startTime = startTime;

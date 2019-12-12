@@ -2,16 +2,19 @@ package net.commuty;
 
 import net.commuty.configuration.ClientBuilder;
 import net.commuty.configuration.JsonMapper;
-import net.commuty.exception.ApiException;
 import net.commuty.exception.CredentialsException;
 import net.commuty.exception.HttpClientException;
 import net.commuty.exception.HttpRequestException;
 import net.commuty.http.HttpClient;
+import net.commuty.http.request.AccessLogRequest;
+import net.commuty.http.request.MissingUserIdRequest;
 import net.commuty.http.request.TokenRequest;
 import net.commuty.http.request.VerificationRequest;
+import net.commuty.http.response.AccessLogResponse;
 import net.commuty.http.response.AccessRightResponse;
 import net.commuty.http.response.TokenResponse;
 import net.commuty.http.response.VerificationResponse;
+import net.commuty.model.AccessLog;
 import net.commuty.model.AccessRight;
 import net.commuty.model.UserId;
 import org.slf4j.Logger;
@@ -31,6 +34,8 @@ public class ParkingAccess {
     public static final String TOKEN_REQUESTS_URL = "/v2/token-requests";
     public static final String ACCESS_REQUESTS_URL = "/v2/parking-sites/%s/access-requests";
     public static final String ACCESS_RIGHTS_URL = "/v2/access-rights";
+    public static final String REPORT_ACCESS_URL = "/v2/parking-sites/%s/access-logs";
+    public static final String REPORT_MISSING_IDS_URL = "/v2/missing-user-ids";
 
     public static final String DAY_PARAM = "day";
     public static final String UNREAD_ONLY_PARAM = "unreadOnly";
@@ -41,7 +46,7 @@ public class ParkingAccess {
 
     private ParkingAccess(ClientBuilder builder) {
         this.builder = builder;
-        this.httpClient = new HttpClient(builder.getHost(), JsonMapper.create());
+        this.httpClient = new HttpClient(builder, JsonMapper.create());
     }
 
     public static ParkingAccess create(String username, String password) {
@@ -56,7 +61,7 @@ public class ParkingAccess {
         return new ParkingAccess(builder);
     }
 
-    public String authenticate() throws CredentialsException, ApiException {
+    public String authenticate() throws CredentialsException, HttpRequestException, HttpClientException {
         LOG.debug("Authenticating user");
         try {
             TokenResponse auth = httpClient.makePostRequest(TOKEN_REQUESTS_URL, null, new TokenRequest(this.builder.getUsername(), this.builder.getPassword()), TokenResponse.class);
@@ -68,17 +73,18 @@ public class ParkingAccess {
             if (requestException.isForbidden()) {
                 LOG.trace("Unable to authenticate: username or password is invalid");
                 throw new CredentialsException();
+            } else {
+                throw requestException;
             }
-            throw new ApiException("There was an issue with the request", requestException);
-        } catch (HttpClientException clientException) {
-            LOG.error("There was an issue inside the client", clientException);
-            throw new ApiException("The system was not able to make the request", clientException);
         }
     }
 
-    public boolean verifySingle(String parkingSiteId, UserId user) throws CredentialsException, ApiException {
+    public boolean verifySingle(String parkingSiteId, UserId user) throws CredentialsException, HttpRequestException, HttpClientException {
         if(parkingSiteId == null || parkingSiteId.trim().isEmpty()) {
             throw new IllegalArgumentException("Parking site cannot be null or blank");
+        }
+        if(user == null) {
+            throw new IllegalArgumentException("UserId cannot be null");
         }
         LOG.debug("Verify If user {} is authorized to access the parking site {}", user, parkingSiteId);
         try {
@@ -90,24 +96,22 @@ public class ParkingAccess {
                 LOG.trace("Token exception, refreshing token then try again");
                 authenticate();
                 return verifySingle(parkingSiteId, user);
+            } else {
+                throw requestException;
             }
-            throw new ApiException("There was an issue with the request", requestException);
-        } catch (HttpClientException clientException) {
-            LOG.error("There was an issue inside the client", clientException);
-            throw new ApiException("The system was not able to make the request", clientException);
         }
 
     }
 
-    public Collection<AccessRight> listAccessRightsForToday() throws CredentialsException, ApiException {
+    public Collection<AccessRight> listAccessRightsForToday() throws CredentialsException, HttpRequestException, HttpClientException {
         return listAccessRights(null,null);
     }
 
-    public Collection<AccessRight> listAccessRightsForToday(boolean unreadOnly) throws CredentialsException, ApiException {
+    public Collection<AccessRight> listAccessRightsForToday(boolean unreadOnly) throws CredentialsException, HttpRequestException, HttpClientException {
         return listAccessRights(null, unreadOnly);
     }
 
-    public Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly) throws CredentialsException, ApiException {
+    public Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly) throws CredentialsException, HttpRequestException, HttpClientException {
         LOG.debug("Check the presence of Access rights");
         Map<String, String> parameters = new HashMap<>();
         if (date != null) {
@@ -127,12 +131,51 @@ public class ParkingAccess {
                 LOG.trace("Token exception, refreshing token then try again");
                 authenticate();
                 return listAccessRights(date, unreadOnly);
+            } else {
+                throw requestException;
             }
-            throw new ApiException("There was an issue with the request", requestException);
-        } catch (HttpClientException clientException) {
-            LOG.error("There was an issue inside the client", clientException);
-            throw new ApiException("The system was not able to make the request", clientException);
         }
+    }
 
+    public String reportAccessLog(String parkingSiteId, Collection<AccessLog> accessLogs) throws CredentialsException, HttpRequestException, HttpClientException {
+        if(parkingSiteId == null || parkingSiteId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Parking site cannot be null or blank");
+        }
+        if (accessLogs == null || accessLogs.isEmpty()) {
+            throw new IllegalArgumentException("Accesses cannot be null or blank");
+        }
+        LOG.debug("Report Access logs to Commuty for the site {}", parkingSiteId);
+
+        try {
+            String path = String.format(REPORT_ACCESS_URL, parkingSiteId);
+            return httpClient.makePostRequest(path, token, new AccessLogRequest(accessLogs), AccessLogResponse.class).getLogId();
+        } catch (HttpRequestException requestException) {
+            if (requestException.isUnauthorized()) {
+                LOG.trace("Token exception, refreshing token then try again");
+                authenticate();
+                return reportAccessLog(parkingSiteId, accessLogs);
+            } else {
+                throw requestException;
+            }
+        }
+    }
+
+    public UserId reportMissingUserId(UserId user) throws CredentialsException, HttpRequestException, HttpClientException {
+        if(user == null) {
+            throw new IllegalArgumentException("UserId cannot be null");
+        }
+        LOG.debug("Report user {} as missing", user);
+
+        try {
+            return httpClient.makePostRequest(REPORT_MISSING_IDS_URL, token, new MissingUserIdRequest(user), UserId.class);
+        } catch (HttpRequestException requestException) {
+            if (requestException.isUnauthorized()) {
+                LOG.trace("Token exception, refreshing token then try again");
+                authenticate();
+                return reportMissingUserId(user);
+            } else {
+                throw requestException;
+            }
+        }
     }
 }
