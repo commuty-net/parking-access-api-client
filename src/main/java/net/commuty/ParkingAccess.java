@@ -1,6 +1,6 @@
 package net.commuty;
 
-import net.commuty.configuration.ClientBuilder;
+import net.commuty.configuration.Client;
 import net.commuty.configuration.JsonMapper;
 import net.commuty.exception.CredentialsException;
 import net.commuty.exception.HttpClientException;
@@ -40,31 +40,29 @@ public class ParkingAccess {
     public static final String DAY_PARAM = "day";
     public static final String UNREAD_ONLY_PARAM = "unreadOnly";
 
-    private final ClientBuilder builder;
+    private final Client client;
     private final HttpClient httpClient;
     private String token;
 
-    private ParkingAccess(ClientBuilder builder) {
-        this.builder = builder;
-        this.httpClient = new HttpClient(builder, JsonMapper.create());
+    private ParkingAccess(Client builder) {
+        this.client = builder;
+        this.httpClient = new HttpClient(client, JsonMapper.create());
     }
 
     public static ParkingAccess create(String username, String password) {
         LOG.trace("Call to create a standard ParkingAccess client");
-        ClientBuilder.defaultClient(username, password).validate();
-        return new ParkingAccess(ClientBuilder.defaultClient(username, password));
+        return new ParkingAccess(Client.Builder.buildDefault(username, password));
     }
 
-    public static ParkingAccess create(ClientBuilder builder) {
+    public static ParkingAccess create(Client client) {
         LOG.trace("Call to create a custom ParkingAccess client");
-        builder.validate();
-        return new ParkingAccess(builder);
+        return new ParkingAccess(client);
     }
 
     public String authenticate() throws CredentialsException, HttpRequestException, HttpClientException {
         LOG.debug("Authenticating user");
         try {
-            TokenResponse auth = httpClient.makePostRequest(TOKEN_REQUESTS_URL, null, new TokenRequest(this.builder.getUsername(), this.builder.getPassword()), TokenResponse.class);
+            TokenResponse auth = httpClient.makePostRequest(TOKEN_REQUESTS_URL, null, new TokenRequest(this.client.getUsername(), this.client.getPassword()), TokenResponse.class);
             token = auth.getToken();
             LOG.debug("Authentication done, token saved");
             return token;

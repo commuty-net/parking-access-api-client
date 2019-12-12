@@ -1,6 +1,8 @@
 plugins {
+    id 'idea'
     id 'java-library'
     id 'maven-publish'
+    id 'groovy'
 }
 
 group 'net.commuty'
@@ -31,13 +33,14 @@ build.finalizedBy publishToMavenLocal
 
 dependencies {
     implementation (
-            "com.fasterxml.jackson.core:jackson-databind:2.10.1",
-            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1",
-            "com.fasterxml.jackson.module:jackson-module-paranamer:2.10.1",
-            "org.slf4j:slf4j-api:1.7.29"
+            "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion",
+            "com.fasterxml.jackson.module:jackson-module-paranamer:$jacksonVersion",
+            "org.slf4j:slf4j-api:$slf4jVersion"
     )
 
-    testImplementation (
-            "junit:junit:4.12"
+    testCompile (
+            "org.spockframework:spock-core:$spockVersion",
+            "org.codehaus.groovy:groovy-all:$groovyVersion",
     )
 }

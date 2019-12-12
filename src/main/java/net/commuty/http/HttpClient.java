@@ -1,6 +1,6 @@
 package net.commuty.http;
 
-import net.commuty.configuration.ClientBuilder;
+import net.commuty.configuration.Client;
 import net.commuty.configuration.JsonMapper;
 import net.commuty.exception.HttpClientException;
 import net.commuty.exception.HttpRequestException;
@@ -41,10 +41,10 @@ public class HttpClient {
     private final Optional<Proxy> proxy;
 
 
-    public HttpClient(ClientBuilder builder, JsonMapper mapper) {
-        this.baseUrl = builder.getHost();
+    public HttpClient(Client client, JsonMapper mapper) {
+        this.baseUrl = client.getHost();
         this.mapper = mapper;
-        this.proxy = builder.getProxy();
+        this.proxy = client.getProxy();
     }
 
 
