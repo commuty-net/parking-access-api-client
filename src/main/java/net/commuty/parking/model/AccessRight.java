@@ -2,6 +2,8 @@ package net.commuty.parking.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 
@@ -55,5 +57,17 @@ public class AccessRight {
                 ", endTime=" + endTime +
                 ", granted=" + granted +
                 '}';
+    }
+
+    public boolean covers(LocalDateTime moment) {
+        if (moment == null) {
+            throw new IllegalArgumentException("AccessRight.covers: moment must not be null");
+        }
+        return moment.isBefore(endTime.toLocalDateTime()) &&
+                !moment.isBefore(startTime.toLocalDateTime());
+    }
+
+    public boolean startsAfter(LocalDateTime moment) {
+        return startTime.toLocalDateTime().isAfter(moment);
     }
 }

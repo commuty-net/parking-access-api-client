@@ -64,6 +64,10 @@ public class UserId {
         return UserIdType.parse(type);
     }
 
+    public boolean hasType(UserIdType type) {
+        return getUserIdType() == type;
+    }
+
     @Override
     public String toString() {
         return "UserId{" +
