@@ -5,14 +5,14 @@ module commuty.parking.access.client {
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.fasterxml.jackson.module.paranamer;
 
-    opens net.commuty.configuration;
-    opens net.commuty.model to com.fasterxml.jackson.databind;
-    opens net.commuty.http.request to com.fasterxml.jackson.databind;
-    opens net.commuty.http.response to com.fasterxml.jackson.databind;
+    opens net.commuty.parking.configuration;
+    opens net.commuty.parking.model to com.fasterxml.jackson.databind;
+    opens net.commuty.parking.http.request to com.fasterxml.jackson.databind;
+    opens net.commuty.parking.http.response to com.fasterxml.jackson.databind;
 
-    exports net.commuty;
-    exports net.commuty.exception;
-    exports net.commuty.model;
+    exports net.commuty.parking;
+    exports net.commuty.parking.exception;
+    exports net.commuty.parking.model;
 
     uses com.fasterxml.jackson.databind.Module;
 }

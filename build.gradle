@@ -58,7 +58,7 @@ dependencies {
             "org.slf4j:slf4j-api:$slf4jVersion"
     )
 
-    testCompile (
+    testImplementation (
             "org.spockframework:spock-core:$spockVersion",
             "org.codehaus.groovy:groovy-all:$groovyVersion",
     )
