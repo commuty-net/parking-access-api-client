@@ -5,17 +5,17 @@ import spock.lang.Specification
 
 class MessageSpec extends Specification {
 
-    def mapper = JsonMapper.create();
+    def mapper = JsonMapper.create()
 
     def """
         parse a message {"reason":not null, "message": null}
         is parsed correctly
         """() {
         given:
-        def string = '{"reason":"a_valid_reason","message": null}'
+        def json = '{"reason":"a_valid_reason","message": null}'
 
         when:
-        def message = mapper.read(new StringReader(string), Message.class)
+        def message = mapper.read(new StringReader(json), Message.class)
 
         then:
         message != null
@@ -28,10 +28,10 @@ class MessageSpec extends Specification {
         is parsed correctly
         """() {
         given:
-        def string = '{"reason":"a_valid_reason"}'
+        def json = '{"reason":"a_valid_reason"}'
 
         when:
-        def message = mapper.read(new StringReader(string), Message.class)
+        def message = mapper.read(new StringReader(json), Message.class)
 
         then:
         message != null
@@ -44,10 +44,10 @@ class MessageSpec extends Specification {
         is parsed correctly
         """() {
         given:
-        def string = '{"reason":"a_valid_reason","message":""}'
+        def json = '{"reason":"a_valid_reason","message":""}'
 
         when:
-        def message = mapper.read(new StringReader(string), Message.class)
+        def message = mapper.read(new StringReader(json), Message.class)
 
         then:
         message != null
@@ -60,10 +60,10 @@ class MessageSpec extends Specification {
         is parsed correctly
         """() {
         given:
-        def string = '{"reason":null,"message": "hello"}'
+        def json = '{"reason":null,"message": "hello"}'
 
         when:
-        def message = mapper.read(new StringReader(string), Message.class)
+        def message = mapper.read(new StringReader(json), Message.class)
 
         then:
         message != null
@@ -76,10 +76,10 @@ class MessageSpec extends Specification {
         is parsed correctly
         """() {
         given:
-        def string = '{"message":"hello"}'
+        def json = '{"message":"hello"}'
 
         when:
-        def message = mapper.read(new StringReader(string), Message.class)
+        def message = mapper.read(new StringReader(json), Message.class)
 
         then:
         message != null
@@ -92,10 +92,10 @@ class MessageSpec extends Specification {
         is parsed correctly
         """() {
         given:
-        def string = '{"reason":"", "message":"hello"}'
+        def json = '{"reason":"", "message":"hello"}'
 
         when:
-        def message = mapper.read(new StringReader(string), Message.class)
+        def message = mapper.read(new StringReader(json), Message.class)
 
         then:
         message != null
@@ -108,10 +108,10 @@ class MessageSpec extends Specification {
         is parsed correctly
         """() {
         given:
-        def string = '{}'
+        def json = '{}'
 
         when:
-        def message = mapper.read(new StringReader(string), Message.class)
+        def message = mapper.read(new StringReader(json), Message.class)
 
         then:
         message != null
@@ -124,10 +124,10 @@ class MessageSpec extends Specification {
         exception is thrown
         """() {
         given:
-        def string = ""
+        def json = ""
 
         when:
-        mapper.read(new StringReader(string), Message.class)
+        mapper.read(new StringReader(json), Message.class)
 
         then:
         thrown(IOException)

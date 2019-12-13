@@ -4,7 +4,7 @@ import net.commuty.parking.model.AccessLog;
 
 import java.util.Collection;
 
-public class AccessLogRequest implements Requestable{
+public class AccessLogRequest implements Requestable {
 
     private final Collection<AccessLog> accesses;
 

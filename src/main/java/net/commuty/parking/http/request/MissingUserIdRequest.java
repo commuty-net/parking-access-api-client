@@ -3,7 +3,7 @@ package net.commuty.parking.http.request;
 import net.commuty.parking.model.UserId;
 import net.commuty.parking.model.UserIdType;
 
-public class MissingUserIdRequest implements Requestable{
+public class MissingUserIdRequest implements Requestable {
 
     private final String id;
     private final UserIdType type;
