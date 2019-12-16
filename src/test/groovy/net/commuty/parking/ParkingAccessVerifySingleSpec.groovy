@@ -1,61 +1,20 @@
 package net.commuty.parking
 
 import net.commuty.parking.http.request.VerificationRequest
-import org.mockserver.integration.ClientAndServer
-import org.mockserver.verify.VerificationTimes
-import spock.lang.AutoCleanup
 import spock.lang.Shared
-import spock.lang.Specification
 
 import static java.net.HttpURLConnection.HTTP_OK
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED
 import static net.commuty.parking.model.UserId.fromBadgeNumber
 import static net.commuty.parking.model.UserId.fromEmail
-import static org.mockserver.integration.ClientAndServer.startClientAndServer
 import static org.mockserver.model.HttpRequest.request
 import static org.mockserver.model.HttpResponse.response
-import static org.mockserver.model.NottableString.not
-import static org.mockserver.verify.VerificationTimes.once
 
-class ParkingAccessVerifySingleSpec extends Specification implements RestTrait {
-
-    @Shared def parkingAccess = ParkingAccess.create("dummy", "dummy", "http://localhost:8080")
+class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
 
     @Shared def validParkingSite = "parking-site"
     @Shared def unknownParkingSite = "wrongsiteid"
     @Shared def validUser = fromBadgeNumber("1234")
     @Shared def unknownUser = fromEmail("anon@commuty.net")
-
-    @AutoCleanup('stop')
-    ClientAndServer mockServer
-
-    def setup() {
-        mockServer = startClientAndServer(8080)
-        mockAuthRoutes()
-        mockVerificationRoutes()
-    }
-
-    def mockAuthRoutes() {
-        // get token
-        mockServer.when(
-                request()
-                        .withMethod("POST")
-                        .withPath("/v2/token-requests")
-        ).respond(
-                response('{"token":"atoken"}')
-                        .withStatusCode(HTTP_OK)
-        )
-
-        // unauthorized
-        mockServer.when(
-                request()
-                        .withPath(not("/v2/token-requests"))
-                        .withHeader(not("Authorization"))
-        ).respond(
-                response()
-                        .withStatusCode(HTTP_UNAUTHORIZED)
-        )
-    }
 
     def mockVerificationRoutes() {
         // valid route (must match parking site and body)
@@ -133,6 +92,8 @@ class ParkingAccessVerifySingleSpec extends Specification implements RestTrait {
         #verifySingle(unknown parking site, unknown user)
         returns false
         """() {
+        given:
+        mockVerificationRoutes()
 
         when:
         def isGranted = parkingAccess.verifySingle(unknownParkingSite, unknownUser)
@@ -145,6 +106,8 @@ class ParkingAccessVerifySingleSpec extends Specification implements RestTrait {
         #verifySingle(known parking site, unknown user)
         returns false
         """() {
+        given:
+        mockVerificationRoutes()
 
         when:
         def isGranted = parkingAccess.verifySingle(validParkingSite, unknownUser)
@@ -157,6 +120,8 @@ class ParkingAccessVerifySingleSpec extends Specification implements RestTrait {
         #verifySingle(unknown parking site, known user)
         returns false
         """() {
+        given:
+        mockVerificationRoutes()
 
         when:
         def isGranted = parkingAccess.verifySingle(unknownParkingSite, validUser)
@@ -169,6 +134,8 @@ class ParkingAccessVerifySingleSpec extends Specification implements RestTrait {
         #verifySingle(known parking site, known user)
         returns true
         """() {
+        given:
+        mockVerificationRoutes()
 
         when:
         def isGranted = parkingAccess.verifySingle(validParkingSite, validUser)

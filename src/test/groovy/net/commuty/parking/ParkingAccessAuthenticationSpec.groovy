@@ -1,10 +1,11 @@
 package net.commuty.parking
 
-
+import net.commuty.parking.configuration.JsonMapper
 import net.commuty.parking.exception.CredentialsException
 import net.commuty.parking.http.request.TokenRequest
 import org.mockserver.integration.ClientAndServer
 import spock.lang.AutoCleanup
+import spock.lang.Shared
 import spock.lang.Specification
 
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN
@@ -13,13 +14,18 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer
 import static org.mockserver.model.HttpRequest.request
 import static org.mockserver.model.HttpResponse.response
 
-class ParkingAccessAuthenticationSpec extends Specification implements RestTrait {
+class ParkingAccessAuthenticationSpec extends Specification {
+
+    @Shared String host
+
+    @Shared JsonMapper mapper = JsonMapper.create()
 
     @AutoCleanup('stop')
     ClientAndServer mockServer
 
     def setup() {
-        mockServer = startClientAndServer(8080)
+        mockServer = startClientAndServer()
+        host = "http://localhost:${mockServer.getLocalPort()}"
     }
 
     def """
