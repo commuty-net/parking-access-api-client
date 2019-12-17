@@ -61,7 +61,7 @@ dependencies {
     testImplementation (
             "org.spockframework:spock-core:$spockVersion",
             "org.codehaus.groovy:groovy-all:$groovyVersion",
-            "org.mock-server:mockserver-netty:5.8.0",
-            "ch.qos.logback:logback-classic:1.2.3"
+            "org.mock-server:mockserver-netty:$mockServerVersion",
+            "ch.qos.logback:logback-classic:$logbackVersion"
     )
 }

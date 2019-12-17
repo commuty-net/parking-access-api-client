@@ -22,10 +22,13 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
                 request()
                 .withMethod("POST")
                 .withPath("/v2/parking-sites/${validParkingSite}/access-requests")
-                .withHeader("Authorization", "Bearer atoken")
+                .withHeader("Authorization", token)
                 .withBody(mapper.write(new VerificationRequest(validUser)))
         ).respond(
-                response('{"granted":true}')
+                response("""
+                               {
+                                   "granted":true
+                               }""")
                 .withStatusCode(HTTP_OK)
         )
 
@@ -36,7 +39,7 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
                 request()
                 .withMethod("POST")
                 .withPath("/v2/parking-sites/.*/access-requests")
-                .withHeader("Authorization", "Bearer atoken")
+                .withHeader("Authorization", token)
         ).respond(
                 response('{"granted":false}')
                 .withStatusCode(HTTP_OK)

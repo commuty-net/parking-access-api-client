@@ -17,9 +17,13 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
                 request()
                     .withMethod("POST")
                     .withPath("/v2/parking-sites/.*/access-logs")
-                    .withHeader("Authorization", "Bearer atoken")
+                    .withHeader("Authorization", token)
         ).respond(
-                response('{"logId": "a-valid-log-id"}')
+                response("""
+                               {
+                                    "logId": "a-valid-log-id"
+                               }
+                               """)
                 .withStatusCode(HTTP_OK)
         )
     }

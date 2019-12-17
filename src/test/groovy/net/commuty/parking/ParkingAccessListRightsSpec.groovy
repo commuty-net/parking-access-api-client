@@ -19,7 +19,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                 request()
                         .withMethod("GET")
                         .withPath("/v2/access-rights")
-                        .withHeader("Authorization", "Bearer atoken")
+                        .withHeader("Authorization", token)
         ).respond(
                 response()
                         .withBody('{"accessRights": []}')
@@ -58,7 +58,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                 request()
                         .withMethod("GET")
                         .withPath("/v2/access-rights")
-                        .withHeader("Authorization", "Bearer atoken")
+                        .withHeader("Authorization", token)
         ).respond(
                 response()
                         .withBody("""
@@ -119,7 +119,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                 request()
                         .withMethod("GET")
                         .withPath("/v2/access-rights")
-                        .withHeader("Authorization", "Bearer atoken")
+                        .withHeader("Authorization", token)
         ).respond(
                 response()
                         .withBody("""

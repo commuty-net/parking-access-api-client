@@ -7,6 +7,7 @@ import java.time.OffsetDateTime
 
 import static net.commuty.parking.model.UserIdType.EMAIL
 import static net.commuty.parking.model.UserIdType.PIN_CODE
+import static net.commuty.parking.model.UserIdType.UNKNOWN
 
 class AccessRightSpec extends Specification {
 
@@ -88,6 +89,44 @@ class AccessRightSpec extends Specification {
         right.userIds.last().userIdType == PIN_CODE
         right.parkingSiteId == "d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4"
         right.granted
+        right.startTime == OffsetDateTime.parse("2019-11-29T00:00:00+07:00")
+        right.endTime == OffsetDateTime.parse("2019-11-30T00:00:00+07:00")
+    }
+
+    def """
+        parse a message {
+            "userIds": one valid userId from a unknown type in the library
+            "parkingSiteId": a valid string
+            "startTime": a valid date
+            "endTime": a valid date
+            "granted": a boolean
+        }
+        is parsed correctly
+        """() {
+        given:
+        def json = """
+                {
+                    "userIds": [{
+                        "id": "unknownId",
+                        "type": "unknownTypeId"
+                    }],
+                    "parkingSiteId": "d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4",
+                    "granted": false,
+                    "startTime": "2019-11-29T00:00:00+07:00",
+                    "endTime": "2019-11-30T00:00:00+07:00"
+                }"""
+
+        when:
+        def right = mapper.read(new StringReader(json), AccessRight.class)
+
+        then:
+        right != null
+        right.userIds.size() == 1
+        right.userIds.first().id == "unknownId"
+        right.userIds.first().userIdType == UNKNOWN
+        right.userIds.first().type == "unknownTypeId"
+        right.parkingSiteId == "d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4"
+        !right.granted
         right.startTime == OffsetDateTime.parse("2019-11-29T00:00:00+07:00")
         right.endTime == OffsetDateTime.parse("2019-11-30T00:00:00+07:00")
     }

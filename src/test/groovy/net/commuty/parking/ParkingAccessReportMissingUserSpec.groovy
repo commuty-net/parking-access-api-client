@@ -35,7 +35,11 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
                         .withPath("/v2/missing-user-ids")
                         .withHeader("Authorization", token)
         ).respond(
-                response("""{"id": "${userId.id}", "type": "${userId.type}"}""")
+                response("""
+                               {
+                                    "id": "${userId.id}", 
+                                    "type": "${userId.type}"
+                               }""")
                         .withStatusCode(HTTP_OK)
         )
 
