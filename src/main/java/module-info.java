@@ -10,4 +10,5 @@ module commuty.parking.access.client {
 
     exports net.commuty.parking;
     exports net.commuty.parking.model;
+    exports net.commuty.parking.http;
 }
