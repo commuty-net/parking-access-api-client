@@ -5,6 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static net.commuty.parking.model.UserIdType.*;
 
+/**
+ * This identifies a user via one {@link UserIdType} and one identifier value.<br />
+ * A parking user is known in Commuty via one or more {@link UserId}. Each user id has a type of identifier (email, license plate,...) and the identification value.<br />
+ * For instance, a correct user id could be:
+ * <ul>
+ *     <li>type: {@link UserIdType#EMAIL}</li>
+ *     <li>id: parking-user@someorg.com</li>
+ * </ul>
+ */
 public class UserId {
 
     private final String id;
@@ -21,39 +30,66 @@ public class UserId {
         this.id = id;
     }
 
+    /**
+     * Creates a user id based on an email.
+     */
     public static UserId fromEmail(String email) {
         return new UserId(EMAIL, email);
     }
 
+    /**
+     * Creates a user id based on a license plate.
+     */
     public static UserId fromLicensePlate(String licensePlate) {
         return new UserId(LICENSE_PLATE, licensePlate);
     }
 
+    /**
+     * Creates a user id based on an identification number
+     */
     public static UserId fromIdentificationNumber(String identificationNumber) {
         return new UserId(UserIdType.IDENTIFICATION_NUMBER, identificationNumber);
     }
 
+    /**
+     * Creates a user id based on a generated qr code.
+     */
     public static UserId fromQrCode(String qrCode) {
         return new UserId(QR_CODE, qrCode);
     }
 
+    /**
+     * Creates a user id based on a badge number.
+     */
     public static UserId fromBadgeNumber(String badgeNumber) {
         return new UserId(BADGE_NUMBER, badgeNumber);
     }
 
+    /**
+     * Creates a user id based on a cardholder identifier.
+     */
     public static UserId fromCardholderId(String cardholderId) {
         return new UserId(CARDHOLDER_ID, cardholderId);
     }
 
+    /**
+     * Creates a user id based on a pin code.
+     */
     public static UserId fromPinCode(String pinCode) {
         return new UserId(PIN_CODE, pinCode);
     }
 
+    /**
+     * The value of the identifier.
+     */
     @JsonProperty("id")
     public String getId() {
         return id;
     }
 
+    /**
+     * The identification type.
+     */
     @JsonProperty("type")
     public UserIdType getType() {
         return type;

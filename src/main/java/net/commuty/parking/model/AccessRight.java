@@ -7,6 +7,30 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 
+/**
+ * This holds the access right:
+ * <ul>
+ *     <li>for a user identified by one or more of its ids;</li>
+ *     <li>for a specific parking site;</li>
+ *     <li>for a period of time (starting from {@link #getStartTime()} until before {@link #getEndTime()});</li>
+ *     <li>whether is access is allowed or not.</li>
+ * </ul>
+ * <br />
+ * An access right will never overlap two days, meaning that it will always start on or after midnight and end on or before midnight the next day.<br />
+ * It is possible for a user to have multiple access rights on a parking site for a day.
+ * In this case, the periods (from start time until end time) will also never overlap. Moreover, all the periods will cover a complete day.<br /><br />
+ * For instance: <br />
+ * A user that is <b>not granted</b> today will:
+ * <ul>
+ *     <li>have one <b>granted</b> right starting from <b>today midnight</b> until <b>tomorrow midnight</b></li>
+ * </ul>
+ * A user that is <b>granted</b> today <b>from 08:00 until 16:00</b> will:
+ * <ul>
+ *     <li>have one <b>not granted</b> right starting from <b>today midnight</b> until <b>today 08:00</b></li>
+ *     <li>have one <b>granted</b> right starting from <b>today 08:00</b> until <b>today 16:00</b></li>
+ *     <li>have one <b>not granted</b> right starting from <b>today 16:00</b> until <b>tomorrow midnight</b></li>
+ * </ul>
+ */
 public class AccessRight {
 
     private final Collection<UserId> userIds;
@@ -32,26 +56,41 @@ public class AccessRight {
         this.granted = granted;
     }
 
+    /**
+     * A list of known user ids known by Commuty that target the user concerning by this access right.
+     */
     @JsonProperty("userIds")
     public Collection<UserId> getUserIds() {
         return userIds;
     }
 
+    /**
+     * The identifier of the parking site that the user is able (or not) to enter.
+     */
     @JsonProperty("parkingSiteId")
     public String getParkingSiteId() {
         return parkingSiteId;
     }
 
+    /**
+     * The moment (included) when the user is allowed (or not) on the parking site.
+     */
     @JsonProperty("startTime")
     public OffsetDateTime getStartTime() {
         return startTime;
     }
 
+    /**
+     * The moment (excluded) when the user is allowed (or not) anymore on the parking site.
+     */
     @JsonProperty("endTime")
     public OffsetDateTime getEndTime() {
         return endTime;
     }
 
+    /**
+     * The status of the access right, wheter the user is allowed (<code>true</code>) on the parking site or not (<code>false</code>).
+     */
     @JsonProperty("granted")
     public boolean isGranted() {
         return granted;
@@ -68,6 +107,11 @@ public class AccessRight {
                 '}';
     }
 
+    /**
+     * Check if this access right happens in the given moment or not.
+     * @param moment The moment to check.
+     * @return <code>true</code> if the moment given is during the access right, <code>false</code> otherwise.
+     */
     public boolean covers(LocalDateTime moment) {
         if (moment == null) {
             throw new IllegalArgumentException("AccessRight.covers: moment must not be null");
@@ -76,6 +120,11 @@ public class AccessRight {
                 !moment.isBefore(startTime.toLocalDateTime());
     }
 
+    /**
+     * Check if this access right's start time is after the given moment.
+     * @param moment The moment to check.
+     * @return <code>true</code> if the given moment is after the start time, <code>false</code> otherwise.
+     */
     public boolean startsAfter(LocalDateTime moment) {
         return startTime.toLocalDateTime().isAfter(moment);
     }

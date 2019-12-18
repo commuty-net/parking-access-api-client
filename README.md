@@ -16,50 +16,67 @@ This library requires a minimum `Java 8` version to work.
 It has a very small amount of dependencies:
 * `com.fasterxml.jackson.core:jackson-databind:2.10.1`
 * `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1`
-* `com.fasterxml.jackson.module:jackson-module-paranamer:2.10.1`
 * `org.slf4j:slf4j-api:1.7.29`
 
-## Usage
+## Integrate the library in your project
 
-This client was made to be used effortlessly and without no required configuration.
+To use this library in your project, you can do it via a maven dependency:
+
+```xml
+<dependency>
+    <groupId>net.commuty</groupId>
+    <artifactId>parking-access-api-client</artifactId>
+    <version>2.0.0</version>
+</dependency>
+```
+
+or via a gradle:
+
+```
+implementation "net.commuty:parking-access-api-client:2.0.0"
+```
+
+## Usage
 
 To instantiate a client using the username/password Commuty provided to you, simple use the following statement:
 
 ```java
-import net.commuty.parking.ParkingAccessOld;
+package net.commuty.parking;
+
+import net.commuty.parking.Configuration;
+import net.commuty.parking.ParkingAccess;
 
 public class Example {
-    public static void main(String[] args){
-        String username = "a-username";
-        String password = "a-password";
-        ParkingAccess client = ParkingAccess.create(username, password); 
+
+    public static void main(String[] args) {
+        ParkingAccess client = Configuration.Builder.buildDefault("a-username", "a-password").toRestClient();
     }
 }
+
 ```
 
 However, if you need to configure more options (to configure a proxy for instance), there is a convenient builder present for you:
 
 ```java
-import net.commuty.parking.ParkingAccessOld;
+import net.commuty.parking.ParkingAccess;
 import net.commuty.parking.configuration.Client;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
 public class Example {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         String username = "a-username";
         String password = "a-password";
         String host = "https://parking-access.commuty.net";
         Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.0.1", 8080));
-        Client clientBuilder = Client.Builder.create()
-                      .withCredentials(username, password)
-                      .withHost(host)
-                      .withProxy(proxy)
-                      .build();
-
-        ParkingAccess client = ParkingAccess.create(clientBuilder); 
-
+        ParkingAccess client = Configuration.Builder
+                .create()
+                .withCredentials(username, password)
+                .withHost(host)
+                .withProxy(proxy)
+                .build()
+                .toRestClient();
     }
 }
 ```
@@ -78,17 +95,19 @@ Every example will start with the initialisation of the client. You can of cours
 ### verify if a user can access a parking site
 
 ```java
-import net.commuty.parking.ParkingAccessOld;
-import CredentialsException;
-import HttpClientException;
-import HttpRequestException;
+import net.commuty.parking.Configuration;
+import net.commuty.parking.ParkingAccess;
+import net.commuty.parking.http.CredentialsException;
+import net.commuty.parking.http.HttpClientException;
+import net.commuty.parking.http.HttpRequestException;
 import net.commuty.parking.model.UserId;
 
 public class Example {
+
     public static void main(String[] args){
-        ParkingAccess client = ParkingAccess.create("a-username", "a-password");
+        ParkingAccess client = Configuration.Builder.create().withCredentials("a-username", "a-password").build().toRestClient();
         try {
-            boolean isAllowed = client.verifySingle("a-parking-site-id", UserId.fromEmail("somemone@your-company.net"));
+            boolean isAllowed = client.isGranted("a-parking-site-id", UserId.fromEmail("somemone@your-company.net"));
             if (isAllowed) {
                 // do something that will open a gate...
             } else {
@@ -112,16 +131,19 @@ public class Example {
 ### List all parking access rights
 
 ```java
-import net.commuty.parking.ParkingAccessOld;
-import ApiException;
-import CredentialsException;
+import net.commuty.parking.Configuration;
+import net.commuty.parking.ParkingAccess;
+import net.commuty.parking.http.ApiException;
+import net.commuty.parking.http.CredentialsException;
 import net.commuty.parking.model.AccessRight;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 public class Example {
+
     public static void main(String[] args){
-        ParkingAccess client = ParkingAccess.create("a-username", "a-password");
+        ParkingAccess client = Configuration.Builder.create().withCredentials("a-username", "a-password").build().toRestClient();
         try {
             // retrieve all accesses for today (unread and already read)
             Collection<AccessRight> accessesOfTheDay = client.listAccessRightsForToday();
@@ -143,14 +165,16 @@ public class Example {
         }
     }
 }
+
 ```
 
 ### Report who entered/exited the parking
 
 ```java
-import net.commuty.parking.ParkingAccessOld;
-import ApiException;
-import CredentialsException;
+import net.commuty.parking.Configuration;
+import net.commuty.parking.ParkingAccess;
+import net.commuty.parking.http.ApiException;
+import net.commuty.parking.http.CredentialsException;
 import net.commuty.parking.model.AccessLog;
 import net.commuty.parking.model.UserId;
 
@@ -159,8 +183,9 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class Example {
+
     public static void main(String[] args){
-        ParkingAccess client = ParkingAccess.create("a-username", "a-password");
+        ParkingAccess client = Configuration.Builder.create().withCredentials("a-username", "a-password").build().toRestClient();
         try {
             // create one (or more) access log to report to Commuty
             Collection<AccessLog> accessLogs = Arrays.asList(
@@ -168,10 +193,10 @@ public class Example {
                     AccessLog.createOutAccessLog(UserId.fromBadgeNumber("11223344"), LocalDateTime.of(2019, 10, 10, 21, 23, 12))
                     // etc 
             );
-            
+
             // report them to Commuty
             String logId = client.reportAccessLog("a-parking-site-id", accessLogs);
-            
+
             // you can save the logId for future reference or simply discard it
 
         } catch (CredentialsException credentialsException) {
@@ -189,14 +214,16 @@ public class Example {
 ### Report a user that is known by you but not by Commuty
 
 ```java
-import net.commuty.parking.ParkingAccessOld;
-import ApiException;
-import CredentialsException;
+import net.commuty.parking.Configuration;
+import net.commuty.parking.ParkingAccess;
+import net.commuty.parking.http.ApiException;
+import net.commuty.parking.http.CredentialsException;
 import net.commuty.parking.model.UserId;
 
 public class Example {
+
     public static void main(String[] args){
-        ParkingAccess client = ParkingAccess.create("a-username", "a-password");
+        ParkingAccess client = Configuration.Builder.create().withCredentials("a-username", "a-password").build().toRestClient();
         try {
             // send every user that is known by you, one user at a time
             client.reportMissingUserId(UserId.fromLicensePlate("1-ABC-123"));

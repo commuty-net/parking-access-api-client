@@ -128,7 +128,7 @@ public class HttpClient {
         connection.setRequestMethod(POST);
         connection.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
         connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
-        if (token != null && !"".equals(token)) {
+        if (token != null && !token.trim().isEmpty()) {
             connection.setRequestProperty(AUTHORIZATION, String.format(TOKEN_TEMPLATE, token));
         }
         connection.setConnectTimeout(TIMEOUT_IN_MS);

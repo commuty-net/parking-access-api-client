@@ -3,6 +3,11 @@ package net.commuty.parking.model;
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * This indicates what is the type of the user identifier.<br />
+ * A parking user is known to Commuty via one or more identifiers. Each identifier has a specific type (i.e. the identifier is an email, a number plate,...)<br />
+ * If the identifier type is not known by the client (for instance when the client is used against a newer version of the api), the the type will be shown as {@link #UNKNOWN}.
+ */
 public enum UserIdType {
     @JsonProperty("email")
     EMAIL,
@@ -27,24 +32,5 @@ public enum UserIdType {
 
     @JsonEnumDefaultValue
     @JsonProperty("unknown")
-    UNKNOWN;
-// TODO remove?
-//
-//    private final String serializedIdType;
-//
-//    UserIdType(String serializedIdType) {
-//        this.serializedIdType = serializedIdType;
-//    }
-//
-//    static UserIdType parse(String providedIdType) {
-//        return stream(UserIdType.values())
-//                .filter(type -> providedIdType.equals(type.serializedIdType))
-//                .findFirst()
-//                .orElse(UNKNOWN);
-//    }
-//
-//    @JsonValue
-//    private String getSerializedIdType() {
-//        return serializedIdType;
-//    }
+    UNKNOWN
 }
