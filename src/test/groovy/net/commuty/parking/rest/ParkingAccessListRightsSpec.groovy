@@ -1,4 +1,4 @@
-package net.commuty.parking
+package net.commuty.parking.rest
 
 
 import java.time.LocalDate
@@ -93,9 +93,9 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         accesses.size() == 1
         with(accesses.first()) {
             userIds.size() == 2
-            userIds.first().userIdType == EMAIL
+            userIds.first().type == EMAIL
             userIds.first().id == "anonymised.19884@commuty.net"
-            userIds.last().userIdType == BADGE_NUMBER
+            userIds.last().type == BADGE_NUMBER
             userIds.last().id == "123456"
             parkingSiteId == "d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4"
             !granted

@@ -1,4 +1,4 @@
-package net.commuty.parking
+package net.commuty.parking.rest
 
 
 import net.commuty.parking.model.AccessLog

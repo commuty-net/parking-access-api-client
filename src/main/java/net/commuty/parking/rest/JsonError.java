@@ -1,23 +1,28 @@
-package net.commuty.parking.model;
+package net.commuty.parking.rest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import net.commuty.parking.http.Error;
 
-public class Message {
+public class JsonError implements Error {
 
     private final String reason;
 
-    private String message;
+    private final String message;
 
     @JsonCreator
-    private Message(String reason, String message) {
+    JsonError(@JsonProperty("reason") String reason,
+              @JsonProperty("message") String message) {
         this.reason = reason;
         this.message = message;
     }
 
+    @JsonProperty("reason")
     public String getReason() {
         return reason;
     }
 
+    @JsonProperty("message")
     public String getMessage() {
         return message;
     }

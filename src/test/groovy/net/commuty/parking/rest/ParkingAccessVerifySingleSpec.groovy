@@ -1,6 +1,6 @@
-package net.commuty.parking
+package net.commuty.parking.rest
 
-import net.commuty.parking.http.request.VerificationRequest
+
 import spock.lang.Shared
 
 import static java.net.HttpURLConnection.HTTP_OK
@@ -55,7 +55,7 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
         def userId = validUser
 
         when:
-        parkingAccess.verifySingle(parkingSiteId, userId)
+        parkingAccess.isGranted(parkingSiteId, userId)
 
         then:
         thrown(IllegalArgumentException)
@@ -70,7 +70,7 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
         def userId = validUser
 
         when:
-        parkingAccess.verifySingle(parkingSiteId, userId)
+        parkingAccess.isGranted(parkingSiteId, userId)
 
         then:
         thrown(IllegalArgumentException)
@@ -85,21 +85,18 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
         def userId = null
 
         when:
-        parkingAccess.verifySingle(parkingSiteId, userId)
+        parkingAccess.isGranted(parkingSiteId, userId)
 
         then:
         thrown(IllegalArgumentException)
     }
 
-    def """
-        #verifySingle(unknown parking site, unknown user)
-        returns false
-        """() {
+    def "#verifySingle(unknown parking site, unknown user) returns false"() {
         given:
         mockVerificationRoutes()
 
         when:
-        def isGranted = parkingAccess.verifySingle(unknownParkingSite, unknownUser)
+        def isGranted = parkingAccess.isGranted(unknownParkingSite, unknownUser)
 
         then:
         !isGranted
@@ -113,7 +110,7 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
         mockVerificationRoutes()
 
         when:
-        def isGranted = parkingAccess.verifySingle(validParkingSite, unknownUser)
+        def isGranted = parkingAccess.isGranted(validParkingSite, unknownUser)
 
         then:
         !isGranted
@@ -127,7 +124,7 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
         mockVerificationRoutes()
 
         when:
-        def isGranted = parkingAccess.verifySingle(unknownParkingSite, validUser)
+        def isGranted = parkingAccess.isGranted(unknownParkingSite, validUser)
 
         then:
         !isGranted
@@ -141,7 +138,7 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
         mockVerificationRoutes()
 
         when:
-        def isGranted = parkingAccess.verifySingle(validParkingSite, validUser)
+        def isGranted = parkingAccess.isGranted(validParkingSite, validUser)
 
         then:
         isGranted

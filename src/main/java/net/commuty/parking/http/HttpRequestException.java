@@ -1,21 +1,19 @@
-package net.commuty.parking.exception;
-
-import net.commuty.parking.model.Message;
+package net.commuty.parking.http;
 
 import static java.net.HttpURLConnection.*;
 
 public class HttpRequestException extends ApiException {
 
     private final int httpResponseCode;
-    private final Message errorResponse;
+    private final Error errorResponse;
 
-    public HttpRequestException(int httpResponseCode, Message errorResponse) {
+    protected HttpRequestException(int httpResponseCode, Error errorResponse) {
         super("The request failed with an error code "+ httpResponseCode);
         this.httpResponseCode = httpResponseCode;
         this.errorResponse = errorResponse;
     }
 
-    public Message getErrorResponse() {
+    public Error getErrorResponse() {
         return errorResponse;
     }
 

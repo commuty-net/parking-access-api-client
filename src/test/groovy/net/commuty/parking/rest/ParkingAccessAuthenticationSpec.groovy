@@ -1,8 +1,7 @@
-package net.commuty.parking
+package net.commuty.parking.rest
 
-import net.commuty.parking.configuration.JsonMapper
-import net.commuty.parking.exception.CredentialsException
-import net.commuty.parking.http.request.TokenRequest
+import net.commuty.parking.Configuration
+import net.commuty.parking.http.CredentialsException
 import org.mockserver.integration.ClientAndServer
 import spock.lang.AutoCleanup
 import spock.lang.Shared
@@ -36,7 +35,7 @@ class ParkingAccessAuthenticationSpec extends Specification {
         given:
         def username = "test"
         def password = "blu"
-        def parkingAccess = ParkingAccess.create(username, password, host)
+        def parkingAccess = Configuration.Builder.create().withCredentials(username, password).withHost(host).build().toRestClient()
         mockServer.when(
                 request()
                 .withMethod("POST")
@@ -67,7 +66,7 @@ class ParkingAccessAuthenticationSpec extends Specification {
                 "token": "some-valid-token"
             }
         """
-        def parkingAccess = ParkingAccess.create(username, password, host)
+        def parkingAccess = Configuration.Builder.create().withCredentials(username, password).withHost(host).build().toRestClient()
         mockServer.when(
                 request()
                 .withMethod("POST")

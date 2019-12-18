@@ -1,20 +1,14 @@
 package net.commuty.parking.model
 
 import groovy.json.JsonSlurper
-import net.commuty.parking.configuration.JsonMapper
+import net.commuty.parking.rest.JsonMapperTest
 import spock.lang.Specification
 
-import static net.commuty.parking.model.UserIdType.BADGE_NUMBER
-import static net.commuty.parking.model.UserIdType.CARDHOLDER_ID
-import static net.commuty.parking.model.UserIdType.EMAIL
-import static net.commuty.parking.model.UserIdType.IDENTIFICATION_NUMBER
-import static net.commuty.parking.model.UserIdType.LICENSE_PLATE
-import static net.commuty.parking.model.UserIdType.PIN_CODE
-import static net.commuty.parking.model.UserIdType.QR_CODE
+import static net.commuty.parking.model.UserIdType.*
 
 class UserIdSpec extends Specification {
 
-    def mapper = JsonMapper.create()
+    def mapper = JsonMapperTest.create()
     def reader = new JsonSlurper()
 
     def """
@@ -47,8 +41,7 @@ class UserIdSpec extends Specification {
         then:
         userId != null
         userId.id == email
-        userId.type == "email"
-        userId.userIdType == EMAIL
+        userId.type == EMAIL
     }
 
     def """
@@ -82,8 +75,7 @@ class UserIdSpec extends Specification {
         then:
         userId != null
         userId.id == licensePlate
-        userId.type == "licensePlate"
-        userId.userIdType == LICENSE_PLATE
+        userId.type == LICENSE_PLATE
     }
 
     def """
@@ -117,8 +109,7 @@ class UserIdSpec extends Specification {
         then:
         userId != null
         userId.id == identificationNumber
-        userId.type == "identificationNumber"
-        userId.userIdType == IDENTIFICATION_NUMBER
+        userId.type == IDENTIFICATION_NUMBER
     }
 
     def """
@@ -152,8 +143,7 @@ class UserIdSpec extends Specification {
         then:
         userId != null
         userId.id == qrCode
-        userId.type == "qrCode"
-        userId.userIdType == QR_CODE
+        userId.type == QR_CODE
     }
 
     def """
@@ -187,8 +177,7 @@ class UserIdSpec extends Specification {
         then:
         userId != null
         userId.id == badgeNumber
-        userId.type == "badgeNumber"
-        userId.userIdType == BADGE_NUMBER
+        userId.type == BADGE_NUMBER
     }
 
     def """
@@ -222,8 +211,7 @@ class UserIdSpec extends Specification {
         then:
         userId != null
         userId.id == cardholderId
-        userId.type == "cardholderId"
-        userId.userIdType == CARDHOLDER_ID
+        userId.type == CARDHOLDER_ID
     }
 
     def """
@@ -257,8 +245,7 @@ class UserIdSpec extends Specification {
         then:
         userId != null
         userId.id == pinCode
-        userId.type == "pinCode"
-        userId.userIdType == PIN_CODE
+        userId.type == PIN_CODE
     }
 
     def """

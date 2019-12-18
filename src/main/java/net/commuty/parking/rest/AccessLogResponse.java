@@ -1,16 +1,18 @@
-package net.commuty.parking.http.response;
+package net.commuty.parking.rest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AccessLogResponse {
+class AccessLogResponse {
 
     private final String logId;
 
     @JsonCreator
-    public AccessLogResponse(String logId) {
+    AccessLogResponse(@JsonProperty("logId") String logId) {
         this.logId = logId;
     }
 
+    @JsonProperty("logId")
     public String getLogId() {
         return logId;
     }

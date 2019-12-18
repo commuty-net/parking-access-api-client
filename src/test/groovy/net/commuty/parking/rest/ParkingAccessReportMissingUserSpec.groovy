@@ -1,9 +1,12 @@
-package net.commuty.parking
+package net.commuty.parking.rest
 
 
 import net.commuty.parking.model.UserId
+import net.commuty.parking.model.UserIdType
+import spock.lang.IgnoreRest
 
 import static java.net.HttpURLConnection.HTTP_OK
+import static net.commuty.parking.model.UserIdType.QR_CODE
 import static org.mockserver.model.HttpRequest.request
 import static org.mockserver.model.HttpResponse.response
 
@@ -21,9 +24,8 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
 
         then:
         thrown(IllegalArgumentException)
-
     }
-
+    
     def """
         #reportMissingUserId(a valid userId)
         """() {
@@ -37,8 +39,8 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
         ).respond(
                 response("""
                                {
-                                    "id": "${userId.id}", 
-                                    "type": "${userId.type}"
+                                    "id": "F1F2F013D4C9D00D0A", 
+                                    "type": "qrCode"
                                }""")
                         .withStatusCode(HTTP_OK)
         )
@@ -49,7 +51,7 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
         then:
         missingUser != null
         missingUser.id == userId.id
-        missingUser.userIdType == userId.userIdType
+        missingUser.type == userId.type
         mockServer.verify(
                 request()
                 .withMethod("POST")
@@ -65,7 +67,7 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
         !submittedRequests.toList().empty
         with(reader.parseText(submittedRequests.first().httpRequest.bodyAsString)) {
             id == userId.id
-            type == userId.type
+            type == "qrCode"
         }
 
     }

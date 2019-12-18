@@ -26,7 +26,7 @@ This client was made to be used effortlessly and without no required configurati
 To instantiate a client using the username/password Commuty provided to you, simple use the following statement:
 
 ```java
-import net.commuty.parking.ParkingAccess;
+import net.commuty.parking.ParkingAccessOld;
 
 public class Example {
     public static void main(String[] args){
@@ -40,7 +40,7 @@ public class Example {
 However, if you need to configure more options (to configure a proxy for instance), there is a convenient builder present for you:
 
 ```java
-import net.commuty.parking.ParkingAccess;
+import net.commuty.parking.ParkingAccessOld;
 import net.commuty.parking.configuration.Client;
 
 import java.net.InetSocketAddress;
@@ -78,10 +78,10 @@ Every example will start with the initialisation of the client. You can of cours
 ### verify if a user can access a parking site
 
 ```java
-import net.commuty.parking.ParkingAccess;
-import net.commuty.parking.exception.CredentialsException;
-import net.commuty.parking.exception.HttpClientException;
-import net.commuty.parking.exception.HttpRequestException;
+import net.commuty.parking.ParkingAccessOld;
+import CredentialsException;
+import HttpClientException;
+import HttpRequestException;
 import net.commuty.parking.model.UserId;
 
 public class Example {
@@ -112,9 +112,9 @@ public class Example {
 ### List all parking access rights
 
 ```java
-import net.commuty.parking.ParkingAccess;
-import net.commuty.parking.exception.ApiException;
-import net.commuty.parking.exception.CredentialsException;
+import net.commuty.parking.ParkingAccessOld;
+import ApiException;
+import CredentialsException;
 import net.commuty.parking.model.AccessRight;
 
 import java.util.Collection;
@@ -148,9 +148,9 @@ public class Example {
 ### Report who entered/exited the parking
 
 ```java
-import net.commuty.parking.ParkingAccess;
-import net.commuty.parking.exception.ApiException;
-import net.commuty.parking.exception.CredentialsException;
+import net.commuty.parking.ParkingAccessOld;
+import ApiException;
+import CredentialsException;
 import net.commuty.parking.model.AccessLog;
 import net.commuty.parking.model.UserId;
 
@@ -189,9 +189,9 @@ public class Example {
 ### Report a user that is known by you but not by Commuty
 
 ```java
-import net.commuty.parking.ParkingAccess;
-import net.commuty.parking.exception.ApiException;
-import net.commuty.parking.exception.CredentialsException;
+import net.commuty.parking.ParkingAccessOld;
+import ApiException;
+import CredentialsException;
 import net.commuty.parking.model.UserId;
 
 public class Example {

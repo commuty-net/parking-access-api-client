@@ -1,8 +1,8 @@
-package net.commuty.parking.exception;
+package net.commuty.parking.http;
 
 public class HttpClientException extends ApiException {
 
-    public HttpClientException(Exception cause) {
+    protected HttpClientException(Exception cause) {
         super("The client was unable to send the query", cause);
     }
 }

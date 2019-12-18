@@ -1,8 +1,8 @@
 package net.commuty.parking.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Collection;
@@ -20,7 +20,11 @@ public class AccessRight {
     private final boolean granted;
 
     @JsonCreator
-    private AccessRight(Collection<UserId> userIds, String parkingSiteId, OffsetDateTime startTime, OffsetDateTime endTime, boolean granted) {
+    AccessRight(@JsonProperty("userIds") Collection<UserId> userIds,
+                @JsonProperty("parkingSiteId") String parkingSiteId,
+                @JsonProperty("startTime") OffsetDateTime startTime,
+                @JsonProperty("endTime") OffsetDateTime endTime,
+                @JsonProperty("granted") boolean granted) {
         this.userIds = userIds;
         this.parkingSiteId = parkingSiteId;
         this.startTime = startTime;
@@ -28,22 +32,27 @@ public class AccessRight {
         this.granted = granted;
     }
 
+    @JsonProperty("userIds")
     public Collection<UserId> getUserIds() {
         return userIds;
     }
 
+    @JsonProperty("parkingSiteId")
     public String getParkingSiteId() {
         return parkingSiteId;
     }
 
+    @JsonProperty("startTime")
     public OffsetDateTime getStartTime() {
         return startTime;
     }
 
+    @JsonProperty("endTime")
     public OffsetDateTime getEndTime() {
         return endTime;
     }
 
+    @JsonProperty("granted")
     public boolean isGranted() {
         return granted;
     }

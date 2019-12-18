@@ -1,34 +1,50 @@
 package net.commuty.parking.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum UserIdType {
-    EMAIL("email"),
-    LICENSE_PLATE("licensePlate"),
-    IDENTIFICATION_NUMBER("identificationNumber"),
-    QR_CODE("qrCode"),
-    BADGE_NUMBER("badgeNumber"),
-    CARDHOLDER_ID("cardholderId"),
-    PIN_CODE("pinCode"),
-    UNKNOWN("unknown");
+    @JsonProperty("email")
+    EMAIL,
 
-    final String serializedIdType;
+    @JsonProperty("licensePlate")
+    LICENSE_PLATE,
 
-    UserIdType(String serializedIdType) {
-        this.serializedIdType = serializedIdType;
-    }
+    @JsonProperty("identificationNumber")
+    IDENTIFICATION_NUMBER,
 
-    static UserIdType parse(String providedIdType) {
-        return Arrays.stream(UserIdType.values())
-                .filter(type -> providedIdType.equals(type.serializedIdType))
-                .findFirst()
-                .orElse(UNKNOWN);
-    }
+    @JsonProperty("qrCode")
+    QR_CODE,
 
-    @JsonValue
-    private String getSerializedIdType() {
-        return serializedIdType;
-    }
+    @JsonProperty("badgeNumber")
+    BADGE_NUMBER,
+
+    @JsonProperty("cardholderId")
+    CARDHOLDER_ID,
+
+    @JsonProperty("pinCode")
+    PIN_CODE,
+
+    @JsonEnumDefaultValue
+    @JsonProperty("unknown")
+    UNKNOWN;
+// TODO remove?
+//
+//    private final String serializedIdType;
+//
+//    UserIdType(String serializedIdType) {
+//        this.serializedIdType = serializedIdType;
+//    }
+//
+//    static UserIdType parse(String providedIdType) {
+//        return stream(UserIdType.values())
+//                .filter(type -> providedIdType.equals(type.serializedIdType))
+//                .findFirst()
+//                .orElse(UNKNOWN);
+//    }
+//
+//    @JsonValue
+//    private String getSerializedIdType() {
+//        return serializedIdType;
+//    }
 }

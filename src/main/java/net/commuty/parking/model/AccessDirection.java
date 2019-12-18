@@ -1,19 +1,11 @@
 package net.commuty.parking.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum AccessDirection {
-    IN("in"),
-    OUT("out");
+    @JsonProperty("in")
+    IN,
 
-    private final String serializedDirection;
-
-    AccessDirection(String serializedDirection) {
-        this.serializedDirection = serializedDirection;
-    }
-
-    @JsonValue
-    private String getSerializedDirection() {
-        return serializedDirection;
-    }
+    @JsonProperty("out")
+    OUT
 }

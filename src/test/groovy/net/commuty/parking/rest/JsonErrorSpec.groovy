@@ -1,9 +1,12 @@
-package net.commuty.parking.model
+package net.commuty.parking.rest
 
-import net.commuty.parking.configuration.JsonMapper
+
 import spock.lang.Specification
 
-class MessageSpec extends Specification {
+import static java.nio.charset.Charset.defaultCharset
+import static org.apache.commons.io.IOUtils.toInputStream
+
+class JsonErrorSpec extends Specification {
 
     def mapper = JsonMapper.create()
 
@@ -15,7 +18,7 @@ class MessageSpec extends Specification {
         def json = '{"reason":"a_valid_reason","message": null}'
 
         when:
-        def message = mapper.read(new StringReader(json), Message.class)
+        def message = mapper.readError(toInputStream(json, defaultCharset()))
 
         then:
         message != null
@@ -31,7 +34,7 @@ class MessageSpec extends Specification {
         def json = '{"reason":"a_valid_reason"}'
 
         when:
-        def message = mapper.read(new StringReader(json), Message.class)
+        def message = mapper.readError(toInputStream(json, defaultCharset()))
 
         then:
         message != null
@@ -47,7 +50,7 @@ class MessageSpec extends Specification {
         def json = '{"reason":"a_valid_reason","message":""}'
 
         when:
-        def message = mapper.read(new StringReader(json), Message.class)
+        def message = mapper.readError(toInputStream(json, defaultCharset()))
 
         then:
         message != null
@@ -63,7 +66,7 @@ class MessageSpec extends Specification {
         def json = '{"reason":null,"message": "hello"}'
 
         when:
-        def message = mapper.read(new StringReader(json), Message.class)
+        def message = mapper.readError(toInputStream(json, defaultCharset()))
 
         then:
         message != null
@@ -79,7 +82,7 @@ class MessageSpec extends Specification {
         def json = '{"message":"hello"}'
 
         when:
-        def message = mapper.read(new StringReader(json), Message.class)
+        def message = mapper.readError(toInputStream(json, defaultCharset()))
 
         then:
         message != null
@@ -95,7 +98,7 @@ class MessageSpec extends Specification {
         def json = '{"reason":"", "message":"hello"}'
 
         when:
-        def message = mapper.read(new StringReader(json), Message.class)
+        def message = mapper.readError(toInputStream(json, defaultCharset()))
 
         then:
         message != null
@@ -111,7 +114,7 @@ class MessageSpec extends Specification {
         def json = '{}'
 
         when:
-        def message = mapper.read(new StringReader(json), Message.class)
+        def message = mapper.readError(toInputStream(json, defaultCharset()))
 
         then:
         message != null
@@ -127,7 +130,7 @@ class MessageSpec extends Specification {
         def json = ""
 
         when:
-        mapper.read(new StringReader(json), Message.class)
+        mapper.readError(toInputStream(json, defaultCharset()))
 
         then:
         thrown(IOException)

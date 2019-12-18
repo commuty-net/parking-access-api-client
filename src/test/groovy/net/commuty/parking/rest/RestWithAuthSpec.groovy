@@ -1,7 +1,8 @@
-package net.commuty.parking
+package net.commuty.parking.rest
 
 import groovy.json.JsonSlurper
-import net.commuty.parking.configuration.JsonMapper
+import net.commuty.parking.Configuration
+import net.commuty.parking.ParkingAccess
 import org.mockserver.integration.ClientAndServer
 import spock.lang.AutoCleanup
 import spock.lang.Shared
@@ -29,7 +30,7 @@ class RestWithAuthSpec extends Specification {
 
     def setup() {
         mockServer = startClientAndServer()
-        parkingAccess = ParkingAccess.create("dummy", "dummy", "http://localhost:${mockServer.getLocalPort()}")
+        parkingAccess = Configuration.Builder.create().withCredentials("dummy", "dummy").withHost("http://localhost:${mockServer.getLocalPort()}").build().toRestClient()
         mockAuthRoutes()
     }
 

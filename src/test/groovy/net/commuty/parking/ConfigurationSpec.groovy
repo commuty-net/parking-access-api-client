@@ -1,9 +1,11 @@
-package net.commuty.parking.configuration
+package net.commuty.parking
 
-import net.commuty.parking.exception.ClientBuilderException
+import spock.lang.Shared
 import spock.lang.Specification
 
-class ClientSpec extends Specification {
+class ConfigurationSpec extends Specification {
+
+    @Shared String defaultHost = "https://parking-access.commuty.net";
 
     def """
         #buildDefault(String, String)
@@ -14,13 +16,13 @@ class ClientSpec extends Specification {
         def password = "password"
 
         when:
-        def client = Client.Builder.buildDefault(username, password)
+        def configuration = Configuration.Builder.buildDefault(username, password)
 
         then:
-        notThrown(ClientBuilderException)
-        client.username == username
-        client.password == password
-        client.host.toString() == "https://parking-access.commuty.net"
+        notThrown(IllegalArgumentException)
+        configuration.username == username
+        configuration.password == password
+        configuration.host.toString() == defaultHost
     }
 
     def """
@@ -32,10 +34,10 @@ class ClientSpec extends Specification {
         def password = null
 
         when:
-        Client.Builder.buildDefault(username, password)
+        Configuration.Builder.buildDefault(username, password)
 
         then:
-        thrown(ClientBuilderException)
+        thrown(IllegalArgumentException)
     }
 
     def """
@@ -43,10 +45,10 @@ class ClientSpec extends Specification {
         throws an exception
         """() {
         when:
-        Client.Builder.create().withHost(invalidHost)
+        Configuration.Builder.create().withHost(invalidHost)
 
         then:
-        thrown(ClientBuilderException)
+        thrown(IllegalArgumentException)
 
         where:
         invalidHost        | _
@@ -63,10 +65,10 @@ class ClientSpec extends Specification {
         def host = "http://app.commuty.net"
 
         when:
-        Client.Builder.create().withHost(host)
+        Configuration.Builder.create().withHost(host)
 
         then:
-        notThrown(ClientBuilderException)
+        notThrown(IllegalArgumentException)
 
     }
 
@@ -75,10 +77,10 @@ class ClientSpec extends Specification {
         throws an exception
         """() {
         when:
-        Client.Builder.create().withCredentials(username, password)
+        Configuration.Builder.create().withCredentials(username, password)
 
         then:
-        thrown(ClientBuilderException)
+        thrown(IllegalArgumentException)
 
         where:
         username | password
@@ -94,10 +96,10 @@ class ClientSpec extends Specification {
         is valid
         """() {
         when:
-        Client.Builder.create().withCredentials(username, password)
+        Configuration.Builder.create().withCredentials(username, password)
 
         then:
-        notThrown(ClientBuilderException)
+        notThrown(IllegalArgumentException)
 
         where:
         username | password
@@ -111,10 +113,10 @@ class ClientSpec extends Specification {
         throws an exception
         """() {
         when:
-        Client.Builder.create().withProxy(null)
+        Configuration.Builder.create().withProxy(null)
 
         then:
-        thrown(ClientBuilderException)
+        thrown(IllegalArgumentException)
     }
 
     def """
@@ -122,26 +124,29 @@ class ClientSpec extends Specification {
         throws an exception
         """() {
         when:
-        Client.Builder.create().build()
+        Configuration.Builder.create().build()
 
         then:
-        thrown(ClientBuilderException)
+        thrown(IllegalArgumentException)
     }
 
     def """
         #build()
         withHost not called
-        throws an exception
+        builds with the default host
+        is valid
         """() {
         given:
         def username = "toto"
         def password = "pass"
 
         when:
-        Client.Builder.create().withCredentials(username, password).build()
+        def configuration = Configuration.Builder.create().withCredentials(username, password).build()
 
         then:
-        thrown(ClientBuilderException)
+        configuration.username == username
+        configuration.password == password
+        configuration.host.toString() == defaultHost
     }
 
     def """
@@ -153,10 +158,10 @@ class ClientSpec extends Specification {
         def host = "http://www.test.com"
 
         when:
-        Client.Builder.create().withHost(host).build()
+        Configuration.Builder.create().withHost(host).build()
 
         then:
-        thrown(ClientBuilderException)
+        thrown(IllegalArgumentException)
     }
 
     def """
@@ -170,12 +175,12 @@ class ClientSpec extends Specification {
         def password = "tutu"
 
         when:
-        def client = Client.Builder.create().withHost(host).withCredentials(username, password).build()
+        def configuration = Configuration.Builder.create().withHost(host).withCredentials(username, password).build()
 
         then:
-        notThrown(ClientBuilderException)
-        client.username == username
-        client.password == password
-        client.host.toString() == host
+        notThrown(IllegalArgumentException)
+        configuration.username == username
+        configuration.password == password
+        configuration.host.toString() == host
     }
 }

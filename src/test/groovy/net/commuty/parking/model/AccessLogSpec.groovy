@@ -1,7 +1,7 @@
 package net.commuty.parking.model
 
 import groovy.json.JsonSlurper
-import net.commuty.parking.configuration.JsonMapper
+import net.commuty.parking.rest.JsonMapperTest
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -11,7 +11,7 @@ import static net.commuty.parking.model.AccessDirection.OUT
 
 class AccessLogSpec extends Specification {
 
-    def mapper = JsonMapper.create()
+    def mapper = JsonMapperTest.create()
     def reader = new JsonSlurper()
 
     def """
@@ -58,7 +58,7 @@ class AccessLogSpec extends Specification {
         then:
         accessLog != null
         accessLog.userId == userId.id
-        accessLog.userIdType == userId.userIdType
+        accessLog.userIdType == userId.type
         accessLog.at == date
         accessLog.way == IN
     }
@@ -97,7 +97,7 @@ class AccessLogSpec extends Specification {
         then:
         accessLog != null
         accessLog.userId == userId.id
-        accessLog.userIdType == userId.userIdType
+        accessLog.userIdType == userId.type
         accessLog.at == date
         accessLog.way == OUT
     }

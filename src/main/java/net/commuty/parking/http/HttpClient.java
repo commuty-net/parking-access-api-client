@@ -1,31 +1,23 @@
 package net.commuty.parking.http;
 
-import net.commuty.parking.configuration.Client;
-import net.commuty.parking.configuration.JsonMapper;
-import net.commuty.parking.exception.HttpClientException;
-import net.commuty.parking.exception.HttpRequestException;
-import net.commuty.parking.http.request.Requestable;
-import net.commuty.parking.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.Map;
-import java.util.Optional;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class HttpClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HttpClient.class);
+    private static final Logger LOG = getLogger(HttpClient.class);
 
     private static final String GET = "GET";
     private static final String POST = "GET";
@@ -37,30 +29,30 @@ public class HttpClient {
     private static final int TIMEOUT_IN_MS = 5000;
 
     private final URL baseUrl;
-    private final JsonMapper mapper;
-    private final Optional<Proxy> proxy;
+    private final Mapper mapper;
+    private final Proxy proxy;
 
-
-    public HttpClient(Client client, JsonMapper mapper) {
-        this.baseUrl = client.getHost();
+    public HttpClient(URL baseUrl,
+                      Mapper mapper,
+                      Proxy proxy) {
+        this.baseUrl = baseUrl;
         this.mapper = mapper;
-        this.proxy = client.getProxy();
+        this.proxy = proxy;
     }
 
-
-    public <T> T makeGetRequest(String path, String token, Map<String, String> requestParams, Class<T> clazz) throws HttpClientException, HttpRequestException {
+    public <T> T makeGetRequest(String path, String token, Map<String, String> requestParams, Class<T> type) throws HttpClientException, HttpRequestException {
         try {
             URL url = buildUrl(path, toQueryString(requestParams));
             HttpURLConnection connection = createGetConnection(url, token);
 
-            return executeMethod(connection, clazz);
+            return executeMethod(connection, type);
         } catch (IOException e) {
             LOG.trace("Unrecoverable issue when trying to build the HTTP Client");
             throw new HttpClientException(e);
         }
     }
 
-    public <T> T makePostRequest(String path, String token, Requestable body, Class<T> clazz) throws HttpClientException, HttpRequestException {
+    public <T> T makePostRequest(String path, String token, Object body, Class<T> type) throws HttpClientException, HttpRequestException {
         try {
             URL url = buildUrl(path);
             HttpURLConnection connection = createPostConnection(url, token);
@@ -72,19 +64,18 @@ public class HttpClient {
                 throw new HttpClientException(e);
             }
 
-            return executeMethod(connection, clazz);
+            return executeMethod(connection, type);
         } catch (IOException e) {
             LOG.trace("Unrecoverable issue when trying to build the HTTP Client");
             throw new HttpClientException(e);
         }
     }
 
-    private <T> T executeMethod(HttpURLConnection connection, Class<T> clazz) throws IOException, HttpRequestException {
+    private <T> T executeMethod(HttpURLConnection connection, Class<T> type) throws IOException, HttpRequestException {
         connection.connect();
-        try (InputStreamReader reader = new InputStreamReader(connection.getInputStream(), UTF_8);
-             BufferedReader buffer = new BufferedReader(reader)) {
+        try (InputStream stream = connection.getInputStream()) {
             LOG.trace("{} [{}] {}", connection.getRequestMethod(), connection.getResponseCode(), connection.getURL());
-            return mapper.read(buffer, clazz);
+            return mapper.read(stream, type);
         } catch (IOException e) {
             LOG.trace("{} [{}] {}", connection.getRequestMethod(), connection.getResponseCode(), connection.getURL());
             throw wrapToHttpRequestException(connection);
@@ -92,10 +83,12 @@ public class HttpClient {
     }
 
     private HttpRequestException wrapToHttpRequestException(HttpURLConnection connection) throws IOException {
-        try (InputStreamReader reader = new InputStreamReader(connection.getErrorStream(), UTF_8);
-             BufferedReader buffer = new BufferedReader(reader)) {
-            return new HttpRequestException(connection.getResponseCode(), mapper.read(buffer, Message.class));
-        } catch (IOException | NullPointerException e) {
+        try (InputStream stream = connection.getErrorStream()) {
+            if (stream == null) {
+                throw new IOException("No error stream available");
+            }
+            return new HttpRequestException(connection.getResponseCode(), mapper.readError(stream));
+        } catch (IOException e) {
             LOG.trace("Error stream is empty or not readable, returning only the response code");
             return new HttpRequestException(connection.getResponseCode(), null);
         }
@@ -122,7 +115,7 @@ public class HttpClient {
         HttpURLConnection connection = openConnection(url);
         connection.setRequestMethod(GET);
         connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
-        if (token != null && !"".equals(token)) {
+        if (token != null && !token.trim().isEmpty()) {
             connection.setRequestProperty(AUTHORIZATION, String.format(TOKEN_TEMPLATE, token));
         }
         connection.setConnectTimeout(TIMEOUT_IN_MS);
@@ -144,6 +137,6 @@ public class HttpClient {
     }
 
     private HttpURLConnection openConnection(URL url) throws IOException {
-        return proxy.isPresent() ? (HttpURLConnection) url.openConnection(proxy.get()) : (HttpURLConnection) url.openConnection();
+        return proxy != null ? (HttpURLConnection) url.openConnection(proxy) : (HttpURLConnection) url.openConnection();
     }
 }

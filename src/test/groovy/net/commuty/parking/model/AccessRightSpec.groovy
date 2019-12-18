@@ -1,17 +1,17 @@
 package net.commuty.parking.model
 
-import net.commuty.parking.configuration.JsonMapper
+import net.commuty.parking.rest.JsonMapperTest
 import spock.lang.Specification
 
 import java.time.OffsetDateTime
 
-import static net.commuty.parking.model.UserIdType.EMAIL
-import static net.commuty.parking.model.UserIdType.PIN_CODE
-import static net.commuty.parking.model.UserIdType.UNKNOWN
+import static java.nio.charset.Charset.defaultCharset
+import static net.commuty.parking.model.UserIdType.*
+import static org.apache.commons.io.IOUtils.toInputStream
 
 class AccessRightSpec extends Specification {
 
-    def mapper = JsonMapper.create()
+    def mapper = JsonMapperTest.create()
 
     def """
         parse a message {
@@ -37,13 +37,13 @@ class AccessRightSpec extends Specification {
                 }"""
 
         when:
-        def right = mapper.read(new StringReader(json), AccessRight.class)
+        def right = mapper.read(toInputStream(json, defaultCharset()), AccessRight.class)
 
         then:
         right != null
         right.userIds.size() == 1
         right.userIds.first().id == "anonymised.19884@commuty.net"
-        right.userIds.first().userIdType == EMAIL
+        right.userIds.first().type == EMAIL
         right.parkingSiteId == "d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4"
         !right.granted
         right.startTime == OffsetDateTime.parse("2019-11-29T00:00:00+01:00")
@@ -78,15 +78,15 @@ class AccessRightSpec extends Specification {
                 }"""
 
         when:
-        def right = mapper.read(new StringReader(json), AccessRight.class)
+        def right = mapper.read(toInputStream(json, defaultCharset()), AccessRight.class)
 
         then:
         right != null
         right.userIds.size() == 2
         right.userIds.first().id == "anonymised.19884@commuty.net"
-        right.userIds.first().userIdType == EMAIL
+        right.userIds.first().type == EMAIL
         right.userIds.last().id == "1234"
-        right.userIds.last().userIdType == PIN_CODE
+        right.userIds.last().type == PIN_CODE
         right.parkingSiteId == "d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4"
         right.granted
         right.startTime == OffsetDateTime.parse("2019-11-29T00:00:00+07:00")
@@ -117,14 +117,13 @@ class AccessRightSpec extends Specification {
                 }"""
 
         when:
-        def right = mapper.read(new StringReader(json), AccessRight.class)
+        def right = mapper.read(toInputStream(json, defaultCharset()), AccessRight.class)
 
         then:
         right != null
         right.userIds.size() == 1
         right.userIds.first().id == "unknownId"
-        right.userIds.first().userIdType == UNKNOWN
-        right.userIds.first().type == "unknownTypeId"
+        right.userIds.first().type == UNKNOWN
         right.parkingSiteId == "d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4"
         !right.granted
         right.startTime == OffsetDateTime.parse("2019-11-29T00:00:00+07:00")
