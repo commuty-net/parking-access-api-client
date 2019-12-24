@@ -6,11 +6,15 @@
         </encoder>
     </appender>
 
-    <logger name="org.mockserver.log" level="warn">
+    <logger name="net.commuty.parking" level="trace" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <logger name="io.netty.buffer" level="info">
+    <logger name="org.mockserver.log" level="warn" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="io.netty.buffer" level="info" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 

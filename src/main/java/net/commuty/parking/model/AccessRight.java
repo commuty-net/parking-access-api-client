@@ -89,7 +89,7 @@ public class AccessRight {
     }
 
     /**
-     * The status of the access right, wheter the user is allowed (<code>true</code>) on the parking site or not (<code>false</code>).
+     * The status of the access right, whether the user is allowed (<code>true</code>) on the parking site or not (<code>false</code>).
      */
     @JsonProperty("granted")
     public boolean isGranted() {

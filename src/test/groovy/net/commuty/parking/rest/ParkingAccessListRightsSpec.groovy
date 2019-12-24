@@ -1,10 +1,14 @@
 package net.commuty.parking.rest
 
+import net.commuty.parking.http.CredentialsException
+import net.commuty.parking.http.HttpClientException
+import net.commuty.parking.http.HttpRequestException
 
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST
 import static java.net.HttpURLConnection.HTTP_OK
 import static net.commuty.parking.model.UserIdType.BADGE_NUMBER
 import static net.commuty.parking.model.UserIdType.EMAIL
@@ -19,7 +23,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                 request()
                         .withMethod("GET")
                         .withPath("/v2/access-rights")
-                        .withHeader("Authorization", token)
+                        .withHeader("Authorization", tokenHeader)
         ).respond(
                 response()
                         .withBody('{"accessRights": []}')
@@ -43,8 +47,8 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         accesses.isEmpty()
         mockServer.verify(
                 request()
-                .withMethod("GET")
-                .withPath("/v2/access-rights")
+                        .withMethod("GET")
+                        .withPath("/v2/access-rights")
         )
     }
 
@@ -58,7 +62,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                 request()
                         .withMethod("GET")
                         .withPath("/v2/access-rights")
-                        .withHeader("Authorization", token)
+                        .withHeader("Authorization", tokenHeader)
         ).respond(
                 response()
                         .withBody("""
@@ -77,7 +81,8 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                                                   "parkingSiteId": "d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4",
                                                   "granted": false,
                                                   "startTime": "2019-11-29T00:00:00+01:00",
-                                                  "endTime": "2019-11-30T00:00:00+01:00"
+                                                  "endTime": "2019-11-30T00:00:00+01:00",
+                                                  "unknown": "parameter"
                                                 }
                                             ]
                                         }
@@ -99,8 +104,8 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
             userIds.last().id == "123456"
             parkingSiteId == "d59b4606-cd94-4d1c-9a30-cfc3a4bf70f4"
             !granted
-            startTime == OffsetDateTime.of(2019, 11, 29, 0,0,0,0, ZoneOffset.ofHours(1))
-            endTime == OffsetDateTime.of(2019, 11, 30, 0,0,0,0, ZoneOffset.ofHours(1))
+            startTime == OffsetDateTime.of(2019, 11, 29, 0, 0, 0, 0, ZoneOffset.ofHours(1))
+            endTime == OffsetDateTime.of(2019, 11, 30, 0, 0, 0, 0, ZoneOffset.ofHours(1))
         }
         mockServer.verify(
                 request()
@@ -119,7 +124,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                 request()
                         .withMethod("GET")
                         .withPath("/v2/access-rights")
-                        .withHeader("Authorization", token)
+                        .withHeader("Authorization", tokenHeader)
         ).respond(
                 response()
                         .withBody("""
@@ -173,10 +178,10 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         then:
         mockServer.verify(
                 request()
-                .withMethod("GET")
-                .withPath("/v2/access-rights")
-                .withQueryStringParameter("unreadOnly", "true")
-                .withQueryStringParameter(not("day"))
+                        .withMethod("GET")
+                        .withPath("/v2/access-rights")
+                        .withQueryStringParameter("unreadOnly", "true")
+                        .withQueryStringParameter(not("day"))
         )
     }
 
@@ -232,7 +237,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         """() {
         given:
         def unreadOnly = null
-        def day = LocalDate.of(2019,10,21)
+        def day = LocalDate.of(2019, 10, 21)
         mockDefaultListRightRoute()
 
         when:
@@ -278,7 +283,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         """() {
         given:
         def unreadOnly = false
-        def day = LocalDate.of(2019,10,21)
+        def day = LocalDate.of(2019, 10, 21)
         mockDefaultListRightRoute()
 
         when:
@@ -292,5 +297,96 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                         .withQueryStringParameter("unreadOnly", "false")
                         .withQueryStringParameter("day", "2019-10-21")
         )
+    }
+
+    def """
+        #listAccessRights(a valid date, unreadOnly = false)
+        query all accesses for a specific day
+        the token is invalid then refreshed
+        no exception is thrown and the final query has a http code 200
+        """() {
+        given:
+        authReturnsExpiredTokenOnceThenValidToken()
+        def unreadOnly = false
+        def day = LocalDate.of(2019, 10, 21)
+        mockDefaultListRightRoute()
+
+        when:
+        parkingAccess.listAccessRights(day, unreadOnly)
+
+        then:
+        mockServer.verify(
+                request()
+                        .withMethod("GET")
+                        .withPath("/v2/access-rights")
+                        .withHeader("Authorization", tokenHeader)
+        )
+        def accessRightsRequest = mockServer.retrieveRecordedRequestsAndResponses(
+                request()
+                        .withMethod("GET")
+                        .withPath("/v2/access-rights")
+                        .withHeader("Authorization", tokenHeader)
+        )
+        accessRightsRequest.size() == 1
+        accessRightsRequest.first().httpResponse.getStatusCode() == HTTP_OK
+    }
+
+    def """
+        #listAccessRights(a valid date, unreadOnly = false)
+        credentials are invalid
+        an exception is thrown
+        """() {
+        given:
+        def unreadOnly = false
+        def day = LocalDate.of(2019, 10, 21)
+        authReturnsInvalidCredentials()
+
+        when:
+        parkingAccess.listAccessRights(day, unreadOnly)
+
+        then:
+        thrown(CredentialsException)
+    }
+
+    def """
+        #listAccessRights(a valid date, unreadOnly = false)
+        api returns an error
+        an exception is thrown
+        """() {
+        given:
+        def unreadOnly = false
+        def day = LocalDate.of(2019, 10, 21)
+        mockServer.when(
+                request()
+                        .withMethod("GET")
+                        .withPath("/v2/access-rights")
+                        .withHeader("Authorization", tokenHeader)
+        ).respond(
+                response()
+                        .withStatusCode(HTTP_BAD_REQUEST)
+        )
+
+        when:
+        parkingAccess.listAccessRights(day, unreadOnly)
+
+        then:
+        thrown(HttpRequestException)
+    }
+
+    def """
+        #listAccessRights(a valid date, unreadOnly = false)
+        api is not reachable
+        an exception is thrown
+        """() {
+        given:
+        def unreadOnly = false
+        def day = LocalDate.of(2019, 10, 21)
+        mockServer.stop()
+
+        when:
+        parkingAccess.listAccessRights(day, unreadOnly)
+
+        then:
+        thrown(HttpClientException)
     }
 }

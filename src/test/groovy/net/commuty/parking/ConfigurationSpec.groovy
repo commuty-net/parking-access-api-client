@@ -5,7 +5,7 @@ import spock.lang.Specification
 
 class ConfigurationSpec extends Specification {
 
-    @Shared String defaultHost = "https://parking-access.commuty.net";
+    @Shared String defaultHost = "https://parking-access.commuty.net"
 
     def """
         #buildDefault(String, String)

@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -31,6 +32,8 @@ public class ParkingAccessRestClient implements ParkingAccess {
 
     public static final String DAY_PARAM = "day";
     public static final String UNREAD_ONLY_PARAM = "unreadOnly";
+
+    private static final int MAX_RETRIES = 5;
 
     private final Configuration configuration;
     private final HttpClient httpClient;
@@ -69,19 +72,8 @@ public class ParkingAccessRestClient implements ParkingAccess {
             throw new IllegalArgumentException("UserId cannot be null");
         }
         LOG.debug("Verify whether user {} is authorized to access the parking site {}", user, parkingSiteId);
-        try {
-            String path = String.format(ACCESS_REQUESTS_URL, parkingSiteId);
-            VerificationResponse access = httpClient.makePostRequest(path, token, new VerificationRequest(user), VerificationResponse.class);
-            return access.isGranted();
-        } catch (HttpRequestException requestException) {
-            if (requestException.isUnauthorized()) {
-                LOG.trace("Token exception, refreshing token then try again");
-                authenticate();
-                return isGranted(parkingSiteId, user);
-            } else {
-                throw requestException;
-            }
-        }
+        String path = String.format(ACCESS_REQUESTS_URL, parkingSiteId);
+        return withRetry(() -> httpClient.makePostRequest(path, token, new VerificationRequest(user), VerificationResponse.class).isGranted());
     }
 
     @Override
@@ -98,18 +90,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
     public Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly) throws CredentialsException, HttpRequestException, HttpClientException {
         LOG.debug("Check the presence of Access rights");
         Map<String, String> parameters = createListAccessRightQueryParameters(date, unreadOnly);
-
-        try {
-            return httpClient.makeGetRequest(ACCESS_RIGHTS_URL, token, parameters, AccessRightResponse.class).getAccessRights();
-        } catch (HttpRequestException requestException) {
-            if (requestException.isUnauthorized()) {
-                LOG.trace("Token exception, refreshing token then try again");
-                authenticate();
-                return listAccessRights(date, unreadOnly);
-            } else {
-                throw requestException;
-            }
-        }
+        return withRetry(() -> httpClient.makeGetRequest(ACCESS_RIGHTS_URL, token, parameters, AccessRightResponse.class).getAccessRights());
     }
 
     private Map<String, String> createListAccessRightQueryParameters(LocalDate date, Boolean unreadOnly) {
@@ -135,19 +116,8 @@ public class ParkingAccessRestClient implements ParkingAccess {
             throw new IllegalArgumentException("Accesses cannot be null or blank");
         }
         LOG.debug("Report Access logs to Commuty for the site {}", parkingSiteId);
-
-        try {
-            String path = String.format(REPORT_ACCESS_URL, parkingSiteId);
-            return httpClient.makePostRequest(path, token, new AccessLogRequest(accessLogs), AccessLogResponse.class).getLogId();
-        } catch (HttpRequestException requestException) {
-            if (requestException.isUnauthorized()) {
-                LOG.trace("Token exception, refreshing token then try again");
-                authenticate();
-                return reportAccessLog(parkingSiteId, accessLogs);
-            } else {
-                throw requestException;
-            }
-        }
+        String path = String.format(REPORT_ACCESS_URL, parkingSiteId);
+        return withRetry(() -> httpClient.makePostRequest(path, token, new AccessLogRequest(accessLogs), AccessLogResponse.class).getLogId());
     }
 
     @Override
@@ -156,16 +126,36 @@ public class ParkingAccessRestClient implements ParkingAccess {
             throw new IllegalArgumentException("UserId cannot be null");
         }
         LOG.debug("Report user {} as missing", user);
+        return withRetry(() -> httpClient.makePostRequest(REPORT_MISSING_IDS_URL, token, new MissingUserIdRequest(user), UserId.class));
+    }
 
-        try {
-            return httpClient.makePostRequest(REPORT_MISSING_IDS_URL, token, new MissingUserIdRequest(user), UserId.class);
-        } catch (HttpRequestException requestException) {
-            if (requestException.isUnauthorized()) {
-                LOG.trace("Token exception, refreshing token then try again");
-                authenticate();
-                return reportMissingUserId(user);
-            } else {
-                throw requestException;
+    private <T> T withRetry(Callable<T> callable) throws HttpClientException, CredentialsException, HttpRequestException {
+        int currentTry = 1;
+        while (true) {
+            try {
+                LOG.trace("Attempt {}/{} to call api", currentTry, MAX_RETRIES);
+                token = token != null ? token : authenticate();
+                return callable.call();
+            } catch (Exception exception) {
+                if (exception instanceof HttpRequestException) {
+                    if (((HttpRequestException) exception).isForbidden()) {
+                        LOG.trace("Token exception, refreshing token then try again");
+                        token = authenticate();
+                    }
+                    currentTry++;
+                    if (currentTry > MAX_RETRIES) {
+                        LOG.trace("Maximum attempts reached, throwing underlying exception");
+                        throw (HttpRequestException) exception;
+                    }
+                } else if (exception instanceof CredentialsException) {
+                    LOG.trace("Invalid username/password");
+                    throw (CredentialsException) exception;
+                } else if (exception instanceof HttpClientException) {
+                    LOG.trace("Issue in the client");
+                    throw (HttpClientException) exception;
+                } else {
+                    throw exception instanceof RuntimeException? (RuntimeException)exception : new RuntimeException(exception);
+                }
             }
         }
     }

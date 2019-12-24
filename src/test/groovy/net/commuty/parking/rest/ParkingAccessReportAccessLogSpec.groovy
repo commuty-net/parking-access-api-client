@@ -1,12 +1,15 @@
 package net.commuty.parking.rest
 
-
+import net.commuty.parking.http.CredentialsException
+import net.commuty.parking.http.HttpClientException
+import net.commuty.parking.http.HttpRequestException
 import net.commuty.parking.model.AccessLog
 import net.commuty.parking.model.UserId
 
 import java.time.LocalDateTime
 
-import static java.net.HttpURLConnection.HTTP_OK
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST
+import static java.net.HttpURLConnection.HTTP_CREATED
 import static org.mockserver.model.HttpRequest.request
 import static org.mockserver.model.HttpResponse.response
 
@@ -17,14 +20,14 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
                 request()
                     .withMethod("POST")
                     .withPath("/v2/parking-sites/.*/access-logs")
-                    .withHeader("Authorization", token)
+                    .withHeader("Authorization", tokenHeader)
         ).respond(
                 response("""
                                {
                                     "logId": "a-valid-log-id"
                                }
                                """)
-                .withStatusCode(HTTP_OK)
+                .withStatusCode(HTTP_CREATED)
         )
     }
 
@@ -111,5 +114,103 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
             it.accesses.first().way == "in"
             it.accesses.first().at == "2019-10-10T13:37:00"
         }
+    }
+
+    def """
+        #reportAccessLog(valid parkingSiteId, one valid access Log)
+        has a correct body
+        token is invalid then refreshed
+        no exception is thrown and the final query has a http code 201
+        """() {
+        given:
+        authReturnsExpiredTokenOnceThenValidToken()
+        mockAccessLogRoute()
+        def parkingSiteId = UUID.randomUUID().toString()
+        def accessLog = AccessLog.createInAccessLog(UserId.fromLicensePlate("1-ABC-000"), LocalDateTime.of(2019, 10, 10, 13, 37, 0))
+        Collection<AccessLog> accesses = Collections.singletonList(accessLog)
+
+        when:
+        def logId = parkingAccess.reportAccessLog(parkingSiteId, accesses)
+
+        then:
+        logId != null
+        logId == "a-valid-log-id"
+        mockServer.verify(
+                request()
+                        .withMethod("POST")
+                        .withPath("/v2/parking-sites/${parkingSiteId}/access-logs")
+        )
+
+        def submittedRequests = mockServer.retrieveRecordedRequestsAndResponses(
+                request()
+                        .withMethod("POST")
+                        .withPath("/v2/parking-sites/${parkingSiteId}/access-logs")
+                        .withHeader("Authorization", tokenHeader)
+        )
+
+        !submittedRequests.toList().empty
+        submittedRequests.first().httpResponse.getStatusCode() == HTTP_CREATED
+    }
+
+    def """
+        #reportAccessLog(valid parkingSiteId, valid Accesses)
+        credentials are invalid
+        throws an error
+        """() {
+        given:
+        def parkingSiteId = UUID.randomUUID().toString()
+        def accessLog = AccessLog.createInAccessLog(UserId.fromLicensePlate("1-ABC-000"), LocalDateTime.of(2019, 10, 10, 13, 37, 0))
+        Collection<AccessLog> accesses = Collections.singletonList(accessLog)
+        authReturnsInvalidCredentials()
+
+        when:
+        parkingAccess.reportAccessLog(parkingSiteId, accesses)
+
+        then:
+        thrown(CredentialsException)
+    }
+
+    def """
+        #reportAccessLog(valid parkingSiteId, valid Accesses)
+        api returns an error (broken api)
+        throws an error
+        """() {
+        given:
+        def parkingSiteId = UUID.randomUUID().toString()
+        def accessLog = AccessLog.createInAccessLog(UserId.fromLicensePlate("1-ABC-000"), LocalDateTime.of(2019, 10, 10, 13, 37, 0))
+        Collection<AccessLog> accesses = Collections.singletonList(accessLog)
+        mockServer.when(
+                request()
+                        .withMethod("POST")
+                        .withPath("/v2/parking-sites/.*/access-logs")
+                        .withHeader("Authorization", tokenHeader)
+        ).respond(
+                response()
+                        .withStatusCode(HTTP_BAD_REQUEST)
+        )
+
+        when:
+        parkingAccess.reportAccessLog(parkingSiteId, accesses)
+
+        then:
+        thrown(HttpRequestException)
+    }
+
+    def """
+        #reportAccessLog(valid parkingSiteId, valid Accesses)
+        api is not reachable
+        throws an error
+        """() {
+        given:
+        def parkingSiteId = UUID.randomUUID().toString()
+        def accessLog = AccessLog.createInAccessLog(UserId.fromLicensePlate("1-ABC-000"), LocalDateTime.of(2019, 10, 10, 13, 37, 0))
+        Collection<AccessLog> accesses = Collections.singletonList(accessLog)
+        mockServer.stop()
+
+        when:
+        parkingAccess.reportAccessLog(parkingSiteId, accesses)
+
+        then:
+        thrown(HttpClientException)
     }
 }

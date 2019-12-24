@@ -80,6 +80,24 @@ public class UserId {
     }
 
     /**
+     * Creates a user id based on a hash of a license plate using the Wiegand 26 bit protocol.<br />
+     * This is compatible with the "Wiegand Interface Module" device from Nedap.<br />
+     * For more information, <a href="https://www.nedapidentification.com/products/anpr/wiegand-interface-module/">Click here to see the Wiegand Interface Module website.</a>
+     */
+    public static UserId fromWim26EncodedLicensePlate(String win26EncodedLicensePlate) {
+        return new UserId(LICENSE_PLATE_WIM26, win26EncodedLicensePlate);
+    }
+
+    /**
+     * Creates a user id based on a hash of a license plate using the Wiegand 64 bit protocol.<br />
+     * This is compatible with the "Wiegand Interface Module" device from Nedap.<br />
+     * For more information, <a href="https://www.nedapidentification.com/products/anpr/wiegand-interface-module/">Click here to see the Wiegand Interface Module website.</a>
+     */
+    public static UserId fromWim64EncodedLicensePlate(String win64EncodedLicensePlate) {
+        return new UserId(LICENSE_PLATE_WIM64, win64EncodedLicensePlate);
+    }
+
+    /**
      * The value of the identifier.
      */
     @JsonProperty("id")

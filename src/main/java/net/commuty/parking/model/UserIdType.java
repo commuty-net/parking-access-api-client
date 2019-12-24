@@ -30,6 +30,12 @@ public enum UserIdType {
     @JsonProperty("pinCode")
     PIN_CODE,
 
+    @JsonProperty("licensePlateWim26")
+    LICENSE_PLATE_WIM26,
+
+    @JsonProperty("licensePlateWim64")
+    LICENSE_PLATE_WIM64,
+
     @JsonEnumDefaultValue
     @JsonProperty("unknown")
     UNKNOWN
