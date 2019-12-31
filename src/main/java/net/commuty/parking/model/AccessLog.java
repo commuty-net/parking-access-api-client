@@ -9,9 +9,10 @@ import static net.commuty.parking.model.AccessDirection.IN;
 import static net.commuty.parking.model.AccessDirection.OUT;
 
 /**
- * This corresponds to a user that entered or exited a parking site at a point in time.<br />
- * You can construct this entity using the {@link #createInAccessLog(UserId, LocalDateTime)} or
- * {@link #createOutAccessLog(UserId, LocalDateTime)} methods, depending on the type of access log you want to report.
+ * <p>This corresponds to a user that entered or exited a parking site at a point in time.</p>
+ *
+ * <p>You can construct this entity using the {@link #createInAccessLog(UserId, LocalDateTime)} or
+ * {@link #createOutAccessLog(UserId, LocalDateTime)} methods, depending on the type of access log you want to report.</p>
  */
 public class AccessLog {
 
@@ -38,7 +39,7 @@ public class AccessLog {
     }
 
     /**
-     * Create a report for a user that entered the parking site at the specified time.<br />
+     * Create a report for a user that entered the parking site at the specified time.
      * @param userId The {@link UserId} concerned by the access log. Cannot be null.
      * @param at The moment when the user entered the parking site, in UTC. Cannot be null.
      * @return the {@link AccessLog} entity.
@@ -51,7 +52,7 @@ public class AccessLog {
     }
 
     /**
-     * Create a report for a user that exited the parking site at the specified time.<br />
+     * Create a report for a user that exited the parking site at the specified time.
      * @param userId The {@link UserId} concerned by the access log. Cannot be null.
      * @param at The moment when the user exited the parking site, in UTC. Cannot be null.
      * @return the {@link AccessLog} entity.

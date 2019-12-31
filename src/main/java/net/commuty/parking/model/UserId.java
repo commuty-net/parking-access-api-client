@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import static net.commuty.parking.model.UserIdType.*;
 
 /**
- * This identifies a user via one {@link UserIdType} and one identifier value.<br />
- * A parking user is known in Commuty via one or more {@link UserId}. Each user id has a type of identifier (email, license plate,...) and the identification value.<br />
- * For instance, a correct user id could be:
+ * <p>This identifies a user via one {@link UserIdType} and one identifier value.</p>
+ * <p>A parking user is known in Commuty via one or more {@link UserId}. Each user id has a type of identifier (email, license plate,...) and the identification value.</p>
+ * <p>For instance, a correct user id could be:</p>
  * <ul>
  *     <li>type: {@link UserIdType#EMAIL}</li>
  *     <li>id: parking-user@someorg.com</li>
@@ -80,18 +80,18 @@ public class UserId {
     }
 
     /**
-     * Creates a user id based on a hash of a license plate using the Wiegand 26 bit protocol.<br />
-     * This is compatible with the "Wiegand Interface Module" device from Nedap.<br />
-     * For more information, <a href="https://www.nedapidentification.com/products/anpr/wiegand-interface-module/">Click here to see the Wiegand Interface Module website.</a>
+     * <p>Creates a user id based on a hash of a license plate using the Wiegand 26 bit protocol.</p>
+     * <p>This is compatible with the "Wiegand Interface Module" device from Nedap.</p>
+     * <p>For more information, <a href="https://www.nedapidentification.com/products/anpr/wiegand-interface-module/">Click here to see the Wiegand Interface Module website.</a></p>
      */
     public static UserId fromWim26EncodedLicensePlate(String win26EncodedLicensePlate) {
         return new UserId(LICENSE_PLATE_WIM26, win26EncodedLicensePlate);
     }
 
     /**
-     * Creates a user id based on a hash of a license plate using the Wiegand 64 bit protocol.<br />
-     * This is compatible with the "Wiegand Interface Module" device from Nedap.<br />
-     * For more information, <a href="https://www.nedapidentification.com/products/anpr/wiegand-interface-module/">Click here to see the Wiegand Interface Module website.</a>
+     * <p>Creates a user id based on a hash of a license plate using the Wiegand 64 bit protocol.</p>
+     * <p>This is compatible with the "Wiegand Interface Module" device from Nedap.</p>
+     * <p>For more information, <a href="https://www.nedapidentification.com/products/anpr/wiegand-interface-module/">Click here to see the Wiegand Interface Module website.</a></p>
      */
     public static UserId fromWim64EncodedLicensePlate(String win64EncodedLicensePlate) {
         return new UserId(LICENSE_PLATE_WIM64, win64EncodedLicensePlate);

@@ -239,3 +239,14 @@ public class Example {
     }
 }
 ```
+
+
+## Development
+
+### Release
+
+Base on this [great article](https://nemerosa.ghost.io/2015/07/01/publishing-to-the-maven-central-using-gradle/)
+```shell
+./gradlew clean build
+./gradlew -Prelease uploadArchives closeAndReleaseRepository
+```

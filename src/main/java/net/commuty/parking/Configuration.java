@@ -9,14 +9,14 @@ import java.net.URL;
 import static java.util.Optional.ofNullable;
 
 /**
- * This will be your entry point to use the Rest client.
- * You need to use the inner Builder class to create a Configuration object,
- * Then you will be able to instantiate a Rest client via the method {@link #toRestClient()}.<br />
- * For example, if you want to create a client with only the username and password you were given, use this:<br />
+ *<p>This will be your entry point to use the Rest client.</p>
+ *<p>You need to use the inner Builder class to create a Configuration object,</p>
+ *<p>Then you will be able to instantiate a Rest client via the method {@link #toRestClient()}.</p>
+ *<p>For example, if you want to create a client with only the username and password you were given, use this:</p>
  * <code>
  *     ParkingAccess client = Configuration.Builder.buildDefault("a-username", "a-password").toRestClient();
- * </code><br />
- * You will then be able to call methods on the <code>client</code> object.
+ * </code>
+ * <p>You will then be able to call methods on the <code>client</code> object.</p>
  */
 public class Configuration {
 
@@ -58,8 +58,8 @@ public class Configuration {
     }
 
     /**
-     * Holds the host URL provided at the creation of the builder.<br />
-     * If no host was provided, this will contain the default production parking api of Commuty.
+     * Holds the host URL provided at the creation of the builder.
+     * <p>If no host was provided, this will contain the default production parking api of Commuty.</p>
      * @return the host url the client will use.
      */
     public URL getHost() {
@@ -67,8 +67,8 @@ public class Configuration {
     }
 
     /**
-     * Holds the Proxy provided at the creation of the builder.<br />
-     * If no proxy was provided, this will be null.
+     * Holds the Proxy provided at the creation of the builder.
+     * <p>If no proxy was provided, this will be null.</p>
      * @return The proxy (if any).
      */
     public Proxy getProxy() {
@@ -84,9 +84,9 @@ public class Configuration {
     }
 
     /**
-     * Build a configuration object that will be used ton instantiate a Rest client.<br />
-     * To use this, call <code>Configuration.Builder.create()</code> then chain one or more builder methods.
-     * The only required method is {@link #withCredentials(String, String)}.
+     * Build a configuration object that will be used ton instantiate a Rest client.
+     * <p>To use this, call <code>Configuration.Builder.create()</code> then chain one or more builder methods.</p>
+     * <p>The only required method is {@link #withCredentials(String, String)}.</p>
      */
     public static class Builder {
 
@@ -105,8 +105,8 @@ public class Configuration {
         }
 
         /**
-         * Set a username and password to authenticate against the API.<br />
-         * This was provided to you by Commuty.
+         * Set a username and password to authenticate against the API
+         * <p>This was provided to you by Commuty.</p>
          * @param username The username Commuty provided to you.
          * @param password The password Commuty provided to you.
          * @return this builder instance.
@@ -124,9 +124,9 @@ public class Configuration {
         }
 
         /**
-         * Allow you to define a hostname that the client will use.<br />
-         * If you do not call this method, the client will use the default production parking api of Commuty.<br />
-         * Unless the Commuty Team tells you otherwise, you don't need to use this method.
+         * <p>Allow you to define a hostname that the client will use.</p>
+         * <p>If you do not call this method, the client will use the default production parking api of Commuty.</p>
+         * <p>Unless the Commuty Team tells you otherwise, you don't need to use this method.</p>
          * @param host a valid URL
          * @return this builder instance.
          */
@@ -147,8 +147,8 @@ public class Configuration {
         }
 
         /**
-         * Allow you to define a proxy (if it is required by your organisation).<br />
-         * Pass a proxy instance to the method, i.e:<br /> <code>new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.0.1", 8080));</code>
+         * <p>Allow you to define a proxy (if it is required by your organisation).</p>
+         * <p>Pass a proxy instance to the method, i.e: <code>new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.0.1", 8080));</code></p>
          * @param proxy a valid {@link Proxy} object.
          * @return this builder instance.
          */
@@ -161,7 +161,7 @@ public class Configuration {
         }
 
         /**
-         * Creates a Configuration instance.<br />
+         * Creates a Configuration instance.
          * @return a new Configuration that will allow you to create a Rest client.
          */
         public Configuration build() {
@@ -170,8 +170,8 @@ public class Configuration {
         }
 
         /**
-         * Creates a new configuration instance using default values (default host and no proxy).<br />
-         * In most cases, you will need only this method to create a Configuration object.
+         * <p>Creates a new configuration instance using default values (default host and no proxy).</p>
+         * <p>In most cases, you will need only this method to create a Configuration object.</p>
          * @param username The username Commuty provided to you.
          * @param password The password Commuty provided to you.
          * @return a new Configuration that will allow you to create a Rest client.

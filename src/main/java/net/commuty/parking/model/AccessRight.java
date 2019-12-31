@@ -15,11 +15,12 @@ import java.util.Collection;
  *     <li>for a period of time (starting from {@link #getStartTime()} until before {@link #getEndTime()});</li>
  *     <li>whether is access is allowed or not.</li>
  * </ul>
- * <br />
- * An access right will never overlap two days, meaning that it will always start on or after midnight and end on or before midnight the next day.<br />
- * It is possible for a user to have multiple access rights on a parking site for a day.
- * In this case, the periods (from start time until end time) will also never overlap. Moreover, all the periods will cover a complete day.<br /><br />
- * For instance: <br />
+ *
+ * <p>An access right will never overlap two days, meaning that it will always start on or after midnight and end on or before midnight the next day.</p>
+ * <p>It is possible for a user to have multiple access rights on a parking site for a day.</p>
+ * <p>In this case, the periods (from start time until end time) will also never overlap. Moreover, all the periods will cover a complete day.</p>
+ *
+ * <p>For instance:</p>
  * A user that is <b>not granted</b> today will:
  * <ul>
  *     <li>have one <b>granted</b> right starting from <b>today midnight</b> until <b>tomorrow midnight</b></li>

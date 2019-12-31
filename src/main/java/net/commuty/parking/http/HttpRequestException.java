@@ -3,14 +3,14 @@ package net.commuty.parking.http;
 import static java.net.HttpURLConnection.*;
 
 /**
- * This exception will occur when the api accepted the request but returned a HTTP status 400 or above.<br />
- * You can get the HTTP status code via {@link #getHttpResponseCode()}. Some helpers methods are present to handle some cases:
+ * <p>This exception will occur when the api accepted the request but returned a HTTP status 400 or above.</p>
+ * <p>You can get the HTTP status code via {@link #getHttpResponseCode()}. Some helpers methods are present to handle some cases:</p>
  * <ul>
  *     <li>{@link #isForbidden()}: http status 403</li>
  *     <li>{@link #isUnauthorized()}: http status 401</li>
  *     <li>{@link #isBadRequest()}: http status 400</li>
  * </ul>
- * Sometimes, you will get more information via the {@link #getErrorResponse()} method. This exposes a reason and message property. For more information, consult the api documentation.
+ * <p>Sometimes, you will get more information via the {@link #getErrorResponse()} method. This exposes a reason and message property. For more information, consult the api documentation.</p>
  */
 public class HttpRequestException extends ApiException {
 
