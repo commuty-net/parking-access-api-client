@@ -66,9 +66,19 @@ if (project.hasProperty("release")) {
     def sonatypeUsername = hasProperty("ossrhUser") ? ossrhUser : System.getenv("ossrhUser")
     def sonatypePassword = hasProperty("ossrhPassword") ? ossrhPassword : System.getenv("ossrhPassword")
 
-    java {
-        withJavadocJar()
-        withSourcesJar()
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        archiveClassifier = "sources"
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier = "javadoc"
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
     }
 
     publishing {
@@ -107,6 +117,11 @@ if (project.hasProperty("release")) {
                             email = "support@commuty.net"
                         }
                     }
+                    scm {
+                        connection "scm:git:https://github.com/commuty-net/parking-access-api-client"
+                        developerConnection "scm:git:git@github.com:commuty-net/parking-access-api-client.git"
+                        url "https://github.com/commuty-net/parking-access-api-client"
+                    }
                 }
             }
         }
@@ -115,7 +130,6 @@ if (project.hasProperty("release")) {
     signing {
         sign configurations.archives
     }
-
 
     javadoc {
         doFirst {
