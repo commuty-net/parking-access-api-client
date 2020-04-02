@@ -8,14 +8,15 @@ Supported features are:
 * List all access rights for a day
 * Report who entered/exited the parking
 * Report a user that is known by the you but not by Commuty
+* Report the number of available (and total) spots on a parking site
 
 ## Compatibility
 
 This library requires a minimum `Java 8` version to work.
 
 It has a very small amount of dependencies:
-* `com.fasterxml.jackson.core:jackson-databind:2.10.1`
-* `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.1`
+* `com.fasterxml.jackson.core:jackson-databind:2.10.3`
+* `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.3`
 * `org.slf4j:slf4j-api:1.7.29`
 
 ## Integrate the library in your project
@@ -26,14 +27,14 @@ To use this library in your project, you can do it via a maven dependency:
 <dependency>
     <groupId>net.commuty</groupId>
     <artifactId>parking-access-api-client</artifactId>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
 or via a gradle:
 
 ```
-implementation "net.commuty:parking-access-api-client:2.0.1"
+implementation "net.commuty:parking-access-api-client:2.1.0"
 ```
 
 ## Usage
@@ -86,6 +87,10 @@ public class Example {
 The client will automatically handle the authentication against the server (i.e. retrieve or refresh the token if needed).
 
 In the event of your credentials are not valid (wrong username, wrong password, revoked access), a call on any method on the client will throw a `CredentialsException`.
+
+## Feature availability
+
+While this client exposes all features available, you will only be able to use the ones Commuty has given you the rights.
 
 ## Examples of usage
 
@@ -227,6 +232,35 @@ public class Example {
         try {
             // send every user that is known by you, one user at a time
             client.reportMissingUserId(UserId.fromLicensePlate("1-ABC-123"));
+
+        } catch (CredentialsException credentialsException) {
+            // Your username or password is invalid
+        } catch (ApiException apiException) {
+            // Instead of catching HttpRequestException and HttpClientException,
+            // you can catch the superclass ApiException and handle only one issue.
+            System.err.println(apiException.getMessage());
+            apiException.printStackTrace();
+        }
+    }
+}
+```
+
+### Report the number of available (and total) spots to Commuty 
+
+```java
+import net.commuty.parking.Configuration;
+import net.commuty.parking.ParkingAccess;
+import net.commuty.parking.http.ApiException;
+import net.commuty.parking.http.CredentialsException;
+
+public class Example {
+
+    public static void main(String[] args){
+        ParkingAccess client = Configuration.Builder.create().withCredentials("a-username", "a-password").build().toRestClient();
+        try {
+            int availableSpots = 13;
+            Integer totalSpots = 40; // can be null
+            client.reportAvailableSpotCount("a-parking-site-id", availableSpots, totalSpots);
 
         } catch (CredentialsException credentialsException) {
             // Your username or password is invalid

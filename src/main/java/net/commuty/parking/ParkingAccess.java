@@ -5,6 +5,7 @@ import net.commuty.parking.http.HttpClientException;
 import net.commuty.parking.http.HttpRequestException;
 import net.commuty.parking.model.AccessLog;
 import net.commuty.parking.model.AccessRight;
+import net.commuty.parking.model.Count;
 import net.commuty.parking.model.UserId;
 
 import java.time.LocalDate;
@@ -100,4 +101,15 @@ public interface ParkingAccess {
      */
     UserId reportMissingUserId(UserId user) throws CredentialsException, HttpRequestException, HttpClientException;
 
+    /**
+     * <p>Report the number of available spots (and optionally the total number of spots) on a parking site.</p>
+     * @param parkingSiteId The identifier of the parking site that was given by Commuty.
+     * @param count The number of available spots at the time of the submission.
+     * @param total The total number of spots (the size of the parking site) at the time of the submission. Ca be <code>null</code>.
+     * @return The reported counts.
+     * @throws CredentialsException Your username or password is invalid.
+     * @throws HttpRequestException The query was sent to the api but the status is unsuccessful (HTTP status code &ge; 400). See {@link HttpRequestException} for more details.
+     * @throws HttpClientException The query did not reached the api, i.e. there was a network issue.
+     */
+    Count reportAvailableSpotCount(String parkingSiteId, int count, Integer total) throws CredentialsException, HttpRequestException, HttpClientException;
 }
