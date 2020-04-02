@@ -5,6 +5,7 @@ import net.commuty.parking.http.HttpClientException
 import net.commuty.parking.http.HttpRequestException
 import net.commuty.parking.model.UserId
 
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST
 import static java.net.HttpURLConnection.HTTP_CREATED
 import static org.mockserver.model.HttpRequest.request
 import static org.mockserver.model.HttpResponse.response
@@ -148,7 +149,7 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
                         .withHeader("Authorization", tokenHeader)
         ).respond(
                 response()
-                        .withStatusCode(HTTP_CREATED)
+                        .withStatusCode(HTTP_BAD_REQUEST)
         )
 
         when:

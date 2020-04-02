@@ -8,6 +8,7 @@ import net.commuty.parking.http.HttpClientException;
 import net.commuty.parking.http.HttpRequestException;
 import net.commuty.parking.model.AccessLog;
 import net.commuty.parking.model.AccessRight;
+import net.commuty.parking.model.Count;
 import net.commuty.parking.model.UserId;
 import org.slf4j.Logger;
 
@@ -29,6 +30,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
     public static final String ACCESS_RIGHTS_URL = "/v2/access-rights";
     public static final String REPORT_ACCESS_URL = "/v2/parking-sites/%s/access-logs";
     public static final String REPORT_MISSING_IDS_URL = "/v2/missing-user-ids";
+    public static final String REPORT_AVAILABLE_SPOTS_COUNT_URL = "/v2/parking-sites/%s/counts";
 
     public static final String DAY_PARAM = "day";
     public static final String UNREAD_ONLY_PARAM = "unreadOnly";
@@ -127,6 +129,15 @@ public class ParkingAccessRestClient implements ParkingAccess {
         }
         LOG.debug("Report user {} as missing", user);
         return withRetry(() -> httpClient.makePostRequest(REPORT_MISSING_IDS_URL, token, new MissingUserIdRequest(user), UserId.class));
+    }
+
+    public Count reportAvailableSpotCount(String parkingSiteId, int count, Integer total) throws CredentialsException, HttpRequestException, HttpClientException {
+        if(parkingSiteId == null || parkingSiteId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Parking site cannot be null or blank");
+        }
+        LOG.debug("Report number of available spots to Commuty for the site {}", parkingSiteId);
+        String path = String.format(REPORT_AVAILABLE_SPOTS_COUNT_URL, parkingSiteId);
+        return withRetry(() -> httpClient.makePostRequest(path, token, new CountRequest(count, total), Count.class));
     }
 
     private <T> T withRetry(Callable<T> callable) throws HttpClientException, CredentialsException, HttpRequestException {
