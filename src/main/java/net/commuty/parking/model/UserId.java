@@ -21,8 +21,8 @@ public class UserId {
     private final UserIdType type;
 
     @JsonCreator
-    UserId(@JsonProperty("type") UserIdType type,
-           @JsonProperty("id") String id) {
+    public UserId(@JsonProperty("type") UserIdType type,
+                  @JsonProperty("id") String id) {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("Identifier of the user cannot be null or blank");
         }
