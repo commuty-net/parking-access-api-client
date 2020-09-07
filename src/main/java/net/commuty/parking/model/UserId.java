@@ -3,6 +3,8 @@ package net.commuty.parking.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 import static net.commuty.parking.model.UserIdType.*;
 
 /**
@@ -123,5 +125,23 @@ public class UserId {
                 "id='" + id + '\'' +
                 ", type='" + type + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        UserId userId = (UserId) other;
+        return Objects.equals(id, userId.id) && type == userId.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type);
     }
 }
