@@ -36,6 +36,9 @@ public enum UserIdType {
     @JsonProperty("licensePlateWim64")
     LICENSE_PLATE_WIM64,
 
+    @JsonProperty("commutyExternalId")
+    COMMUTY_EXTERNAL_ID,
+
     @JsonEnumDefaultValue
     @JsonProperty("unknown")
     UNKNOWN
