@@ -39,6 +39,9 @@ public enum UserIdType {
     @JsonProperty("commutyExternalId")
     COMMUTY_EXTERNAL_ID,
 
+    @JsonProperty("commutyLabel")
+    COMMUTY_LABEL,
+
     @JsonEnumDefaultValue
     @JsonProperty("unknown")
     UNKNOWN
