@@ -35,8 +35,6 @@ public class ParkingAccessRestClient implements ParkingAccess {
     public static final String DAY_PARAM = "day";
     public static final String UNREAD_ONLY_PARAM = "unreadOnly";
 
-    private static final int MAX_RETRIES = 5;
-
     private final Configuration configuration;
     private final HttpClient httpClient;
     private String token;
@@ -67,9 +65,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
 
     @Override
     public boolean isGranted(String parkingSiteId, UserId user) throws CredentialsException, HttpRequestException, HttpClientException {
-        if(parkingSiteId == null || parkingSiteId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Parking site cannot be null or blank");
-        }
+        validateParkingSiteId(parkingSiteId);
         if(user == null) {
             throw new IllegalArgumentException("UserId cannot be null");
         }
@@ -98,8 +94,9 @@ public class ParkingAccessRestClient implements ParkingAccess {
     private Map<String, String> createListAccessRightQueryParameters(LocalDate date, Boolean unreadOnly) {
         Map<String, String> parameters = new HashMap<>();
         if (date != null) {
-            LOG.debug("Date is set to {}", date.format(ISO_LOCAL_DATE));
-            parameters.put(DAY_PARAM, date.format(ISO_LOCAL_DATE));
+            String formatted = date.format(ISO_LOCAL_DATE);
+            LOG.debug("Date is set to {}", formatted);
+            parameters.put(DAY_PARAM, formatted);
         }
 
         if (unreadOnly != null) {
@@ -111,9 +108,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
 
     @Override
     public String reportAccessLog(String parkingSiteId, Collection<AccessLog> accessLogs) throws CredentialsException, HttpRequestException, HttpClientException {
-        if(parkingSiteId == null || parkingSiteId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Parking site cannot be null or blank");
-        }
+        validateParkingSiteId(parkingSiteId);
         if (accessLogs == null || accessLogs.isEmpty()) {
             throw new IllegalArgumentException("Accesses cannot be null or blank");
         }
@@ -132,42 +127,47 @@ public class ParkingAccessRestClient implements ParkingAccess {
     }
 
     public Count reportAvailableSpotCount(String parkingSiteId, int count, Integer total) throws CredentialsException, HttpRequestException, HttpClientException {
-        if(parkingSiteId == null || parkingSiteId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Parking site cannot be null or blank");
-        }
+        validateParkingSiteId(parkingSiteId);
         LOG.debug("Report number of available spots to Commuty for the site {}", parkingSiteId);
         String path = String.format(REPORT_AVAILABLE_SPOTS_COUNT_URL, parkingSiteId);
         return withRetry(() -> httpClient.makePostRequest(path, token, new CountRequest(count, total), Count.class));
     }
 
     private <T> T withRetry(Callable<T> callable) throws HttpClientException, CredentialsException, HttpRequestException {
-        int currentTry = 1;
+        Retry retry = new Retry(configuration.getRetryStrategy().getNumberOfRetries() + 1   , configuration.getRetryStrategy().getIntervalInMs());
         while (true) {
+            LOG.trace("{} retries left to call api", retry.getCount());
             try {
-                LOG.trace("Attempt {}/{} to call api", currentTry, MAX_RETRIES);
                 token = token != null ? token : authenticate();
                 return callable.call();
-            } catch (Exception exception) {
-                if (exception instanceof HttpRequestException) {
-                    if (((HttpRequestException) exception).isForbidden()) {
-                        LOG.trace("Token exception, refreshing token then try again");
-                        token = authenticate();
-                    }
-                    currentTry++;
-                    if (currentTry > MAX_RETRIES) {
-                        LOG.trace("Maximum attempts reached, throwing underlying exception");
-                        throw (HttpRequestException) exception;
-                    }
-                } else if (exception instanceof CredentialsException) {
-                    LOG.trace("Invalid username/password");
-                    throw (CredentialsException) exception;
-                } else if (exception instanceof HttpClientException) {
-                    LOG.trace("Issue in the client");
-                    throw (HttpClientException) exception;
-                } else {
-                    throw exception instanceof RuntimeException? (RuntimeException)exception : new RuntimeException(exception);
+            } catch (HttpRequestException exception) {
+                if (exception.isForbidden()) {
+                    LOG.trace("Token exception, refreshing token then try again");
+                    token = authenticate();
                 }
+                retry = retry.next();
+                if (retry.isOver()) {
+                    throw exception;
+                } else {
+                    retry.waitInterval();
+                }
+            } catch (CredentialsException exception) {
+                LOG.trace("Invalid username/password");
+                throw exception;
+            } catch (HttpClientException exception) {
+                LOG.trace("Issue in the client");
+                throw exception;
+            } catch (RuntimeException exception) {
+                throw exception;
+            } catch (Exception exception) {
+                throw new RuntimeException(exception);
             }
+        }
+    }
+
+    private void validateParkingSiteId(String parkingSiteId) {
+        if(parkingSiteId == null || parkingSiteId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Parking site cannot be null or blank");
         }
     }
 }

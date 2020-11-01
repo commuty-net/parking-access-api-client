@@ -26,6 +26,7 @@ class RestWithAuthSpec extends Specification {
 
     @Shared
     JsonSlurper reader = new JsonSlurper()
+
     @Shared
     JsonMapper mapper = JsonMapper.create()
 
@@ -38,7 +39,11 @@ class RestWithAuthSpec extends Specification {
 
     def setup() {
         mockServer = startClientAndServer()
-        parkingAccess = Configuration.Builder.create().withCredentials("dummy", "dummy").withHost("http://localhost:${mockServer.getLocalPort()}").build().toRestClient()
+        parkingAccess = Configuration.Builder.create()
+                .withCredentials("dummy", "dummy")
+                .withRetryStrategy(5, 0)
+                .withHost("http://localhost:${mockServer.getLocalPort()}")
+                .build().toRestClient()
         mockAuthRoutes()
     }
 

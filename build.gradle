@@ -1,3 +1,5 @@
+import static java.lang.System.getenv
+
 plugins {
     id "idea"
     id "java-library"
@@ -5,11 +7,13 @@ plugins {
     id "maven-publish"
     id "groovy"
     id "signing"
+    id "org.sonarqube" version "$sonarqubeVersion"
     id "io.codearte.nexus-staging" version "$nexusVersion"
+    id "com.github.ben-manes.versions" version "$outdatedVersion"
 }
 
 group "net.commuty"
-version "2.1.4"
+version "2.1.5"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -64,6 +68,19 @@ dependencies {
             "org.mock-server:mockserver-netty:$mockServerVersion",
             "ch.qos.logback:logback-classic:$logbackVersion"
     )
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", getenv("SONARQUBE_URL")
+        property "sonar.login", getenv("SONARQUBE_TOKEN")
+        property "sonar.gitlab.commit_sha", getenv("CI_BUILD_REF")
+        property "sonar.gitlab.ref_name", getenv("CI_BUILD_REF_NAME")
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.test.exclusions", "**/src/test/**/*,src/main/java/module-info.java"
+        property "sonar.verbose", "false"
+        property "sonar.projectKey", "nedap"
+    }
 }
 
 if (project.hasProperty("release")) {

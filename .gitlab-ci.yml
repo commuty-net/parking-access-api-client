@@ -1,0 +1,11 @@
+stages:
+  - build-master
+
+"Execute Sonarqube":
+  stage: build-master
+  script:
+    - ./gradlew clean build sonarqube
+  tags:
+    - sonarqube
+  only:
+    - master

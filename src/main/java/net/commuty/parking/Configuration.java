@@ -6,8 +6,6 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 
-import static java.util.Optional.ofNullable;
-
 /**
  *<p>This will be your entry point to use the Rest client.</p>
  *<p>You need to use the inner Builder class to create a Configuration object,</p>
@@ -24,8 +22,9 @@ public class Configuration {
     private final String password;
     private final URL host;
     private final Proxy proxy;
+    private final RetryStrategy retryStrategy;
 
-    private Configuration(String username, String password, URL host, Proxy proxy) {
+    private Configuration(String username, String password, URL host, Proxy proxy, RetryStrategy retryStrategy) {
         if (username == null) {
             throw new IllegalArgumentException("A username is required. Did you forgot to call the 'withCredentials' method ?");
         }
@@ -35,10 +34,14 @@ public class Configuration {
         if (host == null) {
             throw new IllegalArgumentException("A host is required. Did you forgot to call the 'withHost' method ?");
         }
+        if (retryStrategy == null) {
+            throw new IllegalArgumentException("A retry strategy is required. Did you forgot to call the 'withRetryStrategy' method ?");
+        }
         this.username = username;
         this.password = password;
         this.host = host;
         this.proxy = proxy;
+        this.retryStrategy = retryStrategy;
     }
 
     /**
@@ -76,11 +79,44 @@ public class Configuration {
     }
 
     /**
+     * Holds the RetryStrategy provided at the creation of the builder.
+     * @return The retry strategy.
+     */
+    public RetryStrategy getRetryStrategy() {
+        return retryStrategy;
+    }
+
+    /**
      * Create a new {@link ParkingAccess} Rest client.
      * @return the client.
      */
     public ParkingAccess toRestClient() {
         return new ParkingAccessRestClient(this);
+    }
+
+    public static class RetryStrategy {
+        public static final RetryStrategy DEFAULT = new RetryStrategy(5, 1000);
+        private final int numberOfRetries;
+        private final int intervalInMs;
+
+        RetryStrategy(int numberOfRetries, int intervalInMs) {
+            if (numberOfRetries < 0) {
+                throw new IllegalArgumentException("You must provide a positive numberOfRetries");
+            }
+            if (intervalInMs < 0) {
+                throw new IllegalArgumentException("You must provide a positive intervalInMs");
+            }
+            this.numberOfRetries = numberOfRetries;
+            this.intervalInMs = intervalInMs;
+        }
+
+        public int getNumberOfRetries() {
+            return numberOfRetries;
+        }
+
+        public int getIntervalInMs() {
+            return intervalInMs;
+        }
     }
 
     /**
@@ -92,10 +128,11 @@ public class Configuration {
 
         private static final String DEFAULT_HOST = "https://parking-access.commuty.net";
 
-        private URL host;
+        private URL host = toURL(DEFAULT_HOST);
         private String username;
         private String password;
         private Proxy proxy;
+        private RetryStrategy retryStrategy = RetryStrategy.DEFAULT;
 
         private Builder() {
         }
@@ -161,12 +198,22 @@ public class Configuration {
         }
 
         /**
+         * Set a retry strategy to make every call resilient of unexpected issues.
+         * @param numberOfRetries The number of calls that must be attempted every time the API is contacted. Must be positive.
+         * @param intervalInMs The time to wait (in milliseconds) between each attempt. Must be positive.
+         * @return this builder instance.
+         */
+        public Builder withRetryStrategy(int numberOfRetries, int intervalInMs) {
+            this.retryStrategy = new RetryStrategy(numberOfRetries, intervalInMs);
+            return this;
+        }
+
+        /**
          * Creates a Configuration instance.
          * @return a new Configuration that will allow you to create a Rest client.
          */
         public Configuration build() {
-            URL hostURL = ofNullable(host).orElse(toURL(DEFAULT_HOST));
-            return new Configuration(username, password, hostURL, proxy);
+            return new Configuration(username, password, host, proxy, retryStrategy);
         }
 
         /**
