@@ -55,17 +55,19 @@ public class HttpClient {
         try {
             URL url = buildUrl(path);
             HttpURLConnection connection = createPostConnection(url, token);
-
-            try (DataOutputStream payloadStream = new DataOutputStream(connection.getOutputStream())) {
-                payloadStream.writeBytes(mapper.write(body));
-            } catch (IOException e) {
-                LOG.trace("Unrecoverable issue when creating a message body for the HTTP Client");
-                throw new HttpClientException(e);
-            }
-
+            writeRequestBody(body, connection);
             return executeMethod(connection, type);
         } catch (IOException e) {
             LOG.trace("Unrecoverable issue when trying to build the HTTP Client");
+            throw new HttpClientException(e);
+        }
+    }
+
+    private void writeRequestBody(Object body, HttpURLConnection connection) throws HttpClientException {
+        try (DataOutputStream payloadStream = new DataOutputStream(connection.getOutputStream())) {
+            payloadStream.writeBytes(mapper.write(body));
+        } catch (IOException e) {
+            LOG.trace("Unrecoverable issue when creating a message body for the HTTP Client");
             throw new HttpClientException(e);
         }
     }

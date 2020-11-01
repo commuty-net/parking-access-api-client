@@ -74,6 +74,7 @@ public class Example {
         ParkingAccess client = Configuration.Builder
                 .create()
                 .withCredentials(username, password)
+                .withRetryStrategy(5, 500) // 5 retries (in case of a network error , wait during 500ms between each attempt
                 .withHost(host)
                 .withProxy(proxy)
                 .build()
