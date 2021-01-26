@@ -218,7 +218,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly)
+        parkingAccess.listAccessRights(day, unreadOnly, null)
 
         then:
         mockServer.verify(
@@ -241,7 +241,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly)
+        parkingAccess.listAccessRights(day, unreadOnly, true)
 
         then:
         mockServer.verify(
@@ -264,7 +264,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly)
+        parkingAccess.listAccessRights(day, unreadOnly, false)
 
         then:
         mockServer.verify(
@@ -287,7 +287,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly)
+        parkingAccess.listAccessRights(day, unreadOnly, true)
 
         then:
         mockServer.verify(
@@ -312,7 +312,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly)
+        parkingAccess.listAccessRights(day, unreadOnly, null)
 
         then:
         mockServer.verify(
@@ -342,7 +342,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         authReturnsInvalidCredentials()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly)
+        parkingAccess.listAccessRights(day, unreadOnly, false)
 
         then:
         thrown(CredentialsException)
@@ -367,7 +367,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         )
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly)
+        parkingAccess.listAccessRights(day, unreadOnly, false)
 
         then:
         thrown(HttpRequestException)
@@ -384,7 +384,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockServer.stop()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly)
+        parkingAccess.listAccessRights(day, unreadOnly, false)
 
         then:
         thrown(HttpClientException)

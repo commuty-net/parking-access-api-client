@@ -34,6 +34,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
 
     public static final String DAY_PARAM = "day";
     public static final String UNREAD_ONLY_PARAM = "unreadOnly";
+    public static final String DRY_RUN_PARAM = "dryRun";
 
     private final Configuration configuration;
     private final HttpClient httpClient;
@@ -76,22 +77,22 @@ public class ParkingAccessRestClient implements ParkingAccess {
 
     @Override
     public Collection<AccessRight> listAccessRightsForToday() throws CredentialsException, HttpRequestException, HttpClientException {
-        return listAccessRights(null, null);
+        return listAccessRights(null, null, null);
     }
 
     @Override
     public Collection<AccessRight> listAccessRightsForToday(boolean unreadOnly) throws CredentialsException, HttpRequestException, HttpClientException {
-        return listAccessRights(null, unreadOnly);
+        return listAccessRights(null, unreadOnly, null);
     }
 
     @Override
-    public Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly) throws CredentialsException, HttpRequestException, HttpClientException {
+    public Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly, Boolean dryRun) throws CredentialsException, HttpRequestException, HttpClientException {
         LOG.debug("Check the presence of Access rights");
-        Map<String, String> parameters = createListAccessRightQueryParameters(date, unreadOnly);
+        Map<String, String> parameters = createListAccessRightQueryParameters(date, unreadOnly, dryRun);
         return withRetry(() -> httpClient.makeGetRequest(ACCESS_RIGHTS_URL, token, parameters, AccessRightResponse.class).getAccessRights());
     }
 
-    private Map<String, String> createListAccessRightQueryParameters(LocalDate date, Boolean unreadOnly) {
+    private Map<String, String> createListAccessRightQueryParameters(LocalDate date, Boolean unreadOnly, Boolean dryRun) {
         Map<String, String> parameters = new HashMap<>();
         if (date != null) {
             String formatted = date.format(ISO_LOCAL_DATE);
@@ -103,6 +104,12 @@ public class ParkingAccessRestClient implements ParkingAccess {
             LOG.debug("unreadOnly is set to {}", unreadOnly);
             parameters.put(UNREAD_ONLY_PARAM, unreadOnly.toString());
         }
+
+        if (dryRun != null) {
+            LOG.debug("dryRun is set to {}", dryRun);
+            parameters.put(DRY_RUN_PARAM, dryRun.toString());
+        }
+
         return parameters;
     }
 
@@ -134,7 +141,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
     }
 
     private <T> T withRetry(Callable<T> callable) throws HttpClientException, CredentialsException, HttpRequestException {
-        Retry retry = new Retry(configuration.getRetryStrategy().getNumberOfRetries() + 1   , configuration.getRetryStrategy().getIntervalInMs());
+        Retry retry = new Retry(configuration.getRetryStrategy().getNumberOfRetries() + 1, configuration.getRetryStrategy().getIntervalInMs());
         while (true) {
             LOG.trace("{} retries left to call api", retry.getCount());
             try {

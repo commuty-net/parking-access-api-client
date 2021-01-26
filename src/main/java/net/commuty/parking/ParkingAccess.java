@@ -70,12 +70,13 @@ public interface ParkingAccess {
      * <p>If <code>unreadOnly</code> is <code>true</code>, only the new accesses (the ones that were never retrieved via an api call) will be listed.</p>
      * @param date The {@link LocalDate} of the events you want to retrieve. If <code>date</code> is null, the accesses of the current day will be retrieved.
      * @param unreadOnly Whether you want to retrieve unread only accesses (<code>true</code>) or all accesses (<code>false</code>). If <code>unreadOnly</code> is null, all the accesses (read and unread) will be retrieved.
+     * @param dryRun Whether you want to prevent to flag the retrieve accesses as "read" (<code>true</code>) or not (<code>false</code>). If <code>unreadOnly</code> is null, all the accesses retrieved will be flagged as "read".
      * @return One or more {@link AccessRight}. Each user known by Commuty will at least have one access (granted or not). A user can have multiple accesses.
      * @throws CredentialsException Your username or password is invalid.
      * @throws HttpRequestException The query was sent to the api but the status is unsuccessful (HTTP status code &ge; 400). See {@link HttpRequestException} for more details.
      * @throws HttpClientException The query did not reached the api, i.e. there was a network issue.
      */
-    Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly) throws CredentialsException, HttpRequestException, HttpClientException;
+    Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly, Boolean dryRun) throws CredentialsException, HttpRequestException, HttpClientException;
 
     /**
      * <p>Report to Commuty one or more {@link AccessLog} of users that entered/exited the parking site.</p>
