@@ -9,7 +9,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -39,7 +41,7 @@ public class HttpClient {
         this.proxy = proxy;
     }
 
-    public <T> T makeGetRequest(String path, String token, Map<String, String> requestParams, Class<T> type) throws HttpClientException, HttpRequestException {
+    public <T> T makeGetRequest(String path, String token, Map<String, Collection<String>> requestParams, Class<T> type) throws HttpClientException, HttpRequestException {
         try {
             URL url = buildUrl(path, toQueryString(requestParams));
             HttpURLConnection connection = createGetConnection(url, token);
@@ -95,13 +97,16 @@ public class HttpClient {
         }
     }
 
-    private String toQueryString(Map<String, String> queryParameters) {
+    private String toQueryString(Map<String, Collection<String>> queryParameters) {
         String params = queryParameters.entrySet().stream().map(HttpClient::toQueryParam).collect(joining("&"));
         return params.trim().isEmpty() ? "" : "?" + params.trim();
     }
 
-    private static String toQueryParam(Map.Entry<String, String> entry) {
-        return String.format("%s=%s", entry.getKey(), entry.getValue());
+    private static String toQueryParam(Map.Entry<String, Collection<String>> entry) {
+        return entry.getValue()
+                .stream()
+                .map(value -> String.format("%s=%s", entry.getKey(), value))
+                .collect(joining("&"));
     }
 
     private URL buildUrl(String path) throws MalformedURLException {
