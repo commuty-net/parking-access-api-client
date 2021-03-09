@@ -6,6 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+import static net.commuty.parking.model.AccessRightAttributeName.ID;
+import static net.commuty.parking.model.AccessRightAttributeName.REASON;
 
 /**
  * This holds the access right:
@@ -44,17 +52,21 @@ public class AccessRight {
 
     private final boolean granted;
 
+    private final Map<AccessRightAttributeName, String> attributes;
+
     @JsonCreator
     AccessRight(@JsonProperty("userIds") Collection<UserId> userIds,
                 @JsonProperty("parkingSiteId") String parkingSiteId,
                 @JsonProperty("startTime") OffsetDateTime startTime,
                 @JsonProperty("endTime") OffsetDateTime endTime,
-                @JsonProperty("granted") boolean granted) {
+                @JsonProperty("granted") boolean granted,
+                @JsonProperty("attributes") Map<AccessRightAttributeName, String> attributes) {
         this.userIds = userIds;
         this.parkingSiteId = parkingSiteId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.granted = granted;
+        this.attributes = ofNullable(attributes).orElse(emptyMap());
     }
 
     /**
@@ -95,6 +107,37 @@ public class AccessRight {
     @JsonProperty("granted")
     public boolean isGranted() {
         return granted;
+    }
+
+    /**
+     * Extra attributes of the access right. It is present only when <code>includeAttributes</code> contains at least one {@link AccessRightAttributeName} when fetching access rights.<br />
+     * Otherwise, this list is empty.
+     */
+    @JsonProperty("attributes")
+    public Map<AccessRightAttributeName, String> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * The unique identifier of this access right. Only present when the extra attributes are fetched, via the <code>includeAttributes</code> parameter.<br />
+     * Otherwise, this is <code>null</code>.
+     */
+    public UUID getId() {
+        return of(attributes)
+                .map(attr -> attr.get(ID))
+                .map(UUID::fromString)
+                .orElse(null);
+    }
+
+    /**
+     * The {@link AccessRightReason} of why this access right exists. Only present when the extra attributes are fetched, via the <code>includeAttributes</code> parameter.<br />
+     * Otherwise, this is <code>null</code>.
+     */
+    public AccessRightReason getReason() {
+        return of(attributes)
+                .map(attr -> attr.get(REASON))
+                .map(AccessRightReason::findByName)
+                .orElse(null);
     }
 
     @Override

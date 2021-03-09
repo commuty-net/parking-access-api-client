@@ -3,13 +3,12 @@ package net.commuty.parking;
 import net.commuty.parking.http.CredentialsException;
 import net.commuty.parking.http.HttpClientException;
 import net.commuty.parking.http.HttpRequestException;
-import net.commuty.parking.model.AccessLog;
-import net.commuty.parking.model.AccessRight;
-import net.commuty.parking.model.Count;
-import net.commuty.parking.model.UserId;
+import net.commuty.parking.model.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * <p>This is the client you must use to query the parking access api of Commuty.</p>
@@ -71,12 +70,14 @@ public interface ParkingAccess {
      * @param date The {@link LocalDate} of the events you want to retrieve. If <code>date</code> is null, the accesses of the current day will be retrieved.
      * @param unreadOnly Whether you want to retrieve unread only accesses (<code>true</code>) or all accesses (<code>false</code>). If <code>unreadOnly</code> is null, all the accesses (read and unread) will be retrieved.
      * @param dryRun Whether you want to prevent to flag the retrieve accesses as "read" (<code>true</code>) or not (<code>false</code>). If <code>unreadOnly</code> is null, all the accesses retrieved will be flagged as "read".
+     * @param createdAfter Only retrieve events created after this {@link LocalDateTime}. Represents a <code>UTC</code> timestamp. If <code>createdAfter</code> is null, all the accesses will be retrieved.
+     * @param includeAttributes Whether you want to fetch extra attributes about each access. The possible values are listed in {@link AccessRightAttributeName}.
      * @return One or more {@link AccessRight}. Each user known by Commuty will at least have one access (granted or not). A user can have multiple accesses.
      * @throws CredentialsException Your username or password is invalid.
      * @throws HttpRequestException The query was sent to the api but the status is unsuccessful (HTTP status code &ge; 400). See {@link HttpRequestException} for more details.
      * @throws HttpClientException The query did not reached the api, i.e. there was a network issue.
      */
-    Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly, Boolean dryRun) throws CredentialsException, HttpRequestException, HttpClientException;
+    Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly, Boolean dryRun, LocalDateTime createdAfter, Set<AccessRightAttributeName> includeAttributes) throws CredentialsException, HttpRequestException, HttpClientException;
 
     /**
      * <p>Report to Commuty one or more {@link AccessLog} of users that entered/exited the parking site.</p>

@@ -6,19 +6,24 @@ import net.commuty.parking.http.CredentialsException;
 import net.commuty.parking.http.HttpClient;
 import net.commuty.parking.http.HttpClientException;
 import net.commuty.parking.http.HttpRequestException;
-import net.commuty.parking.model.AccessLog;
-import net.commuty.parking.model.AccessRight;
-import net.commuty.parking.model.Count;
-import net.commuty.parking.model.UserId;
+import net.commuty.parking.model.*;
 import org.slf4j.Logger;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ParkingAccessRestClient implements ParkingAccess {
@@ -35,6 +40,9 @@ public class ParkingAccessRestClient implements ParkingAccess {
     public static final String DAY_PARAM = "day";
     public static final String UNREAD_ONLY_PARAM = "unreadOnly";
     public static final String DRY_RUN_PARAM = "dryRun";
+    public static final String CREATED_AFTER_PARAM = "createdAfter";
+    public static final String INCLUDE_ATTRIBUTES_PARAM = "includeAttributes";
+    private static final ZoneId UTC = ZoneId.of("UTC");
 
     private final Configuration configuration;
     private final HttpClient httpClient;
@@ -77,37 +85,59 @@ public class ParkingAccessRestClient implements ParkingAccess {
 
     @Override
     public Collection<AccessRight> listAccessRightsForToday() throws CredentialsException, HttpRequestException, HttpClientException {
-        return listAccessRights(null, null, null);
+        return listAccessRights(null, null, null, null, emptySet());
     }
 
     @Override
     public Collection<AccessRight> listAccessRightsForToday(boolean unreadOnly) throws CredentialsException, HttpRequestException, HttpClientException {
-        return listAccessRights(null, unreadOnly, null);
+        return listAccessRights(null, unreadOnly, null, null, emptySet());
     }
 
     @Override
-    public Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly, Boolean dryRun) throws CredentialsException, HttpRequestException, HttpClientException {
+    public Collection<AccessRight> listAccessRights(LocalDate date,
+                                                    Boolean unreadOnly,
+                                                    Boolean dryRun,
+                                                    LocalDateTime createdAfter,
+                                                    Set<AccessRightAttributeName> includeAttributes) throws CredentialsException, HttpRequestException, HttpClientException {
         LOG.debug("Check the presence of Access rights");
-        Map<String, String> parameters = createListAccessRightQueryParameters(date, unreadOnly, dryRun);
+        Map<String, Collection<String>> parameters = createListAccessRightQueryParameters(date, unreadOnly, dryRun, createdAfter, includeAttributes);
         return withRetry(() -> httpClient.makeGetRequest(ACCESS_RIGHTS_URL, token, parameters, AccessRightResponse.class).getAccessRights());
     }
 
-    private Map<String, String> createListAccessRightQueryParameters(LocalDate date, Boolean unreadOnly, Boolean dryRun) {
-        Map<String, String> parameters = new HashMap<>();
+    private Map<String, Collection<String>> createListAccessRightQueryParameters(LocalDate date,
+                                                                     Boolean unreadOnly,
+                                                                     Boolean dryRun,
+                                                                     LocalDateTime createdAfter,
+                                                                     Set<AccessRightAttributeName> includeAttributes) {
+        Map<String, Collection<String>> parameters = new HashMap<>();
         if (date != null) {
             String formatted = date.format(ISO_LOCAL_DATE);
             LOG.debug("Date is set to {}", formatted);
-            parameters.put(DAY_PARAM, formatted);
+            parameters.put(DAY_PARAM, singletonList(formatted));
         }
 
         if (unreadOnly != null) {
             LOG.debug("unreadOnly is set to {}", unreadOnly);
-            parameters.put(UNREAD_ONLY_PARAM, unreadOnly.toString());
+            parameters.put(UNREAD_ONLY_PARAM, singletonList(unreadOnly.toString()));
         }
 
         if (dryRun != null) {
             LOG.debug("dryRun is set to {}", dryRun);
-            parameters.put(DRY_RUN_PARAM, dryRun.toString());
+            parameters.put(DRY_RUN_PARAM, singletonList(dryRun.toString()));
+        }
+
+        if (createdAfter != null) {
+            String formatted = createdAfter.truncatedTo(SECONDS).atZone(UTC).format(ISO_INSTANT);
+            LOG.debug("createdAfter is set to {}", formatted);
+            parameters.put(CREATED_AFTER_PARAM, singletonList(formatted));
+        }
+
+        if (includeAttributes != null) {
+            Collection<String> attributes = includeAttributes
+                    .stream()
+                    .map(AccessRightAttributeName::getAttributeName)
+                    .collect(toList());
+            parameters.put(INCLUDE_ATTRIBUTES_PARAM, attributes);
         }
 
         return parameters;
