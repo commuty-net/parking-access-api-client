@@ -55,12 +55,12 @@ public class AccessRight {
     private final Map<AccessRightAttributeName, String> attributes;
 
     @JsonCreator
-    AccessRight(@JsonProperty("userIds") Collection<UserId> userIds,
-                @JsonProperty("parkingSiteId") String parkingSiteId,
-                @JsonProperty("startTime") OffsetDateTime startTime,
-                @JsonProperty("endTime") OffsetDateTime endTime,
-                @JsonProperty("granted") boolean granted,
-                @JsonProperty("attributes") Map<AccessRightAttributeName, String> attributes) {
+    public AccessRight(@JsonProperty("userIds") Collection<UserId> userIds,
+                       @JsonProperty("parkingSiteId") String parkingSiteId,
+                       @JsonProperty("startTime") OffsetDateTime startTime,
+                       @JsonProperty("endTime") OffsetDateTime endTime,
+                       @JsonProperty("granted") boolean granted,
+                       @JsonProperty("attributes") Map<AccessRightAttributeName, String> attributes) {
         this.userIds = userIds;
         this.parkingSiteId = parkingSiteId;
         this.startTime = startTime;
