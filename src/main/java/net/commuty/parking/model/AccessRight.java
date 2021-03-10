@@ -1,7 +1,6 @@
 package net.commuty.parking.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -9,6 +8,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
@@ -40,6 +40,7 @@ import static net.commuty.parking.model.AccessRightAttributeName.REASON;
  *     <li>have one <b>not granted</b> right starting from <b>today 16:00</b> until <b>tomorrow midnight</b></li>
  * </ul>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccessRight {
 
     private final Collection<UserId> userIds;
@@ -114,6 +115,7 @@ public class AccessRight {
      * Otherwise, this list is empty.
      */
     @JsonProperty("attributes")
+    @JsonInclude(NON_EMPTY)
     public Map<AccessRightAttributeName, String> getAttributes() {
         return attributes;
     }
@@ -122,6 +124,7 @@ public class AccessRight {
      * The unique identifier of this access right. Only present when the extra attributes are fetched, via the <code>includeAttributes</code> parameter.<br />
      * Otherwise, this is <code>null</code>.
      */
+    @JsonIgnore
     public UUID getId() {
         return of(attributes)
                 .map(attr -> attr.get(ID))
@@ -133,6 +136,7 @@ public class AccessRight {
      * The {@link AccessRightReason} of why this access right exists. Only present when the extra attributes are fetched, via the <code>includeAttributes</code> parameter.<br />
      * Otherwise, this is <code>null</code>.
      */
+    @JsonIgnore
     public AccessRightReason getReason() {
         return of(attributes)
                 .map(attr -> attr.get(REASON))
