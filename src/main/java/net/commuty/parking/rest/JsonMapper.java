@@ -50,4 +50,8 @@ class JsonMapper implements Mapper {
     public Error readError(InputStream stream) throws IOException {
         return read(stream, JsonError.class);
     }
+
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
 }

@@ -8,6 +8,7 @@ import net.commuty.parking.model.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -114,4 +115,15 @@ public interface ParkingAccess {
      * @throws HttpClientException The query did not reached the api, i.e. there was a network issue.
      */
     Count reportAvailableSpotCount(String parkingSiteId, int count, Integer total) throws CredentialsException, HttpRequestException, HttpClientException;
+
+    /**
+     * <p>Lists all the parking spot of a given parking site.</p>
+     * <p>It does not return the parking spots that have been deleted.</p>
+     * @param parkingSiteId The identifier of the parking site that was given by Commuty. must not be null or blank
+     * @return the active (not deleted) {@link ParkingSpot}s for the given parking site.
+     * @throws CredentialsException Your username or password is invalid.
+     * @throws HttpRequestException The query was sent to the api but the status is unsuccessful (HTTP status code &ge; 400). See {@link HttpRequestException} for more details.
+     * @throws HttpClientException The query did not reached the api, i.e. there was a network issue.
+     */
+    List<ParkingSpot> listParkingSpots(String parkingSiteId) throws CredentialsException, HttpRequestException, HttpClientException;
 }

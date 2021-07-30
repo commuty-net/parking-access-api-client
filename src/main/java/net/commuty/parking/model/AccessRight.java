@@ -12,8 +12,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-import static net.commuty.parking.model.AccessRightAttributeName.ID;
-import static net.commuty.parking.model.AccessRightAttributeName.REASON;
+import static net.commuty.parking.model.AccessRightAttributeName.*;
 
 /**
  * This holds the access right:
@@ -141,6 +140,37 @@ public class AccessRight {
         return of(attributes)
                 .map(attr -> attr.get(REASON))
                 .map(AccessRightReason::findByName)
+                .orElse(null);
+    }
+
+    /**
+     * When an access right is granted for a specific parking spot, this value represents its unique identifier. It is null otherwise.
+     */
+    @JsonIgnore
+    public UUID getParkingSpotId() {
+        return of(attributes)
+                .map(attr -> attr.get(PARKING_SPOT_ID))
+                .map(UUID::fromString)
+                .orElse(null);
+    }
+
+    /**
+     * When an access right is granted for a specific parking spot, this value represents its name as defined by the managers. It is null otherwise.
+     */
+    @JsonIgnore
+    public String getParkingSpotName() {
+        return of(attributes)
+                .map(attr -> attr.get(PARKING_SPOT_NAME))
+                .orElse(null);
+    }
+
+    /**
+     * When an access right is granted for a specific parking spot, this value represents its display name as it is shown to the end-users. It is null otherwise.
+     */
+    @JsonIgnore
+    public String getParkingSpotDisplayName() {
+        return of(attributes)
+                .map(attr -> attr.get(PARKING_SPOT_DISPLAY_NAME))
                 .orElse(null);
     }
 

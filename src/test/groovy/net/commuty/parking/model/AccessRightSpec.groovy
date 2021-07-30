@@ -7,6 +7,7 @@ import java.time.OffsetDateTime
 
 import static java.nio.charset.Charset.defaultCharset
 import static net.commuty.parking.model.AccessRightReason.NONE
+import static net.commuty.parking.model.AccessRightReason.PERMANENT_ACCESS
 import static net.commuty.parking.model.UserIdType.*
 import static org.apache.commons.io.IOUtils.toInputStream
 
@@ -189,4 +190,45 @@ class AccessRightSpec extends Specification {
         right.id == UUID.fromString("2696420b-1a2f-42c4-b9d5-2e05c5fc877c")
         right.reason == NONE
     }
+
+    def "parse a message with extra attributes  is parsed correctly"() {
+        given:
+        def json = """
+                {
+                    "userIds": [{
+                        "id": "12345",
+                        "type": "identificationNumber"
+                    }],
+                    "parkingSiteId": "ff217562-d357-40be-893e-f74b48570d21",
+                    "granted": true,
+                    "startTime": "2021-07-29T00:00:00+02:00",
+                    "endTime": "2021-07-29T00:00:00+02:00",
+                    "attributes": {
+                        "id": "4850b369-729a-4623-89ab-be1a61b15920",
+                        "reason": "permanentAccess",
+                        "parkingSpotId": "e71a3670-d1f7-4095-8e1d-a19003141411",
+                        "parkingSpotName": "P1234",
+                        "parkingSpotDisplayName": "Zone B"
+                    }
+                }"""
+        when:
+        def right = mapper.read(toInputStream(json, defaultCharset()), AccessRight.class)
+
+        then:
+        right != null
+        right.userIds.size() == 1
+        right.userIds.first().id == "12345"
+        right.userIds.first().type == IDENTIFICATION_NUMBER
+        right.parkingSiteId == "ff217562-d357-40be-893e-f74b48570d21"
+        right.granted
+        right.startTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
+        right.endTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
+        right.attributes.size() == 5
+        right.id == UUID.fromString("4850b369-729a-4623-89ab-be1a61b15920")
+        right.reason == PERMANENT_ACCESS
+        right.parkingSpotId == UUID.fromString("e71a3670-d1f7-4095-8e1d-a19003141411")
+        right.parkingSpotName == "P1234"
+        right.parkingSpotDisplayName == "Zone B"
+    }
+
 }

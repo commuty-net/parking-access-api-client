@@ -12,17 +12,13 @@ import org.slf4j.Logger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.time.temporal.ChronoUnit.SECONDS;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -33,6 +29,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
     public static final String TOKEN_REQUESTS_URL = "/v2/token-requests";
     public static final String ACCESS_REQUESTS_URL = "/v2/parking-sites/%s/access-requests";
     public static final String ACCESS_RIGHTS_URL = "/v2/access-rights";
+    public static final String PARKING_SPOTS_RIGHTS_URL = "/v2/parking-sites/%s/parking-spots";
     public static final String REPORT_ACCESS_URL = "/v2/parking-sites/%s/access-logs";
     public static final String REPORT_MISSING_IDS_URL = "/v2/missing-user-ids";
     public static final String REPORT_AVAILABLE_SPOTS_COUNT_URL = "/v2/parking-sites/%s/counts";
@@ -139,7 +136,6 @@ public class ParkingAccessRestClient implements ParkingAccess {
                     .collect(toList());
             parameters.put(INCLUDE_ATTRIBUTES_PARAM, attributes);
         }
-
         return parameters;
     }
 
@@ -163,11 +159,23 @@ public class ParkingAccessRestClient implements ParkingAccess {
         return withRetry(() -> httpClient.makePostRequest(REPORT_MISSING_IDS_URL, token, new MissingUserIdRequest(user), UserId.class));
     }
 
+    @Override
     public Count reportAvailableSpotCount(String parkingSiteId, int count, Integer total) throws CredentialsException, HttpRequestException, HttpClientException {
         validateParkingSiteId(parkingSiteId);
         LOG.debug("Report number of available spots to Commuty for the site {}", parkingSiteId);
         String path = String.format(REPORT_AVAILABLE_SPOTS_COUNT_URL, parkingSiteId);
         return withRetry(() -> httpClient.makePostRequest(path, token, new CountRequest(count, total), Count.class));
+    }
+
+    @Override
+    public List<ParkingSpot> listParkingSpots(String parkingSiteId) throws CredentialsException, HttpRequestException, HttpClientException {
+        if (parkingSiteId == null || parkingSiteId.trim().isEmpty()) {
+            throw new IllegalArgumentException("parkingSiteId must not be null or blank");
+        }
+
+        LOG.debug("List parking spot for parkingSiteId={}", parkingSiteId);
+        String path = String.format(PARKING_SPOTS_RIGHTS_URL, parkingSiteId);
+        return withRetry(() -> httpClient.makeGetRequest(path, token, emptyMap(), ParkingSpotResponse.class).getParkingSpots());
     }
 
     private <T> T withRetry(Callable<T> callable) throws HttpClientException, CredentialsException, HttpRequestException {
