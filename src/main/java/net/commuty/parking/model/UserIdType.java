@@ -42,6 +42,9 @@ public enum UserIdType {
     @JsonProperty("commutyLabel")
     COMMUTY_LABEL,
 
+    @JsonProperty("accessCode")
+    ACCESS_CODE,
+
     @JsonEnumDefaultValue
     @JsonProperty("unknown")
     UNKNOWN

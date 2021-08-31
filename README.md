@@ -27,14 +27,14 @@ To use this library in your project, you can do it via a maven dependency:
 <dependency>
     <groupId>net.commuty</groupId>
     <artifactId>parking-access-api-client</artifactId>
-    <version>2.3.0</version>
+    <version>2.3.1</version>
 </dependency>
 ```
 
 or via a gradle:
 
 ```
-implementation "net.commuty:parking-access-api-client:2.3.0"
+implementation "net.commuty:parking-access-api-client:2.3.1"
 ```
 
 ## Usage
@@ -278,10 +278,11 @@ public class Example {
 
 ## Development
 
+Build with AdoptOpenJDK 11
+
 ### Release
 
-Base on this [great article](https://nemerosa.ghost.io/2015/07/01/publishing-to-the-maven-central-using-gradle/)
 ```shell
 ./gradlew clean build
-./gradlew -Prelease uploadArchives closeAndReleaseRepository
+./gradlew publish
 ```
