@@ -30,9 +30,11 @@ public enum UserIdType {
     @JsonProperty("pinCode")
     PIN_CODE,
 
-    @JsonProperty("licensePlateWim26")
+    @Deprecated
+    @JsonProperty("`licensePlateWim26`")
     LICENSE_PLATE_WIM26,
 
+    @Deprecated
     @JsonProperty("licensePlateWim64")
     LICENSE_PLATE_WIM64,
 
@@ -44,6 +46,12 @@ public enum UserIdType {
 
     @JsonProperty("accessCode")
     ACCESS_CODE,
+
+    @JsonProperty("licensePlateWim26AsDecimalCode")
+    LICENSE_PLATE_WIM26_AS_DECIMAL_CODE,
+
+    @JsonProperty("licensePlateWim26AsFacilityAndIdCode")
+    LICENSE_PLATE_WIM26_AS_FACILITY_AND_ID_CODE,
 
     @JsonEnumDefaultValue
     @JsonProperty("unknown")
