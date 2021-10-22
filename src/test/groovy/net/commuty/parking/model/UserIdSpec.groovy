@@ -267,40 +267,6 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromWim26EncodedLicensePlate(valid string)
-        returns an user with UserIdType == LICENSE_PLATE_WIM26
-        """() {
-        given:
-        def win26EncodedLicensePlate = "F0F1F2F3"
-
-        when:
-        def userId = UserId.fromWim26EncodedLicensePlate(win26EncodedLicensePlate)
-
-        then:
-        userId != null
-        userId.id == win26EncodedLicensePlate
-        userId.type == LICENSE_PLATE_WIM26
-    }
-
-    def """
-        #fromWim26EncodedLicensePlate(valid string)
-        is parsed correctly
-        """() {
-        given:
-        def win26EncodedLicensePlate = "F0F1F2F3"
-
-        when:
-        def userIdString = mapper.write(UserId.fromWim26EncodedLicensePlate(win26EncodedLicensePlate))
-
-        then:
-        userIdString != null
-        def parsed = reader.parseText(userIdString)
-        parsed != null
-        parsed.id == win26EncodedLicensePlate
-        parsed.type == "licensePlateWim26"
-    }
-
-    def """
         #fromWim64EncodedLicensePlate(valid string)
         returns an user with UserIdType == LICENSE_PLATE_WIM64
         """() {

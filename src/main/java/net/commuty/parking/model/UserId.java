@@ -51,7 +51,7 @@ public class UserId {
      * Creates a user id based on an identification number
      */
     public static UserId fromIdentificationNumber(String identificationNumber) {
-        return new UserId(UserIdType.IDENTIFICATION_NUMBER, identificationNumber);
+        return new UserId(IDENTIFICATION_NUMBER, identificationNumber);
     }
 
     /**
@@ -80,15 +80,6 @@ public class UserId {
      */
     public static UserId fromPinCode(String pinCode) {
         return new UserId(PIN_CODE, pinCode);
-    }
-
-    /**
-     * <p>Creates a user id based on a hash of a license plate using the Wiegand 26 bit protocol.</p>
-     * <p>This is compatible with the "Wiegand Interface Module" device from Nedap.</p>
-     * <p>For more information, <a href="https://www.nedapidentification.com/products/anpr/wiegand-interface-module/">Click here to see the Wiegand Interface Module website.</a></p>
-     */
-    public static UserId fromWim26EncodedLicensePlate(String win26EncodedLicensePlate) {
-        return new UserId(LICENSE_PLATE_WIM26, win26EncodedLicensePlate);
     }
 
     /**
