@@ -7,7 +7,7 @@ Supported features are:
 * Verify a user can access a parking site
 * List all access rights for a day
 * Report who entered/exited the parking
-* Report a user that is known by the you but not by Commuty
+* Report a user that is known by you but not by Commuty
 * Report the number of available (and total) spots on a parking site
 
 ## Compatibility
@@ -27,14 +27,14 @@ To use this library in your project, you can do it via a maven dependency:
 <dependency>
     <groupId>net.commuty</groupId>
     <artifactId>parking-access-api-client</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.2</version>
 </dependency>
 ```
 
 or via a gradle:
 
 ```
-implementation "net.commuty:parking-access-api-client:2.3.1"
+implementation "net.commuty:parking-access-api-client:2.3.2"
 ```
 
 ## Usage
