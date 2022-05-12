@@ -27,18 +27,23 @@ public class HttpClient {
     private static final String ACCEPT = "Accept";
     private static final String AUTHORIZATION = "Authorization";
     private static final String TOKEN_TEMPLATE = "Bearer %s";
-    private static final int TIMEOUT_IN_MS = 5000;
 
     private final URL baseUrl;
     private final Mapper mapper;
     private final Proxy proxy;
+    private final int connectionTimeoutInMs;
+    private final int requestTimeoutInMs;
 
     public HttpClient(URL baseUrl,
                       Mapper mapper,
-                      Proxy proxy) {
+                      Proxy proxy,
+                      int connectionTimeoutInMs,
+                      int requestTimeoutInMs) {
         this.baseUrl = baseUrl;
         this.mapper = mapper;
         this.proxy = proxy;
+        this.connectionTimeoutInMs = connectionTimeoutInMs;
+        this.requestTimeoutInMs = requestTimeoutInMs;
     }
 
     public <T> T makeGetRequest(String path, String token, Map<String, Collection<String>> requestParams, Class<T> type) throws HttpClientException, HttpRequestException {
@@ -124,8 +129,8 @@ public class HttpClient {
         if (token != null && !token.trim().isEmpty()) {
             connection.setRequestProperty(AUTHORIZATION, String.format(TOKEN_TEMPLATE, token));
         }
-        connection.setConnectTimeout(TIMEOUT_IN_MS);
-        connection.setReadTimeout(TIMEOUT_IN_MS);
+        connection.setConnectTimeout(this.connectionTimeoutInMs);
+        connection.setReadTimeout(this.requestTimeoutInMs);
         return connection;
     }
 
@@ -137,7 +142,7 @@ public class HttpClient {
         if (token != null && !token.trim().isEmpty()) {
             connection.setRequestProperty(AUTHORIZATION, String.format(TOKEN_TEMPLATE, token));
         }
-        connection.setConnectTimeout(TIMEOUT_IN_MS);
+        connection.setConnectTimeout(this.connectionTimeoutInMs);
         connection.setDoOutput(true);
         return connection;
     }

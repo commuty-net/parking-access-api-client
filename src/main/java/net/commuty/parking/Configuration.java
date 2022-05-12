@@ -23,8 +23,9 @@ public class Configuration {
     private final URL host;
     private final Proxy proxy;
     private final RetryStrategy retryStrategy;
+    private final Timeout timeout;
 
-    private Configuration(String username, String password, URL host, Proxy proxy, RetryStrategy retryStrategy) {
+    private Configuration(String username, String password, URL host, Proxy proxy, RetryStrategy retryStrategy, Timeout timeout) {
         if (username == null) {
             throw new IllegalArgumentException("A username is required. Did you forgot to call the 'withCredentials' method ?");
         }
@@ -37,11 +38,15 @@ public class Configuration {
         if (retryStrategy == null) {
             throw new IllegalArgumentException("A retry strategy is required. Did you forgot to call the 'withRetryStrategy' method ?");
         }
+        if(timeout == null) {
+            throw new IllegalArgumentException("A timeout is required. Did you forgot to call the 'withTimeout' method ?");
+        }
         this.username = username;
         this.password = password;
         this.host = host;
         this.proxy = proxy;
         this.retryStrategy = retryStrategy;
+        this.timeout = timeout;
     }
 
     /**
@@ -87,6 +92,14 @@ public class Configuration {
     }
 
     /**
+     * Holds the Timeout values provided at the creation of the builder.
+     * @return the timeout
+     */
+    public Timeout getTimeout() {
+        return timeout;
+    }
+
+    /**
      * Create a new {@link ParkingAccess} Rest client.
      * @return the client.
      */
@@ -119,6 +132,31 @@ public class Configuration {
         }
     }
 
+    public static class Timeout {
+        public static final Timeout DEFAULT = new Timeout(5000, 30000);
+        private final int connectionTimeoutInMs;
+        private final int requestTimeoutInMs;
+
+        public Timeout(int connectionTimeoutInMs, int requestTimeoutInMs) {
+            if (connectionTimeoutInMs < 0) {
+                throw new IllegalArgumentException("You must provide a positive connectionTimeoutInMs");
+            }
+            if (requestTimeoutInMs < 0) {
+                throw new IllegalArgumentException("You must provide a positive requestTimeoutInMs");
+            }
+            this.connectionTimeoutInMs = connectionTimeoutInMs;
+            this.requestTimeoutInMs = requestTimeoutInMs;
+        }
+
+        public int getConnectionTimeoutInMs() {
+            return connectionTimeoutInMs;
+        }
+
+        public int getRequestTimeoutInMs() {
+            return requestTimeoutInMs;
+        }
+    }
+
     /**
      * Build a configuration object that will be used ton instantiate a Rest client.
      * <p>To use this, call <code>Configuration.Builder.create()</code> then chain one or more builder methods.</p>
@@ -133,6 +171,7 @@ public class Configuration {
         private String password;
         private Proxy proxy;
         private RetryStrategy retryStrategy = RetryStrategy.DEFAULT;
+        private Timeout timeout = Timeout.DEFAULT;
 
         private Builder() {
         }
@@ -209,11 +248,22 @@ public class Configuration {
         }
 
         /**
+         * Set timeout values
+         * @param connectionTimeoutInMs The duration in milliseconds the client will wait during the connection phase of an HTTP Call to the API. Must be positive.
+         * @param requestTimeoutInMs The maximum duration in milliseconds the client will wait for a response of a GET HTTP Call to the API. Must be positive.
+         * @return this builder instance.
+         */
+        public Builder withTimeout(int connectionTimeoutInMs, int requestTimeoutInMs) {
+            this.timeout = new Timeout(connectionTimeoutInMs, requestTimeoutInMs);
+            return this;
+        }
+
+        /**
          * Creates a Configuration instance.
          * @return a new Configuration that will allow you to create a Rest client.
          */
         public Configuration build() {
-            return new Configuration(username, password, host, proxy, retryStrategy);
+            return new Configuration(username, password, host, proxy, retryStrategy, timeout);
         }
 
         /**

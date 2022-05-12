@@ -42,6 +42,7 @@ class RestWithAuthSpec extends Specification {
         parkingAccess = Configuration.Builder.create()
                 .withCredentials("dummy", "dummy")
                 .withRetryStrategy(5, 0)
+                .withTimeout(5000, 5000)
                 .withHost("http://localhost:${mockServer.getLocalPort()}")
                 .build().toRestClient()
         mockAuthRoutes()
