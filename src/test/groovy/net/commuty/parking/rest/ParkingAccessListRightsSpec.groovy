@@ -35,7 +35,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRightsForToday()
+        listAccessRightsForToday()
         no results are expected
         returns an empty list
         """() {
@@ -56,7 +56,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRightsForToday()
+        listAccessRightsForToday()
         one result is expected
         returns one element parsed correctly
         """() {
@@ -118,7 +118,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRightsForToday()
+        listAccessRightsForToday()
         two results are expected
         returns 2 elements
         """() {
@@ -167,7 +167,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRightsForToday(unreadOnly = true)
+        listAccessRightsForToday(unreadOnly = true)
         query accesses for today with unreadOnly = true
         the query is correct
         """() {
@@ -184,12 +184,11 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                         .withMethod("GET")
                         .withPath("/v2/access-rights")
                         .withQueryStringParameter("unreadOnly", "true")
-                        .withQueryStringParameter(not("day"))
         )
     }
 
     def """
-        #listAccessRightsForToday(unreadOnly = false)
+        listAccessRightsForToday(unreadOnly = false)
         query accesses for today with unreadOnly = false
         the query is correct
         """() {
@@ -206,12 +205,11 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                         .withMethod("GET")
                         .withPath("/v2/access-rights")
                         .withQueryStringParameter("unreadOnly", "false")
-                        .withQueryStringParameter(not("day"))
         )
     }
 
     def """
-        #listAccessRights(null date, null boolean)
+        listAccessRights(null date, null boolean)
         query all accesses for today
         the query is correct
         """() {
@@ -228,13 +226,12 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                 request()
                         .withMethod("GET")
                         .withPath("/v2/access-rights")
-                        .withQueryStringParameter(not("unreadOnly"))
-                        .withQueryStringParameter(not("day"))
+                        .withQueryStringParameter("includeAttributes", ID.getAttributeName())
         )
     }
 
     def """
-        #listAccessRights(a valid date, null boolean)
+        listAccessRights(a valid date, null boolean)
         query all accesses for a specific date
         the query is correct
         """() {
@@ -257,7 +254,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRights(null date, unreadOnly = true)
+        listAccessRights(null date, unreadOnly = true)
         query unread accesses for today
         the query is correct
         """() {
@@ -280,7 +277,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRights(a valid date, unreadOnly = false)
+        listAccessRights(a valid date, unreadOnly = false)
         query all accesses for a specific day
         the query is correct
         """() {
@@ -303,7 +300,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRights(a valid date, unreadOnly = false, dryRun = true, createdAfter = a valid date, includeAttributes = ID, REASON)
+        listAccessRights(a valid date, unreadOnly = false, dryRun = true, createdAfter = a valid date, includeAttributes = ID, REASON)
         query all accesses for a specific day
         the query is correct
         """() {
@@ -332,7 +329,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRights(a valid date, unreadOnly = false)
+        listAccessRights(a valid date, unreadOnly = false)
         query all accesses for a specific day
         the token is invalid then refreshed
         no exception is thrown and the final query has a http code 200
@@ -364,7 +361,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRights(a valid date, unreadOnly = false)
+        listAccessRights(a valid date, unreadOnly = false)
         credentials are invalid
         an exception is thrown
         """() {
@@ -381,7 +378,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRights(a valid date, unreadOnly = false)
+        listAccessRights(a valid date, unreadOnly = false)
         api returns an error
         an exception is thrown
         """() {
@@ -406,7 +403,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listAccessRights(a valid date, unreadOnly = false)
+        listAccessRights(a valid date, unreadOnly = false)
         api is not reachable
         an exception is thrown
         """() {

@@ -15,7 +15,7 @@ class AccessLogSpec extends Specification {
     def reader = new JsonSlurper()
 
     def """
-        #createInAccessLog(null userId, a date)
+        createInAccessLog(null userId, a date)
         throws an exception
         """() {
         given:
@@ -30,7 +30,7 @@ class AccessLogSpec extends Specification {
     }
 
     def """
-        #createInAccessLog(valid userId, null date)
+        createInAccessLog(valid userId, null date)
         throws an exception
         """() {
         given:
@@ -45,7 +45,7 @@ class AccessLogSpec extends Specification {
     }
 
     def """
-        #createInAccessLog(valid userId, valid date)
+        createInAccessLog(valid userId, valid date)
         returns an access log with way = IN
         """() {
         given:
@@ -64,7 +64,7 @@ class AccessLogSpec extends Specification {
     }
 
     def """
-        #createInAccessLog(valid userId, valid date)
+        createInAccessLog(valid userId, valid date)
         is parsed correctly
         """() {
         given:
@@ -84,7 +84,7 @@ class AccessLogSpec extends Specification {
     }
 
     def """
-        #createOutAccessLog(valid userId, valid date)
+        createOutAccessLog(valid userId, valid date)
         returns an access log with way = OUT
         """() {
         given:
@@ -103,7 +103,7 @@ class AccessLogSpec extends Specification {
     }
 
     def """
-        #createOutAccessLog(valid userId, valid date)
+        createOutAccessLog(valid userId, valid date)
         is parsed correctly
         """() {
         given:

@@ -13,7 +13,7 @@ import static org.mockserver.model.HttpResponse.response
 class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
 
     def """
-        #reportMissingUserId(null userId)
+        reportMissingUserId(null userId)
         throws an exception
         """() {
         given:
@@ -27,7 +27,7 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportMissingUserId(a valid userId)
+        reportMissingUserId(a valid userId)
         """() {
         given:
         def userId = UserId.fromQrCode("F1F2F013D4C9D00D0A")
@@ -73,7 +73,7 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportMissingUserId(a valid userId)
+        reportMissingUserId(a valid userId)
         token is invalid then refreshed
         no exception is thrown and the final query has a http code 201
         """() {
@@ -120,7 +120,7 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportMissingUserId(valid userId)
+        reportMissingUserId(valid userId)
         invalid credentials
         throws an exception
         """() {
@@ -136,7 +136,7 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportMissingUserId(valid userId)
+        reportMissingUserId(valid userId)
         api returns an error
         throws an exception
         """() {
@@ -160,7 +160,7 @@ class ParkingAccessReportMissingUserSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportMissingUserId(valid userId)
+        reportMissingUserId(valid userId)
         api is unreachable
         throws an exception
         """() {

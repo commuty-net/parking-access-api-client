@@ -12,7 +12,7 @@ class UserIdSpec extends Specification {
     def reader = new JsonSlurper()
 
     def """
-        #fromEmail(invalid email)
+        fromEmail(invalid email)
         throws an exception
         """() {
         when:
@@ -29,7 +29,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromEmail(valid string)
+        fromEmail(valid string)
         returns an user with UserIdType == EMAIL
         """() {
         given:
@@ -45,7 +45,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromEmail(valid string)
+        fromEmail(valid string)
         is parsed correctly
         """() {
         given:
@@ -63,7 +63,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromLicensePlate(valid string)
+        fromLicensePlate(valid string)
         returns an user with UserIdType == LICENSE_PLATE
         """() {
         given:
@@ -79,7 +79,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromLicensePlate(valid string)
+        fromLicensePlate(valid string)
         is parsed correctly
         """() {
         given:
@@ -97,7 +97,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromIdentificationNumber(valid string)
+        fromIdentificationNumber(valid string)
         returns an user with UserIdType == IDENTIFICATION_NUMBER
         """() {
         given:
@@ -113,7 +113,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromIdentificationNumber(valid string)
+        fromIdentificationNumber(valid string)
         is parsed correctly
         """() {
         given:
@@ -131,7 +131,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromQrCode(valid string)
+        fromQrCode(valid string)
         returns an user with UserIdType == QR_CODE
         """() {
         given:
@@ -147,7 +147,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromQrCode(valid string)
+        fromQrCode(valid string)
         is parsed correctly
         """() {
         given:
@@ -165,7 +165,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromBadgeNumber(valid string)
+        fromBadgeNumber(valid string)
         returns an user with UserIdType == BADGE_NUMBER
         """() {
         given:
@@ -181,7 +181,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromBadgeNumber(valid string)
+        fromBadgeNumber(valid string)
         is parsed correctly
         """() {
         given:
@@ -199,7 +199,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromCardholderId(valid string)
+        fromCardholderId(valid string)
         returns an user with UserIdType == CARDHOLDER_ID
         """() {
         given:
@@ -215,7 +215,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromCardholderId(valid string)
+        fromCardholderId(valid string)
         is parsed correctly
         """() {
         given:
@@ -233,7 +233,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromPinCode(valid string)
+        fromPinCode(valid string)
         returns an user with UserIdType == PIN_CODE
         """() {
         given:
@@ -249,7 +249,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromPinCode(valid string)
+        fromPinCode(valid string)
         is parsed correctly
         """() {
         given:
@@ -267,7 +267,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromWim64EncodedLicensePlate(valid string)
+        fromWim64EncodedLicensePlate(valid string)
         returns an user with UserIdType == LICENSE_PLATE_WIM64
         """() {
         given:
@@ -283,7 +283,7 @@ class UserIdSpec extends Specification {
     }
 
     def """
-        #fromWim64EncodedLicensePlate(valid string)
+        fromWim64EncodedLicensePlate(valid string)
         is parsed correctly
         """() {
         given:

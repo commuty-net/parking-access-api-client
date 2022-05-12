@@ -98,7 +98,7 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
         thrown(IllegalArgumentException)
     }
 
-    def "#verifySingle(unknown parking site, unknown user) returns false"() {
+    def "verifySingle(unknown parking site, unknown user) returns false"() {
         given:
         mockVerificationRoutes()
 
@@ -110,7 +110,7 @@ class ParkingAccessVerifySingleSpec extends RestWithAuthSpec {
     }
 
     def """
-        #verifySingle(known parking site, unknown user)
+        verifySingle(known parking site, unknown user)
         returns false
         """() {
         given:

@@ -8,7 +8,7 @@ class ConfigurationSpec extends Specification {
     @Shared String defaultHost = "https://parking-access.commuty.net"
 
     def """
-        #buildDefault(String, String)
+        buildDefault(String, String)
         is valid
         """() {
         given:
@@ -26,7 +26,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #buildDefault(null username, null password)
+        buildDefault(null username, null password)
         throws an exception
         """() {
         given:
@@ -41,7 +41,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #withHost(invalid host)
+        withHost(invalid host)
         throws an exception
         """() {
         when:
@@ -58,7 +58,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #withHost(invalid host)
+        withHost(invalid host)
         is valid
         """() {
         given:
@@ -73,7 +73,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #withCredentials(invalid credentials)
+        withCredentials(invalid credentials)
         throws an exception
         """() {
         when:
@@ -92,7 +92,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #withCredentials(valid credentials)
+        withCredentials(valid credentials)
         is valid
         """() {
         when:
@@ -109,7 +109,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #withProxy(null proxy)
+        withProxy(null proxy)
         throws an exception
         """() {
         when:
@@ -120,7 +120,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #build() called alone
+        build() called alone
         throws an exception
         """() {
         when:
@@ -131,7 +131,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #build()
+        build()
         withHost not called
         builds with the default host
         is valid
@@ -150,7 +150,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #build()
+        build()
         withCredentials not called
         throws an exception
         """() {
@@ -165,7 +165,7 @@ class ConfigurationSpec extends Specification {
     }
 
     def """
-        #build()
+        build()
         withCredentials and withHost called
         isValid
         """() {

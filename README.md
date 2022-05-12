@@ -279,7 +279,7 @@ public class Example {
 
 ## Development
 
-Build with AdoptOpenJDK 11
+Build with JDK Temurin 17
 
 ### Release
 

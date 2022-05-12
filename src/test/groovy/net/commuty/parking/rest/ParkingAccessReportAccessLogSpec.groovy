@@ -32,7 +32,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportAccessLog(null parkingSiteId, null Accesses)
+        reportAccessLog(null parkingSiteId, null Accesses)
         throws an error
         """() {
         given:
@@ -47,7 +47,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportAccessLog(valid parkingSiteId, null Accesses)
+        reportAccessLog(valid parkingSiteId, null Accesses)
         throws an error
         """() {
         given:
@@ -62,7 +62,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportAccessLog(valid parkingSiteId, empty Accesses)
+        reportAccessLog(valid parkingSiteId, empty Accesses)
         throws an error
         """() {
         given:
@@ -77,7 +77,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportAccessLog(valid parkingSiteId, one valid access Log)
+        reportAccessLog(valid parkingSiteId, one valid access Log)
         has a correct body
         returns a valid log id
         """() {
@@ -117,7 +117,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportAccessLog(valid parkingSiteId, one valid access Log)
+        reportAccessLog(valid parkingSiteId, one valid access Log)
         has a correct body
         token is invalid then refreshed
         no exception is thrown and the final query has a http code 201
@@ -153,7 +153,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportAccessLog(valid parkingSiteId, valid Accesses)
+        reportAccessLog(valid parkingSiteId, valid Accesses)
         credentials are invalid
         throws an error
         """() {
@@ -171,7 +171,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportAccessLog(valid parkingSiteId, valid Accesses)
+        reportAccessLog(valid parkingSiteId, valid Accesses)
         api returns an error (broken api)
         throws an error
         """() {
@@ -197,7 +197,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
     }
 
     def """
-        #reportAccessLog(valid parkingSiteId, valid Accesses)
+        reportAccessLog(valid parkingSiteId, valid Accesses)
         api is not reachable
         throws an error
         """() {

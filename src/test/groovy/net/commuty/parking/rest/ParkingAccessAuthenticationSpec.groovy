@@ -28,7 +28,7 @@ class ParkingAccessAuthenticationSpec extends Specification {
     }
 
     def """
-        #authenticate()
+        authenticate()
         wrong credentials
         throws an exception
         """() {
@@ -54,7 +54,7 @@ class ParkingAccessAuthenticationSpec extends Specification {
     }
 
     def """
-        #authenticate()
+        authenticate()
         with correct credentials
         returns a token
         """() {

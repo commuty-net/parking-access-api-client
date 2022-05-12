@@ -22,7 +22,7 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listParkingSpots()
+        listParkingSpots()
         no results are expected
         returns an empty list
         """() {
@@ -48,7 +48,7 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
     }
 
     def """
-        #listParkingSpots()
+        listParkingSpots()
         three spots expected
         returns a list of three spots
         """() {

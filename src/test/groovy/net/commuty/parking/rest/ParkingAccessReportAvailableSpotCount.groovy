@@ -12,7 +12,7 @@ import static org.mockserver.model.HttpResponse.response
 class ParkingAccessReportAvailableSpotCount extends RestWithAuthSpec {
 
     def """
-        #reportAvailableSpotCount(null parkingSiteId)
+        reportAvailableSpotCount(null parkingSiteId)
         throws an exception
         """() {
         given:
@@ -28,7 +28,7 @@ class ParkingAccessReportAvailableSpotCount extends RestWithAuthSpec {
     }
 
     def """
-        #reportAvailableSpotCount(empty parkingSiteId)
+        reportAvailableSpotCount(empty parkingSiteId)
         throws an exception
         """() {
         given:
@@ -44,7 +44,7 @@ class ParkingAccessReportAvailableSpotCount extends RestWithAuthSpec {
     }
 
     def """
-        #reportAvailableSpotCount(valid parkingSiteId, count, null total)
+        reportAvailableSpotCount(valid parkingSiteId, count, null total)
         """() {
         given:
         def parkingSiteId = "ABCD"
@@ -81,7 +81,7 @@ class ParkingAccessReportAvailableSpotCount extends RestWithAuthSpec {
     }
 
     def """
-        #reportAvailableSpotCount(valid parkingSiteId, count, total)
+        reportAvailableSpotCount(valid parkingSiteId, count, total)
         """() {
         given:
         def parkingSiteId = "ABCD"
@@ -119,7 +119,7 @@ class ParkingAccessReportAvailableSpotCount extends RestWithAuthSpec {
     // --------
 
     def """
-        #reportAvailableSpotCount(valid parkingSiteId, count, total)
+        reportAvailableSpotCount(valid parkingSiteId, count, total)
         token is invalid then refreshed
         no exception is thrown and the final query has a http code 201
         """() {
@@ -169,7 +169,7 @@ class ParkingAccessReportAvailableSpotCount extends RestWithAuthSpec {
     }
 
     def """
-        #reportAvailableSpotCount(valid parkingSiteId, count, total)
+        reportAvailableSpotCount(valid parkingSiteId, count, total)
         invalid credentials
         throws an exception
         """() {
@@ -187,7 +187,7 @@ class ParkingAccessReportAvailableSpotCount extends RestWithAuthSpec {
     }
 
     def """
-        #reportAvailableSpotCount(valid parkingSiteId, count, total)
+        reportAvailableSpotCount(valid parkingSiteId, count, total)
         api returns an error
         throws an exception
         """() {
@@ -213,7 +213,7 @@ class ParkingAccessReportAvailableSpotCount extends RestWithAuthSpec {
     }
 
     def """
-        #reportAvailableSpotCount(valid parkingSiteId, count, total)
+        reportAvailableSpotCount(valid parkingSiteId, count, total)
         api is unreachable
         throws an exception
         """() {
