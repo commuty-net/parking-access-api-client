@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] 2022-15-12
+
+* Expose and make connection timeout and request timeout configurable
+
 ## [2.3.2] 2021-10-21
 
 * Support for UserIdType `LICENSE_PLATE_WIM26_AS_DECIMAL_CODE` and `LICENSE_PLATE_WIM26_AS_FACILITY_AND_ID_CODE`

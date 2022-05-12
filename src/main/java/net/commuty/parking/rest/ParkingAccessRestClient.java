@@ -47,7 +47,11 @@ public class ParkingAccessRestClient implements ParkingAccess {
 
     public ParkingAccessRestClient(Configuration configuration) {
         this.configuration = configuration;
-        this.httpClient = new HttpClient(configuration.getHost(), JsonMapper.create(), configuration.getProxy());
+        this.httpClient = new HttpClient(configuration.getHost(),
+                JsonMapper.create(),
+                configuration.getProxy(),
+                configuration.getTimeout().getConnectionTimeoutInMs(),
+                configuration.getTimeout().getRequestTimeoutInMs());
     }
 
     @Override

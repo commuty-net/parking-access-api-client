@@ -27,14 +27,14 @@ To use this library in your project, you can do it via a maven dependency:
 <dependency>
     <groupId>net.commuty</groupId>
     <artifactId>parking-access-api-client</artifactId>
-    <version>2.3.2</version>
+    <version>2.4.0</version>
 </dependency>
 ```
 
 or via a gradle:
 
 ```
-implementation "net.commuty:parking-access-api-client:2.3.2"
+implementation "net.commuty:parking-access-api-client:2.4.0"
 ```
 
 ## Usage
@@ -75,6 +75,7 @@ public class Example {
                 .create()
                 .withCredentials(username, password)
                 .withRetryStrategy(5, 500) // 5 retries (in case of a network error , wait during 500ms between each attempt
+                .withTimeout(5000, 10000) // wait 5 seconds to get a connection before failing, wait 10 seconds for a response before failing
                 .withHost(host)
                 .withProxy(proxy)
                 .build()
