@@ -40,11 +40,6 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
         then:
         spots != null
         spots.isEmpty()
-//        mockServer.verify(
-//                request()
-//                        .withMethod("GET")
-//                        .withPath("/v2/parking-sites/"+parkingSiteId.toString()+"/parkings-spots")
-//        )
     }
 
     def """
@@ -62,21 +57,30 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
                       "name": "-2/44",
                       "displayName": "Charleroi -2/44",
                       "evCharger": false,
-                      "visitorSpot": false
+                      "visitorSpot": false,
+                      "forCarpoolersOnly": false,
+                      "forDisabled": false,
+                      "large": false
                     },
                     {
                       "id": "869f4520-943e-40de-a38d-5b3d7be5bdb3",
                       "name": "-2/31",
                       "displayName": "Charleroi -2/31",
                       "evCharger": true,
-                      "visitorSpot": false
+                      "visitorSpot": false,
+                      "forCarpoolersOnly": false,
+                      "forDisabled": true,
+                      "large": false
                     },
                     {
                       "id": "87437c97-ff2e-44cb-948f-46570ea0d63f",
                       "name": "-2/17",
                       "displayName": "Charleroi -2/17",
                       "evCharger": false,
-                      "visitorSpot": true
+                      "visitorSpot": true,
+                      "forCarpoolersOnly": true,
+                      "forDisabled": false,
+                      "large": true
                     }
                 ]
             }
@@ -94,6 +98,9 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
             displayName == "Charleroi -2/44"
             !evCharger
             !visitorSpot
+            !forCarpoolersOnly
+            !forDisabled
+            !large
         }
         with(spots.get(1)) {
             id == UUID.fromString("869f4520-943e-40de-a38d-5b3d7be5bdb3")
@@ -101,6 +108,9 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
             displayName == "Charleroi -2/31"
             evCharger
             !visitorSpot
+            !forCarpoolersOnly
+            forDisabled
+            !large
         }
         with(spots.get(2)) {
             id == UUID.fromString("87437c97-ff2e-44cb-948f-46570ea0d63f")
@@ -108,11 +118,9 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
             displayName == "Charleroi -2/17"
             !evCharger
             visitorSpot
+            forCarpoolersOnly
+            !forDisabled
+            large
         }
-//        mockServer.verify(
-//                request()
-//                        .withMethod("GET")
-//                        .withPath("/v2/parking-sites/"+parkingSiteId+"/parkings-spots")
-//        )
     }
 }

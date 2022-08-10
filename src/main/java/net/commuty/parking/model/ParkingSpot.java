@@ -14,18 +14,27 @@ public class ParkingSpot {
     private final String displayName;
     private final boolean evCharger;
     private final boolean visitorSpot;
+    private final boolean forCarpoolersOnly;
+    private final boolean forDisabled;
+    private final boolean large;
 
     @JsonCreator
     public ParkingSpot(@JsonProperty("id") UUID id,
                        @JsonProperty("name") String name,
                        @JsonProperty("displayName") String displayName,
                        @JsonProperty("evCharger") boolean evCharger,
-                       @JsonProperty("visitorSpot") boolean visitorSpot) {
+                       @JsonProperty("visitorSpot") boolean visitorSpot,
+                       @JsonProperty("forCarpoolersOnly") boolean forCarpoolersOnly,
+                       @JsonProperty("forDisabled") boolean forDisabled,
+                       @JsonProperty("large") boolean large) {
         this.id = id;
         this.name = name;
         this.displayName = displayName;
         this.evCharger = evCharger;
         this.visitorSpot = visitorSpot;
+        this.forCarpoolersOnly = forCarpoolersOnly;
+        this.forDisabled = forDisabled;
+        this.large = large;
     }
 
     @JsonProperty("id")
@@ -63,5 +72,29 @@ public class ParkingSpot {
     @JsonProperty("visitorSpot")
     public boolean isVisitorSpot() {
         return visitorSpot;
+    }
+
+    /**
+     * @return whether this parking spot is dedicated to carpoolers or not.
+     */
+    @JsonProperty("forCarpoolersOnly")
+    public boolean isForCarpoolersOnly() {
+        return forCarpoolersOnly;
+    }
+
+    /**
+     * @return whether this parking spot is dedicated to people with reduced mobility or not.
+     */
+    @JsonProperty("forDisabled")
+    public boolean isForDisabled() {
+        return forDisabled;
+    }
+
+    /**
+     * @return whether this parking spot is large or not.
+     */
+    @JsonProperty("large")
+    public boolean isLarge() {
+        return large;
     }
 }
