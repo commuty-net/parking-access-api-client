@@ -11,7 +11,6 @@ import java.net.Proxy;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import static org.slf4j.LoggerFactory.getLogger;
