@@ -174,6 +174,18 @@ public class AccessRight {
                 .orElse(null);
     }
 
+    /**
+     * <code>true</code> when this access right is granted for a visitor. <code>false</code> otherwise.
+     * The boolean value is <code>null</code> when this attribute is not requested.
+     */
+    @JsonIgnore
+    public Boolean isVisitor() {
+        return of(attributes)
+                .map(attr -> attr.get(IS_VISITOR))
+                .map(Boolean::parseBoolean)
+                .orElse(null);
+    }
+
     @Override
     public String toString() {
         return "AccessRight{" +

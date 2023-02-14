@@ -37,7 +37,13 @@ public enum AccessRightAttributeName {
      * This display name is used for end-user. It can be the <code>parkingSiteName</code>parkingSiteName itself or another name (e.g. a zone name, a level name, etc).
      */
     @JsonProperty("parkingSpotDisplayName")
-    PARKING_SPOT_DISPLAY_NAME("parkingSpotDisplayName")
+    PARKING_SPOT_DISPLAY_NAME("parkingSpotDisplayName"),
+
+    /**
+     * <code>true</code> when this access right is granted for a visitor. <code>false</code> otherwise.
+     */
+    @JsonProperty("isVisitor")
+    IS_VISITOR("isVisitor")
     ;
 
     private final String attributeName;
