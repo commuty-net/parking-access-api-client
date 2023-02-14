@@ -208,7 +208,8 @@ class AccessRightSpec extends Specification {
                         "reason": "permanentAccess",
                         "parkingSpotId": "e71a3670-d1f7-4095-8e1d-a19003141411",
                         "parkingSpotName": "P1234",
-                        "parkingSpotDisplayName": "Zone B"
+                        "parkingSpotDisplayName": "Zone B",
+                        "isVisitor": false
                     }
                 }"""
         when:
@@ -223,12 +224,12 @@ class AccessRightSpec extends Specification {
         right.granted
         right.startTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
         right.endTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
-        right.attributes.size() == 5
+        right.attributes.size() == 6
         right.id == UUID.fromString("4850b369-729a-4623-89ab-be1a61b15920")
         right.reason == PERMANENT_ACCESS
         right.parkingSpotId == UUID.fromString("e71a3670-d1f7-4095-8e1d-a19003141411")
         right.parkingSpotName == "P1234"
         right.parkingSpotDisplayName == "Zone B"
+        !right.visitor
     }
-
 }
