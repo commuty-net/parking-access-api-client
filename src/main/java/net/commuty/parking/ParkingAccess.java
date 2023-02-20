@@ -72,13 +72,15 @@ public interface ParkingAccess {
      * @param unreadOnly Whether you want to retrieve unread only accesses (<code>true</code>) or all accesses (<code>false</code>). If <code>unreadOnly</code> is null, all the accesses (read and unread) will be retrieved.
      * @param dryRun Whether you want to prevent to flag the retrieve accesses as "read" (<code>true</code>) or not (<code>false</code>). If <code>unreadOnly</code> is null, all the accesses retrieved will be flagged as "read".
      * @param createdAfter Only retrieve events created after this {@link LocalDateTime}. Represents a <code>UTC</code> timestamp. If <code>createdAfter</code> is null, all the accesses will be retrieved.
+     * @param granted If set to `true`, only the access rights that are granted will be returned. If set to `false`, only the access rights that are denied will be returned. If <code>granted</code> is null, all the accesses will be retrieved.
+     * @param parkingSiteId If set, only the access rights associated with the provided <code>parkingSiteId</code> (case-sensitive) will be returned. If <code>parkingSiteId</code> is null or blank, all the accesses will be retrieved.
      * @param includeAttributes Whether you want to fetch extra attributes about each access. The possible values are listed in {@link AccessRightAttributeName}.
      * @return One or more {@link AccessRight}. Each user known by Commuty will at least have one access (granted or not). A user can have multiple accesses.
      * @throws CredentialsException Your username or password is invalid.
      * @throws HttpRequestException The query was sent to the api but the status is unsuccessful (HTTP status code &ge; 400). See {@link HttpRequestException} for more details.
      * @throws HttpClientException The query did not reached the api, i.e. there was a network issue.
      */
-    Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly, Boolean dryRun, LocalDateTime createdAfter, Set<AccessRightAttributeName> includeAttributes) throws CredentialsException, HttpRequestException, HttpClientException;
+    Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly, Boolean dryRun, LocalDateTime createdAfter, Boolean granted, String parkingSiteId, Set<AccessRightAttributeName> includeAttributes) throws CredentialsException, HttpRequestException, HttpClientException;
 
     /**
      * <p>Report to Commuty one or more {@link AccessLog} of users that entered/exited the parking site.</p>
