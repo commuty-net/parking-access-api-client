@@ -52,7 +52,16 @@ public enum AccessRightReason {
      * The access is granted.
      */
     @JsonProperty("weekendAccess")
-    WEEKEND_ACCESS("weekendAccess");
+    WEEKEND_ACCESS("weekendAccess"),
+
+    /**
+     * If a parking site is configured to always give access,
+     * users will be authorized to enter a site anytime, even if they didn't
+     * requested a parking spot.<br />
+     * The access is granted.
+     */
+    @JsonProperty("freeAccess")
+    FREE_ACCESS("freeAccess");
 
     private final String reasonName;
 
