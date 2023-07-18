@@ -53,6 +53,7 @@ class AccessRightSpec extends Specification {
         right.attributes.isEmpty()
         right.id == null
         right.reason == null
+        right.subjectId == null
 
     }
 
@@ -99,6 +100,7 @@ class AccessRightSpec extends Specification {
         right.attributes.isEmpty()
         right.id == null
         right.reason == null
+        right.subjectId == null
     }
 
     def """
@@ -139,6 +141,7 @@ class AccessRightSpec extends Specification {
         right.attributes.isEmpty()
         right.id == null
         right.reason == null
+        right.subjectId == null
     }
 
     def """
@@ -189,6 +192,7 @@ class AccessRightSpec extends Specification {
         right.attributes.size() == 2
         right.id == UUID.fromString("2696420b-1a2f-42c4-b9d5-2e05c5fc877c")
         right.reason == NONE
+        right.subjectId == null
     }
 
     def "parse a message with extra attributes  is parsed correctly"() {
@@ -209,7 +213,8 @@ class AccessRightSpec extends Specification {
                         "parkingSpotId": "e71a3670-d1f7-4095-8e1d-a19003141411",
                         "parkingSpotName": "P1234",
                         "parkingSpotDisplayName": "Zone B",
-                        "isVisitor": false
+                        "isVisitor": false,
+                        "subjectId": "a3d076e2-83dc-47aa-91b4-eaa1cad723dd"
                     }
                 }"""
         when:
@@ -224,12 +229,13 @@ class AccessRightSpec extends Specification {
         right.granted
         right.startTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
         right.endTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
-        right.attributes.size() == 6
+        right.attributes.size() == 7
         right.id == UUID.fromString("4850b369-729a-4623-89ab-be1a61b15920")
         right.reason == PERMANENT_ACCESS
         right.parkingSpotId == UUID.fromString("e71a3670-d1f7-4095-8e1d-a19003141411")
         right.parkingSpotName == "P1234"
         right.parkingSpotDisplayName == "Zone B"
         !right.visitor
+        right.subjectId == UUID.fromString("a3d076e2-83dc-47aa-91b4-eaa1cad723dd")
     }
 }

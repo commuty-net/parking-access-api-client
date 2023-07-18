@@ -186,6 +186,17 @@ public class AccessRight {
                 .orElse(null);
     }
 
+    /**
+     * @return A unique identifier identifying the actual "subject" whose the access right belongs to. This can be the ID of a user, a visitor or an access exception.
+     */
+    @JsonIgnore
+    public UUID getSubjectId() {
+        return of(attributes)
+                .map(attr -> attr.get(SUBJECT_ID))
+                .map(UUID::fromString)
+                .orElse(null);
+    }
+
     @Override
     public String toString() {
         return "AccessRight{" +

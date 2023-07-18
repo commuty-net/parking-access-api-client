@@ -27,14 +27,14 @@ To use this library in your project, you can do it via a maven dependency:
 <dependency>
     <groupId>net.commuty</groupId>
     <artifactId>parking-access-api-client</artifactId>
-    <version>2.5.4</version>
+    <version>2.5.5</version>
 </dependency>
 ```
 
 or via a gradle:
 
 ```
-implementation "net.commuty:parking-access-api-client:2.5.4"
+implementation "net.commuty:parking-access-api-client:2.5.5"
 ```
 
 ## Usage

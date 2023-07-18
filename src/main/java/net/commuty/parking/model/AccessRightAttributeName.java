@@ -43,7 +43,13 @@ public enum AccessRightAttributeName {
      * <code>true</code> when this access right is granted for a visitor. <code>false</code> otherwise.
      */
     @JsonProperty("isVisitor")
-    IS_VISITOR("isVisitor")
+    IS_VISITOR("isVisitor"),
+
+    /**
+     * A unique identifier identifying the actual "subject" whose the access right belongs to. This can be the ID of a user, a visitor or an access exception.
+     */
+    @JsonProperty("subjectId")
+    SUBJECT_ID("subjectId")
     ;
 
     private final String attributeName;
