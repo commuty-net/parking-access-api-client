@@ -85,8 +85,8 @@ sonarqube {
     properties {
         property "sonar.host.url", getenv("SONARQUBE_URL")
         property "sonar.login", getenv("SONARQUBE_TOKEN")
-        property "sonar.gitlab.commit_sha", getenv("CI_BUILD_REF")
-        property "sonar.gitlab.ref_name", getenv("CI_BUILD_REF_NAME")
+        property "sonar.gitlab.commit_sha", getenv("CI_COMMIT_SHA")
+        property "sonar.gitlab.ref_name", getenv("CI_COMMIT_REF_NAME")
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.test.exclusions", "**/src/test/**/*,**/src/main/java/module-info.java"
         property "sonar.verbose", "false"
