@@ -30,6 +30,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
     public static final String ACCESS_REQUESTS_URL = "/v2/parking-sites/%s/access-requests";
     public static final String ACCESS_RIGHTS_URL = "/v2/access-rights";
     public static final String PARKING_SPOTS_RIGHTS_URL = "/v2/parking-sites/%s/parking-spots";
+    public static final String APPLICATION_LOGS_URL = "/v2/application-logs";
     public static final String REPORT_ACCESS_URL = "/v2/parking-sites/%s/access-logs";
     public static final String REPORT_MISSING_IDS_URL = "/v2/missing-user-ids";
     public static final String REPORT_AVAILABLE_SPOTS_COUNT_URL = "/v2/parking-sites/%s/counts";
@@ -197,6 +198,16 @@ public class ParkingAccessRestClient implements ParkingAccess {
         LOG.debug("List parking spot for parkingSiteId={}", parkingSiteId);
         String path = String.format(PARKING_SPOTS_RIGHTS_URL, parkingSiteId);
         return withRetry(() -> httpClient.makeGetRequest(path, token, emptyMap(), ParkingSpotResponse.class).getParkingSpots());
+    }
+
+    @Override
+    public UUID reportApplicationLog(ApplicationLog log) throws CredentialsException, HttpRequestException, HttpClientException {
+        if (log == null) {
+            throw new IllegalArgumentException("log must not be null");
+        }
+
+        LOG.debug("Report Application log to Commuty");
+        return withRetry(() -> httpClient.makePostRequest(APPLICATION_LOGS_URL, token, log, ApplicationLogResponse.class).getLogId());
     }
 
     private <T> T withRetry(Callable<T> callable) throws HttpClientException, CredentialsException, HttpRequestException {

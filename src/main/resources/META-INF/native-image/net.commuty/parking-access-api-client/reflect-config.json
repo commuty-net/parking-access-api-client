@@ -72,6 +72,22 @@
     "allDeclaredFields" : true,
     "allPublicFields" : true
   },{
+    "name" : "net.commuty.parking.model.ApplicationLog",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },{
+    "name" : "net.commuty.parking.model.ApplicationLogLevel",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },{
     "name" : "net.commuty.parking.model.AccessRightReason",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
@@ -97,6 +113,14 @@
     "allPublicFields" : true
   },{
     "name" : "net.commuty.parking.rest.AccessLogResponse",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },{
+    "name" : "net.commuty.parking.rest.ApplicationLogResponse",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,
