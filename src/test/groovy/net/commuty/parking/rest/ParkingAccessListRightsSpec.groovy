@@ -220,7 +220,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, null, null, null, null, [ID] as Set)
+        parkingAccess.listAccessRights(day, unreadOnly, null, null, null, null, null, [ID] as Set)
 
         then:
         mockServer.verify(
@@ -242,7 +242,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, true, null, null, null, [REASON] as Set)
+        parkingAccess.listAccessRights(day, unreadOnly, true, null, null, null, null, [REASON] as Set)
 
         then:
         mockServer.verify(
@@ -265,7 +265,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, false, null,null, null, [ID, REASON] as Set)
+        parkingAccess.listAccessRights(day, unreadOnly, false, null,null, null, null, [ID, REASON] as Set)
 
         then:
         mockServer.verify(
@@ -288,7 +288,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, true, null,null, null, [REASON] as Set)
+        parkingAccess.listAccessRights(day, unreadOnly, true, null,null, null, null, [REASON] as Set)
 
         then:
         mockServer.verify(
@@ -314,7 +314,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, dryRun, createdAfter, null, null, includeAttributes as Set)
+        parkingAccess.listAccessRights(day, unreadOnly, dryRun, createdAfter, null, null, null, includeAttributes as Set)
 
         then:
         mockServer.verify(
@@ -343,7 +343,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, dryRun, createdAfter, true, null, includeAttributes as Set)
+        parkingAccess.listAccessRights(day, unreadOnly, dryRun, createdAfter, true, null, null, includeAttributes as Set)
 
         then:
         mockServer.verify(
@@ -360,7 +360,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
     }
 
     def """
-        listAccessRights(a valid date, unreadOnly = false, dryRun = false, createdAfter = null, granted = false, parkingSiteId = 'acme' includeAttributes = ID, REASON)
+        listAccessRights(a valid date, unreadOnly = false, dryRun = false, createdAfter = null, granted = false, parkingSiteId = 'acme', subjectId='ba164c2e-bdeb-4ded-bd8d-0bd455ed2a6e', includeAttributes = ID, REASON)
         query all accesses for a specific day
         the query is correct
         """() {
@@ -371,10 +371,11 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         def includeAttributes = [ID, REASON]
         def day = LocalDate.of(2019, 10, 21)
         def parkingSiteId = "acme"
+        def subjectId = UUID.fromString("ba164c2e-bdeb-4ded-bd8d-0bd455ed2a6e")
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, dryRun, createdAfter, false, parkingSiteId, includeAttributes as Set)
+        parkingAccess.listAccessRights(day, unreadOnly, dryRun, createdAfter, false, parkingSiteId, subjectId, includeAttributes as Set)
 
         then:
         mockServer.verify(
@@ -387,6 +388,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
                         .withQueryStringParameter("createdAfter", "2021-02-22T13:37:42Z")
                         .withQueryStringParameter("granted", "false")
                         .withQueryStringParameter("parkingSiteId", parkingSiteId)
+                        .withQueryStringParameter("subjectId", subjectId.toString())
                         .withQueryStringParameter("includeAttributes", "id", "reason")
         )
     }
@@ -404,7 +406,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockDefaultListRightRoute()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, null, null, null, null, [ID] as Set)
+        parkingAccess.listAccessRights(day, unreadOnly, null, null, null, null, null, [ID] as Set)
 
         then:
         mockServer.verify(
@@ -434,7 +436,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         authReturnsInvalidCredentials()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, false, null, null, null, null)
+        parkingAccess.listAccessRights(day, unreadOnly, false, null, null, null, null, null)
 
         then:
         thrown(CredentialsException)
@@ -459,7 +461,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         )
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, false, null,null, null, [REASON, ID] as Set)
+        parkingAccess.listAccessRights(day, unreadOnly, false, null,null, null, null, [REASON, ID] as Set)
 
         then:
         thrown(HttpRequestException)
@@ -476,7 +478,7 @@ class ParkingAccessListRightsSpec extends RestWithAuthSpec {
         mockServer.stop()
 
         when:
-        parkingAccess.listAccessRights(day, unreadOnly, false, null, null,null, null)
+        parkingAccess.listAccessRights(day, unreadOnly, false, null, null,null, null, null)
 
         then:
         thrown(HttpClientException)

@@ -41,6 +41,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
     public static final String CREATED_AFTER_PARAM = "createdAfter";
     public static final String GRANTED_PARAM = "granted";
     public static final String PARKING_SITE_ID_PARAM = "parkingSiteId";
+    public static final String SUBJECT_ID_PARAM = "subjectId";
     public static final String INCLUDE_ATTRIBUTES_PARAM = "includeAttributes";
     private static final ZoneId UTC = ZoneId.of("UTC");
 
@@ -89,12 +90,12 @@ public class ParkingAccessRestClient implements ParkingAccess {
 
     @Override
     public Collection<AccessRight> listAccessRightsForToday() throws CredentialsException, HttpRequestException, HttpClientException {
-        return listAccessRights(null, null, null, null, null, null, emptySet());
+        return listAccessRights(null, null, null, null, null, null, null, emptySet());
     }
 
     @Override
     public Collection<AccessRight> listAccessRightsForToday(boolean unreadOnly) throws CredentialsException, HttpRequestException, HttpClientException {
-        return listAccessRights(null, unreadOnly, null, null, null, null, emptySet());
+        return listAccessRights(null, unreadOnly, null, null, null, null, null, emptySet());
     }
 
     @Override
@@ -104,9 +105,10 @@ public class ParkingAccessRestClient implements ParkingAccess {
                                                     LocalDateTime createdAfter,
                                                     Boolean granted,
                                                     String parkingSiteId,
+                                                    UUID subjectId,
                                                     Set<AccessRightAttributeName> includeAttributes) throws CredentialsException, HttpRequestException, HttpClientException {
         LOG.debug("Check the presence of Access rights");
-        Map<String, Collection<String>> parameters = createListAccessRightQueryParameters(date, unreadOnly, dryRun, createdAfter, granted, parkingSiteId, includeAttributes);
+        Map<String, Collection<String>> parameters = createListAccessRightQueryParameters(date, unreadOnly, dryRun, createdAfter, granted, parkingSiteId, subjectId, includeAttributes);
         return withRetry(() -> httpClient.makeGetRequest(ACCESS_RIGHTS_URL, token, parameters, AccessRightResponse.class).getAccessRights());
     }
 
@@ -116,6 +118,7 @@ public class ParkingAccessRestClient implements ParkingAccess {
                                                                                  LocalDateTime createdAfter,
                                                                                  Boolean granted,
                                                                                  String parkingSiteId,
+                                                                                 UUID subjectId,
                                                                                  Set<AccessRightAttributeName> includeAttributes) {
         Map<String, Collection<String>> parameters = new HashMap<>();
         if (date != null) {
@@ -143,6 +146,11 @@ public class ParkingAccessRestClient implements ParkingAccess {
         if (sanitizedParkingSiteId != null && !sanitizedParkingSiteId.isEmpty()) {
             LOG.debug("parkingSiteId is set to {}", sanitizedParkingSiteId);
             parameters.put(PARKING_SITE_ID_PARAM, singletonList(sanitizedParkingSiteId));
+        }
+
+        if (subjectId != null) {
+            LOG.debug("subjectId is set to {}", subjectId);
+            parameters.put(SUBJECT_ID_PARAM, singletonList(subjectId.toString()));
         }
 
         if (createdAfter != null) {

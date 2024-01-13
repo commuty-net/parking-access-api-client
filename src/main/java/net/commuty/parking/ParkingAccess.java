@@ -81,7 +81,14 @@ public interface ParkingAccess {
      * @throws HttpRequestException The query was sent to the api but the status is unsuccessful (HTTP status code &ge; 400). See {@link HttpRequestException} for more details.
      * @throws HttpClientException The query did not reached the api, i.e. there was a network issue.
      */
-    Collection<AccessRight> listAccessRights(LocalDate date, Boolean unreadOnly, Boolean dryRun, LocalDateTime createdAfter, Boolean granted, String parkingSiteId, Set<AccessRightAttributeName> includeAttributes) throws CredentialsException, HttpRequestException, HttpClientException;
+    Collection<AccessRight> listAccessRights(LocalDate date,
+                                             Boolean unreadOnly,
+                                             Boolean dryRun,
+                                             LocalDateTime createdAfter,
+                                             Boolean granted,
+                                             String parkingSiteId,
+                                             UUID subjectId,
+                                             Set<AccessRightAttributeName> includeAttributes) throws CredentialsException, HttpRequestException, HttpClientException;
 
     /**
      * <p>Report to Commuty one or more {@link AccessLog} of users that entered/exited the parking site.</p>
