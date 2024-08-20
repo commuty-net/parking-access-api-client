@@ -138,4 +138,16 @@ public class ApplicationLog {
             return text.substring(0, length);
         }
     }
+
+    @Override
+    public String toString() {
+        return "ApplicationLog{" +
+                "timestamp=" + timestamp +
+                ", level=" + level +
+                ", type='" + type + '\'' +
+                ", message='" + message + '\'' +
+                ", applicationId='" + applicationId + '\'' +
+                ", context=" + context +
+                '}';
+    }
 }

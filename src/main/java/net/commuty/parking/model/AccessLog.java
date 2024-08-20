@@ -151,4 +151,16 @@ public class AccessLog {
     public String getReason() {
         return reason;
     }
+
+    @Override
+    public String toString() {
+        return "AccessLog{" +
+                "userId='" + userId + '\'' +
+                ", userIdType=" + userIdType +
+                ", way=" + way +
+                ", at=" + at +
+                ", granted=" + granted +
+                ", reason='" + reason + '\'' +
+                '}';
+    }
 }

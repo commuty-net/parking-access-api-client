@@ -3,6 +3,7 @@ package net.commuty.parking.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -96,5 +97,36 @@ public class ParkingSpot {
     @JsonProperty("large")
     public boolean isLarge() {
         return large;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        } else if (!(other instanceof ParkingSpot)) {
+            return false;
+        } else {
+            ParkingSpot that = (ParkingSpot) other;
+            return Objects.equals(getId(), that.getId());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "ParkingSpot{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", evCharger=" + evCharger +
+                ", visitorSpot=" + visitorSpot +
+                ", forCarpoolersOnly=" + forCarpoolersOnly +
+                ", forDisabled=" + forDisabled +
+                ", large=" + large +
+                '}';
     }
 }

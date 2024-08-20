@@ -51,4 +51,13 @@ public class WebhookMessage {
     public WebhookMessageOperation getOperation() {
         return operation;
     }
+
+    @Override
+    public String toString() {
+        return "WebhookMessage{" +
+                "id=" + id +
+                ", accessRight=" + accessRight +
+                ", operation=" + operation +
+                '}';
+    }
 }

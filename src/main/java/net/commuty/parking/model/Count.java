@@ -33,4 +33,12 @@ public class Count {
     public Integer getTotal() {
         return total;
     }
+
+    @Override
+    public String toString() {
+        return "Count{" +
+                "count=" + count +
+                ", total=" + total +
+                '}';
+    }
 }

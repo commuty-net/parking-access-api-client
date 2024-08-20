@@ -26,4 +26,12 @@ public class WebhookMessageErrorResponse {
     public String getMessage() {
         return message;
     }
+
+    @Override
+    public String toString() {
+        return "WebhookMessageErrorResponse{" +
+                "reason='" + reason + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }
