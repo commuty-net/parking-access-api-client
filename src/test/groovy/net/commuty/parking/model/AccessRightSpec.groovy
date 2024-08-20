@@ -235,7 +235,7 @@ class AccessRightSpec extends Specification {
         right.parkingSpotId == UUID.fromString("e71a3670-d1f7-4095-8e1d-a19003141411")
         right.parkingSpotName == "P1234"
         right.parkingSpotDisplayName == "Zone B"
-        !right.visitor
+        !right.isVisitor()
         right.subjectId == UUID.fromString("a3d076e2-83dc-47aa-91b4-eaa1cad723dd")
     }
 }

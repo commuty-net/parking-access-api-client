@@ -31,7 +31,7 @@ dependencies {
 
     testImplementation (
             "org.spockframework:spock-core:$spockVersion",
-            "org.codehaus.groovy:groovy-all:$groovyVersion",
+            "org.apache.groovy:groovy-all:$groovyVersion",
             "org.mock-server:mockserver-netty:$mockServerVersion",
             "ch.qos.logback:logback-classic:$logbackVersion"
     )
@@ -81,7 +81,7 @@ javadoc {
     }
 }
 
-sonarqube {
+sonar {
     properties {
         property "sonar.host.url", getenv("SONARQUBE_URL")
         property "sonar.login", getenv("SONARQUBE_TOKEN")

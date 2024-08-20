@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Implement `equals/hashCode` on `ParkingSpot`
 * Implement `toString` on `AccessLog`, `ApplicationLog`, `Count`, `ParkingSpot`, `WebhookMessage` and `WebhookMessageErrorResponse`
+* Upgrade dependencies:
+  * Jackson from `2.16.1` to `2.17.2`
+  * Logback from `1.4.14` to `1.5.7`
+  * SLF4J from `2.0.9` to `2.0.16`
+  * Gradle from `8.5` to `8.9`
 
 ## [2.6.1] 2024-01-13
 
