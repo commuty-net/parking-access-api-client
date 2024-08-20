@@ -1,6 +1,6 @@
 package net.commuty.parking.rest
 
-import groovy.transform.CompileStatic
+
 import net.commuty.parking.http.CredentialsException
 import net.commuty.parking.http.HttpClientException
 import net.commuty.parking.http.HttpRequestException

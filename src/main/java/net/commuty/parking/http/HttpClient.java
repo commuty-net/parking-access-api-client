@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.URL;
+import java.net.*;
 import java.util.Collection;
 import java.util.Map;
 
@@ -51,8 +48,8 @@ public class HttpClient {
             HttpURLConnection connection = createGetConnection(url, token);
 
             return executeMethod(connection, type);
-        } catch (IOException e) {
-            LOG.trace("Unrecoverable issue when trying to build the HTTP Client");
+        } catch (IOException | URISyntaxException e) {
+            LOG.trace("Unrecoverable issue when trying to build the HTTP Client", e);
             throw new HttpClientException(e);
         }
     }
@@ -63,8 +60,8 @@ public class HttpClient {
             HttpURLConnection connection = createPostConnection(url, token);
             writeRequestBody(body, connection);
             return executeMethod(connection, type);
-        } catch (IOException e) {
-            LOG.trace("Unrecoverable issue when trying to build the HTTP Client");
+        } catch (IOException | URISyntaxException e) {
+            LOG.trace("Unrecoverable issue when trying to build the HTTP Client", e);
             throw new HttpClientException(e);
         }
     }
@@ -73,7 +70,7 @@ public class HttpClient {
         try (DataOutputStream payloadStream = new DataOutputStream(connection.getOutputStream())) {
             payloadStream.writeBytes(mapper.write(body));
         } catch (IOException e) {
-            LOG.trace("Unrecoverable issue when creating a message body for the HTTP Client");
+            LOG.trace("Unrecoverable issue when creating a message body for the HTTP Client", e);
             throw new HttpClientException(e);
         }
     }
@@ -113,12 +110,12 @@ public class HttpClient {
                 .collect(joining("&"));
     }
 
-    private URL buildUrl(String path) throws MalformedURLException {
+    private URL buildUrl(String path) throws MalformedURLException, URISyntaxException {
         return buildUrl(path, "");
     }
 
-    private URL buildUrl(String path, String queryParams) throws MalformedURLException {
-        return new URL(baseUrl, path + queryParams);
+    private URL buildUrl(String path, String queryParams) throws MalformedURLException, URISyntaxException {
+        return baseUrl.toURI().resolve(path + queryParams).toURL();
     }
 
     private HttpURLConnection createGetConnection(URL url, String token) throws IOException {

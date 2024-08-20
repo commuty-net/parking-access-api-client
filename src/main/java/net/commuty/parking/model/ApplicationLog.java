@@ -5,11 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.UUID;
-
-import static java.util.Optional.ofNullable;
-import static net.commuty.parking.model.AccessDirection.IN;
-import static net.commuty.parking.model.AccessDirection.OUT;
 
 /**
  * <p>The "ApplicationLog" serves as a structured representation of log data emitted by client applications utilizing this API.</p>

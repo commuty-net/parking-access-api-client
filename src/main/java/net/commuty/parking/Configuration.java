@@ -2,9 +2,7 @@ package net.commuty.parking;
 
 import net.commuty.parking.rest.ParkingAccessRestClient;
 
-import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.URL;
+import java.net.*;
 
 /**
  *<p>This will be your entry point to use the Rest client.</p>
@@ -216,8 +214,8 @@ public class Configuration {
 
         private URL toURL(String host) {
             try {
-                return new URL(host);
-            } catch (MalformedURLException e) {
+                return new URI(host).toURL();
+            } catch (MalformedURLException | URISyntaxException e) {
                 throw new IllegalArgumentException("The host provided is not a valid URL.");
             }
         }
