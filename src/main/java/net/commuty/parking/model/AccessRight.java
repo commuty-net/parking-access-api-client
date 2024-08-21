@@ -197,6 +197,16 @@ public class AccessRight {
                 .orElse(null);
     }
 
+    /**
+     * @return A label describing the "subject" whose the access right belongs to. This is usually the full name of a user, a visitor or an access exception.
+     */
+    @JsonIgnore
+    public String getSubjectLabel() {
+        return of(attributes)
+                .map(attr -> attr.get(SUBJECT_LABEL))
+                .orElse(null);
+    }
+
     @Override
     public String toString() {
         return "AccessRight{" +

@@ -49,7 +49,14 @@ public enum AccessRightAttributeName {
      * A unique identifier identifying the actual "subject" whose the access right belongs to. This can be the ID of a user, a visitor or an access exception.
      */
     @JsonProperty("subjectId")
-    SUBJECT_ID("subjectId")
+    SUBJECT_ID("subjectId"),
+
+    /**
+     * A label describing the "subject" whose the access right belongs to.
+     * This is usually the full name of a user, a visitor or an access exception.
+     */
+    @JsonProperty("subjectLabel")
+    SUBJECT_LABEL("subjectLabel")
     ;
 
     private final String attributeName;
