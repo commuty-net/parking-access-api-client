@@ -61,6 +61,8 @@ class AccessLogSpec extends Specification {
         accessLog.userIdType == userId.type
         accessLog.at == date
         accessLog.way == IN
+        accessLog.identificationMethod == null
+        accessLog.reason == null
     }
 
     def """
@@ -81,6 +83,8 @@ class AccessLogSpec extends Specification {
         parsed.userIdType == "badgeNumber"
         parsed.at == "2019-12-25T13:37:00"
         parsed.way == "in"
+        parsed.identificationMethod == null
+        parsed.reason == null
     }
 
     def """
@@ -100,6 +104,8 @@ class AccessLogSpec extends Specification {
         accessLog.userIdType == userId.type
         accessLog.at == date
         accessLog.way == OUT
+        accessLog.identificationMethod == null
+        accessLog.reason == null
     }
 
     def """
@@ -120,5 +126,33 @@ class AccessLogSpec extends Specification {
         parsed.userIdType == "badgeNumber"
         parsed.at == "2019-12-25T13:37:00"
         parsed.way == "out"
+        parsed.identificationMethod == null
+        parsed.reason == null
+    }
+
+
+    def """
+        createOutAccessLog(valid userId, valid at, valid granted, valid identificationMethod, valid reason)
+        is parsed correctly
+        """() {
+        given:
+        def userId = UserId.fromBadgeNumber("1234")
+        def date = LocalDateTime.of(2019, 12, 25, 13, 37, 0)
+        def granted = true
+        def identificationMethod = "anpr"
+        def reason = "That person was allowed by ANPR"
+
+        when:
+        def accessLogString = mapper.write(AccessLog.createOutAccessLog(userId, date, granted, identificationMethod, reason))
+
+        then:
+        accessLogString != null
+        def parsed = reader.parseText(accessLogString)
+        parsed.userId == userId.id
+        parsed.userIdType == "badgeNumber"
+        parsed.at == "2019-12-25T13:37:00"
+        parsed.way == "out"
+        parsed.identificationMethod == identificationMethod
+        parsed.reason == reason
     }
 }

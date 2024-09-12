@@ -84,7 +84,10 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
         given:
         mockAccessLogRoute()
         def parkingSiteId = UUID.randomUUID().toString()
-        def accessLog = AccessLog.createInAccessLog(UserId.fromLicensePlate("1-ABC-000"), LocalDateTime.of(2019, 10, 10, 13, 37, 0))
+
+        def reason = "QR Code read properly"
+        def identificationMethod = "qr-Code"
+        def accessLog = AccessLog.createInAccessLog(UserId.fromLicensePlate("1-ABC-000"), LocalDateTime.of(2019, 10, 10, 13, 37, 0), true, identificationMethod, reason)
         Collection<AccessLog> accesses = Collections.singletonList(accessLog)
 
         when:
@@ -113,6 +116,8 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
             it.accesses.first().userIdType == "licensePlate"
             it.accesses.first().way == "in"
             it.accesses.first().at == "2019-10-10T13:37:00"
+            it.accesses.first().identificationMethod == identificationMethod
+            it.accesses.first().reason == reason
         }
     }
 
