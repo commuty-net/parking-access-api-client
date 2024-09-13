@@ -28,6 +28,8 @@ public class AccessLog {
 
     private final String identificationMethod;
 
+    private final String identificationValue;
+
     private final String reason;
 
     @JsonCreator
@@ -37,6 +39,7 @@ public class AccessLog {
               @JsonProperty("at") LocalDateTime at,
               @JsonProperty("granted") boolean granted,
               @JsonProperty("identificationMethod") String identificationMethod,
+              @JsonProperty("identificationValue") String identificationValue,
               @JsonProperty("reason") String reason) {
         if (at == null) {
             throw new IllegalArgumentException("Log date cannot be null");
@@ -47,6 +50,7 @@ public class AccessLog {
         this.at = at;
         this.granted = granted;
         this.identificationMethod = identificationMethod;
+        this.identificationValue = identificationValue;
         this.reason = reason;
     }
 
@@ -54,7 +58,7 @@ public class AccessLog {
               UserIdType userIdType,
               AccessDirection way,
               LocalDateTime at) {
-        this(userId, userIdType, way, at, true, null, null);
+        this(userId, userIdType, way, at, true, null, null, null);
     }
 
     /**
@@ -64,7 +68,7 @@ public class AccessLog {
      * @return the {@link AccessLog} entity.
      */
     public static AccessLog createInAccessLog(UserId userId, LocalDateTime at) {
-        return createInAccessLog(userId, at, true, null, null);
+        return createInAccessLog(userId, at, true, null, null, null);
     }
 
     /**
@@ -74,44 +78,59 @@ public class AccessLog {
      * @return the {@link AccessLog} entity.
      */
     public static AccessLog createOutAccessLog(UserId userId, LocalDateTime at) {
-        return createOutAccessLog(userId, at, true, null, null);
+        return createOutAccessLog(userId, at, true, null, null, null);
     }
 
     /**
      * Create a report for a user that entered the parking site at the specified time.
-     * @param userId The {@link UserId} concerned by the access log. Cannot be null.
+     * @param userId The {@link UserId} concerned by the access log. This value is used internally by Commuty to identify the individual, and it does not need to match the specific identification method used by the Access Control system (such as ANPR or badge scanning). Cannot be null.
      * @param at The moment when the user entered the parking site, in UTC. Cannot be null.
      * @param granted Whether or not the user was allowed to enter the parking or not;
      * @param identificationMethod Defines how a person or vehicle is identified when entering or exiting a parking facility. This attribute records the method through which the system recognizes or verifies the identity of the individual or vehicle to grant access. This attribute plays a critical role in tracking the method of identification for logging purposes and can help differentiate between various access mechanisms, such as license plate recognition, badge scans, or QR code usage. For example: "qr-code", "nedap-nvite", "anpr", "badge", etc. This can be null.
+     * @param identificationValue Defines the specific value used in conjunction with the 'identificationMethod' to identify a person or vehicle during entry or exit. This value captures the actual data used by the system to verify the identity, such as a license plate number, badge ID, or QR code. This attribute serves as a log for the value that was processed during identification and is useful for logging, auditing, and debugging purposes. It does not store personal information or indicate who the person is, but it logs the data recognized by the system.
      * @param reason reason to specify why the user has been authorized (or not) to enter. This also can be used as a free-text field for ad-hoc comments.
      * @return the {@link AccessLog} entity.
      */
-    public static AccessLog createInAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String reason) {
+    public static AccessLog createInAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason) {
         if (userId == null) {
             throw new IllegalArgumentException("UserId cannot be null");
         }
-        return new AccessLog(userId.getId(), userId.getType(), IN, at, granted, identificationMethod, reason);
+        return new AccessLog(userId.getId(), userId.getType(), IN, at, granted, identificationMethod, identificationValue, reason);
     }
 
     /**
      * Create a report for a user that exited the parking site at the specified time.
-     * @param userId The {@link UserId} concerned by the access log. Cannot be null.
+     * @param userId The {@link UserId} concerned by the access log. This value is used internally by Commuty to identify the individual, and it does not need to match the specific identification method used by the Access Control system (such as ANPR or badge scanning). Cannot be null.
      * @param at The moment when the user exited the parking site, in UTC. Cannot be null.
      * @param granted Whether or not the user was allowed to enter the parking or not;
      * @param identificationMethod Defines how a person or vehicle is identified when entering or exiting a parking facility. This attribute records the method through which the system recognizes or verifies the identity of the individual or vehicle to grant access. This attribute plays a critical role in tracking the method of identification for logging purposes and can help differentiate between various access mechanisms, such as license plate recognition, badge scans, or QR code usage. For example: "qr-code", "nedap-nvite", "anpr", "badge", etc. This can be null.
+     * @param identificationValue Defines the specific value used in conjunction with the 'identificationMethod' to identify a person or vehicle during entry or exit. This value captures the actual data used by the system to verify the identity, such as a license plate number, badge ID, or QR code. This attribute serves as a log for the value that was processed during identification and is useful for logging, auditing, and debugging purposes. It does not store personal information or indicate who the person is, but it logs the data recognized by the system.
      * @param reason reason to specify why the user has been authorized (or not) to exit. This also can be used as a free-text field for ad-hoc comments.
      * @return the {@link AccessLog} entity.
      */
-    public static AccessLog createOutAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String reason) {
+    public static AccessLog createOutAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason) {
         if (userId == null) {
             throw new IllegalArgumentException("UserId cannot be null");
         }
-        return new AccessLog(userId.getId(), userId.getType(), OUT, at, granted, identificationMethod, reason);
+        return new AccessLog(userId.getId(), userId.getType(), OUT, at, granted, identificationMethod, identificationValue, reason);
     }
 
-
     /**
-     * The identifier of the user. This is linked with the {@link #getUserIdType()} property.
+     * Represents the unique identifier of the user who entered or exited the parking facility.
+     * This identifier is linked with the {@link #getUserIdType()} property, which specifies the
+     * type of identifier being used (such as an email or another unique identifier).
+     *
+     * This value is used internally by Commuty to identify the individual, and it does not need to
+     * match the specific identification method used by the Access Control system (such as ANPR
+     * or badge scanning). For example, even if the person entered using a badge or license plate
+     * recognition, the userId might still be their email or another identifier used by Commuty
+     * for user management.
+     *
+     * This flexibility allows the system to map various access methods to a consistent identifier,
+     * regardless of how the person physically entered or exited the parking facility.
+     *
+     * Example:
+     * - "john.doe@example.com" when the user is identified by their email
      */
     @JsonProperty("userId")
     public String getUserId() {
@@ -119,7 +138,21 @@ public class AccessLog {
     }
 
     /**
-     * The {@link UserIdType} of the identifier of the user. This is linked with the {@link #getUserId()} property.
+     * Specifies the type of identifier used in the {@link #getUserId()} property to identify the
+     * person who entered or exited the parking facility.
+     *
+     * This value indicates the nature of the identifier used, such as whether it's an email,
+     * employee ID, or other forms of user identification. While the Access Control system may use
+     * other methods (like ANPR or badge scanning) to permit entry or exit, this field allows
+     * Commuty to store and track a consistent user identifier, which can be of any type based on
+     * the context.
+     *
+     * Example {@link UserIdType} values could include:
+     * - `EMAIL` if the `userId` is an email address
+     * - `EMPLOYEE_ID` if the `userId` refers to an internal employee ID
+     *
+     * This property ensures that different types of user identifiers are tracked in a structured
+     * way, allowing for consistent logging and auditing of users regardless of their access method.
      */
     @JsonProperty("userIdType")
     public UserIdType getUserIdType() {
@@ -159,15 +192,50 @@ public class AccessLog {
     }
 
     /**
-     * Defines how a person or vehicle is identified when entering or exiting a parking facility.
-     * This attribute records the method through which the system recognizes or verifies the identity of the individual or vehicle to grant access.
-     * This attribute plays a critical role in tracking the method of identification for logging purposes and can help differentiate between various access mechanisms, such as license plate recognition, badge scans, or QR code usage.
-     * For example: "qr-code", "nedap-nvite", "anpr", "badge", etc.
-     * This can be null.
+     * Specifies how a person or vehicle is identified when entering or exiting a parking facility.
+     * This attribute indicates the method used by the system to recognize or verify the identity
+     * of the individual or vehicle for access control.
+     *
+     * It is used to log the specific mechanism employed during entry or exit, such as license plate
+     * recognition, badge scanning, or QR code scanning. Tracking this method allows for a clear
+     * understanding of how access was granted and helps differentiate between the various access
+     * methods available.
+     *
+     * Example valid values include:
+     * - "qr-code" for QR code scanning
+     * - "nedap-nvite" for specific systems like Nedap NVITE
+     * - "anpr" for Automatic Number Plate Recognition
+     * - "badge" for access via a badge reader
+     *
+     * This attribute is essential for logging and auditing purposes, but it can be null if the
+     * method of identification is not applicable or unavailable.
      */
     @JsonProperty("identificationMethod")
     public String getIdentificationMethod() {
         return identificationMethod;
+    }
+
+    /**
+     * Represents the specific value used in conjunction with the 'identificationMethod' to identify
+     * a person or vehicle during entry or exit. This value captures the actual data used by the
+     * system to verify the identity, such as a license plate number, badge ID, or QR code.
+     *
+     * This attribute serves as a log for the value that was processed during identification and is
+     * useful for logging, auditing, and debugging purposes. It does not store personal information
+     * or indicate who the person is, but it logs the data recognized by the system.
+     *
+     * - Example: "1AAA000" when 'identificationMethod' is "anpr" (Automatic Number Plate Recognition)
+     * - Example: "04 A2 58 1B 93 6F D4" when 'identificationMethod' is "badge" (a badge's unique ID)
+     *
+     * Important: If 'identificationMethod' is not specified or is null, this attribute is ignored
+     * as it cannot be processed independently.
+     *
+     * This attribute can also be null if no identification value is captured or applicable.
+     *
+     */
+    @JsonProperty("identificationValue")
+    public String getIdentificationValue() {
+        return identificationValue;
     }
 
     @Override

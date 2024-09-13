@@ -87,7 +87,8 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
 
         def reason = "QR Code read properly"
         def identificationMethod = "qr-Code"
-        def accessLog = AccessLog.createInAccessLog(UserId.fromLicensePlate("1-ABC-000"), LocalDateTime.of(2019, 10, 10, 13, 37, 0), true, identificationMethod, reason)
+        def identificationValue = "TEXT-UEYRU-789"
+        def accessLog = AccessLog.createInAccessLog(UserId.fromLicensePlate("1-ABC-000"), LocalDateTime.of(2019, 10, 10, 13, 37, 0), true, identificationMethod, identificationValue, reason)
         Collection<AccessLog> accesses = Collections.singletonList(accessLog)
 
         when:
@@ -117,6 +118,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
             it.accesses.first().way == "in"
             it.accesses.first().at == "2019-10-10T13:37:00"
             it.accesses.first().identificationMethod == identificationMethod
+            it.accesses.first().identificationValue == identificationValue
             it.accesses.first().reason == reason
         }
     }

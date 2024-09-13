@@ -62,6 +62,7 @@ class AccessLogSpec extends Specification {
         accessLog.at == date
         accessLog.way == IN
         accessLog.identificationMethod == null
+        accessLog.identificationValue == null
         accessLog.reason == null
     }
 
@@ -84,6 +85,7 @@ class AccessLogSpec extends Specification {
         parsed.at == "2019-12-25T13:37:00"
         parsed.way == "in"
         parsed.identificationMethod == null
+        parsed.identificationValue == null
         parsed.reason == null
     }
 
@@ -105,6 +107,7 @@ class AccessLogSpec extends Specification {
         accessLog.at == date
         accessLog.way == OUT
         accessLog.identificationMethod == null
+        accessLog.identificationValue == null
         accessLog.reason == null
     }
 
@@ -127,6 +130,7 @@ class AccessLogSpec extends Specification {
         parsed.at == "2019-12-25T13:37:00"
         parsed.way == "out"
         parsed.identificationMethod == null
+        parsed.identificationValue == null
         parsed.reason == null
     }
 
@@ -140,10 +144,11 @@ class AccessLogSpec extends Specification {
         def date = LocalDateTime.of(2019, 12, 25, 13, 37, 0)
         def granted = true
         def identificationMethod = "anpr"
+        def identificationValue = "3-ARD-789"
         def reason = "That person was allowed by ANPR"
 
         when:
-        def accessLogString = mapper.write(AccessLog.createOutAccessLog(userId, date, granted, identificationMethod, reason))
+        def accessLogString = mapper.write(AccessLog.createOutAccessLog(userId, date, granted, identificationMethod, identificationValue, reason))
 
         then:
         accessLogString != null
@@ -153,6 +158,7 @@ class AccessLogSpec extends Specification {
         parsed.at == "2019-12-25T13:37:00"
         parsed.way == "out"
         parsed.identificationMethod == identificationMethod
+        parsed.identificationValue == identificationValue
         parsed.reason == reason
     }
 }
