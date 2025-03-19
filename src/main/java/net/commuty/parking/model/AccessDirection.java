@@ -1,5 +1,6 @@
 package net.commuty.parking.model;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -16,5 +17,12 @@ public enum AccessDirection {
      * Indicates a user that is exiting the parking site.
      */
     @JsonProperty("out")
-    OUT
+    OUT,
+
+    /**
+     * Only used when parsed from a unknown object key.
+     */
+    @JsonEnumDefaultValue
+    @JsonProperty("unknown")
+    UNKNOWN
 }

@@ -1,5 +1,6 @@
 package net.commuty.parking.model;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -9,5 +10,11 @@ public enum WebhookMessageOperation {
     @JsonProperty("create")
     CREATE,
     @JsonProperty("remove")
-    REMOVE
+    REMOVE,
+    /**
+     * Only used when parsed from a unknown object key.
+     */
+    @JsonEnumDefaultValue
+    @JsonProperty("unknown")
+    UNKNOWN
 }

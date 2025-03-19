@@ -245,4 +245,46 @@ class AccessRightSpec extends Specification {
         right.subjectId == UUID.fromString("a3d076e2-83dc-47aa-91b4-eaa1cad723dd")
         right.subjectLabel == "John Doe"
     }
+
+
+    def "parse a message with unknown attributes is parsed without failing"() {
+        given:
+        def json = """
+                {
+                    "userIds": [{
+                        "id": "12345",
+                        "type": "identificationNumber"
+                    }],
+                    "parkingSiteId": "ff217562-d357-40be-893e-f74b48570d21",
+                    "granted": true,
+                    "startTime": "2021-07-29T00:00:00+02:00",
+                    "endTime": "2021-07-29T00:00:00+02:00",
+                    "attributes": {
+                        "failure-a": "4850b369-729a-4623-89ab-be1a61b15920",
+                        "failure-b": "permanentAccess"
+                    }
+                }"""
+        when:
+        def right = mapper.read(toInputStream(json, defaultCharset()), AccessRight.class)
+
+        then:
+        right != null
+        right.userIds.size() == 1
+        right.userIds.first().id == "12345"
+        right.userIds.first().type == IDENTIFICATION_NUMBER
+        right.parkingSiteId == "ff217562-d357-40be-893e-f74b48570d21"
+        right.granted
+        right.startTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
+        right.endTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
+        right.attributes.size() == 1
+        right.id == null
+        right.reason == null
+        right.parkingSpotId == null
+        right.parkingSpotName == null
+        right.parkingSpotDisplayName == null
+        right.parkingSpotZoneId == null
+        !right.isVisitor()
+        right.subjectId == null
+        right.subjectLabel == null
+    }
 }

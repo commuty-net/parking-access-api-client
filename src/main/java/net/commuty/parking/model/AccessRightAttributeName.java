@@ -1,5 +1,6 @@
 package net.commuty.parking.model;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -62,7 +63,14 @@ public enum AccessRightAttributeName {
      * This is usually the full name of a user, a visitor or an access exception.
      */
     @JsonProperty("subjectLabel")
-    SUBJECT_LABEL("subjectLabel")
+    SUBJECT_LABEL("subjectLabel"),
+
+    /**
+     * Only used when parsed from a unknown object key.
+     */
+    @JsonEnumDefaultValue
+    @JsonProperty("unknown")
+    UNKNOWN("unknown")
     ;
 
     private final String attributeName;

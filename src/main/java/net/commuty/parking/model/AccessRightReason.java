@@ -1,5 +1,6 @@
 package net.commuty.parking.model;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Arrays;
@@ -61,7 +62,14 @@ public enum AccessRightReason {
      * The access is granted.
      */
     @JsonProperty("freeAccess")
-    FREE_ACCESS("freeAccess");
+    FREE_ACCESS("freeAccess"),
+
+    /**
+     * Only used when parsed from a unknown object key.
+     */
+    @JsonEnumDefaultValue
+    @JsonProperty("unknown")
+    UNKNOWN("unknown");
 
     private final String reasonName;
 
