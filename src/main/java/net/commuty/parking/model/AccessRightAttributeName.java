@@ -40,6 +40,12 @@ public enum AccessRightAttributeName {
     PARKING_SPOT_DISPLAY_NAME("parkingSpotDisplayName"),
 
     /**
+     * This value represents the ID of the "Parking Site" (virtual, not physical) where it is defined in Commuty.
+     */
+    @JsonProperty("parkingSpotZoneId")
+    PARKING_SPOT_ZONE_ID("parkingSpotZoneId"),
+
+    /**
      * <code>true</code> when this access right is granted for a visitor. <code>false</code> otherwise.
      */
     @JsonProperty("isVisitor")

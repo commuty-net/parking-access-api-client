@@ -13,6 +13,7 @@ public class ParkingSpot {
     private final UUID id;
     private final String name;
     private final String displayName;
+    private final UUID zoneId;
     private final boolean evCharger;
     private final boolean visitorSpot;
     private final boolean forCarpoolersOnly;
@@ -23,6 +24,7 @@ public class ParkingSpot {
     public ParkingSpot(@JsonProperty("id") UUID id,
                        @JsonProperty("name") String name,
                        @JsonProperty("displayName") String displayName,
+                       @JsonProperty("zoneId") UUID zoneId,
                        @JsonProperty("evCharger") boolean evCharger,
                        @JsonProperty("visitorSpot") boolean visitorSpot,
                        @JsonProperty("forCarpoolersOnly") boolean forCarpoolersOnly,
@@ -30,6 +32,7 @@ public class ParkingSpot {
                        @JsonProperty("large") boolean large) {
         this.id = id;
         this.name = name;
+        this.zoneId = zoneId;
         this.displayName = displayName;
         this.evCharger = evCharger;
         this.visitorSpot = visitorSpot;
@@ -57,6 +60,14 @@ public class ParkingSpot {
     @JsonProperty("displayName")
     public String getDisplayName() {
         return displayName;
+    }
+
+    /**
+     * @return the value representing the ID of the "Parking Site" (virtual, not physical) where it is defined in Commuty.
+     */
+    @JsonProperty("zoneId")
+    public UUID getZoneId() {
+        return zoneId;
     }
 
     /**

@@ -216,6 +216,7 @@ class AccessRightSpec extends Specification {
                         "parkingSpotId": "e71a3670-d1f7-4095-8e1d-a19003141411",
                         "parkingSpotName": "P1234",
                         "parkingSpotDisplayName": "Zone B",
+                        "parkingSpotZoneId": "bdae073e-5c1b-4025-9739-f13f00682df0",
                         "isVisitor": false,
                         "subjectId": "a3d076e2-83dc-47aa-91b4-eaa1cad723dd",
                         "subjectLabel": "John Doe"
@@ -233,12 +234,13 @@ class AccessRightSpec extends Specification {
         right.granted
         right.startTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
         right.endTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
-        right.attributes.size() == 8
+        right.attributes.size() == 9
         right.id == UUID.fromString("4850b369-729a-4623-89ab-be1a61b15920")
         right.reason == PERMANENT_ACCESS
         right.parkingSpotId == UUID.fromString("e71a3670-d1f7-4095-8e1d-a19003141411")
         right.parkingSpotName == "P1234"
         right.parkingSpotDisplayName == "Zone B"
+        right.parkingSpotZoneId.toString() == "bdae073e-5c1b-4025-9739-f13f00682df0"
         !right.isVisitor()
         right.subjectId == UUID.fromString("a3d076e2-83dc-47aa-91b4-eaa1cad723dd")
         right.subjectLabel == "John Doe"

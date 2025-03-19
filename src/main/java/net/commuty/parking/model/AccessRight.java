@@ -175,6 +175,17 @@ public class AccessRight {
     }
 
     /**
+     * When an access right is granted for a specific parking spot, this value represents the ID of the "Parking Site" (virtual, not physical) where it is defined in Commuty.
+     */
+    @JsonIgnore
+    public UUID getParkingSpotZoneId() {
+        return of(attributes)
+                .map(attr -> attr.get(PARKING_SPOT_ZONE_ID))
+                .map(UUID::fromString)
+                .orElse(null);
+    }
+
+    /**
      * <code>true</code> when this access right is granted for a visitor. <code>false</code> otherwise.
      * The boolean value is <code>null</code> when this attribute is not requested.
      */

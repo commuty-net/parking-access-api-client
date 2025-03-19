@@ -34,7 +34,7 @@ To use this library in your project, you can do it via a maven dependency:
 or via a gradle:
 
 ```
-implementation "net.commuty:parking-access-api-client:2.7.1"
+implementation "net.commuty:parking-access-api-client:2.7.2
 ```
 
 ## Usage

@@ -169,6 +169,13 @@ class WebhookMessageSpec extends Specification {
         right.attributes.isEmpty()
         right.id == null
         right.reason == null
+        right.parkingSpotId == null
+        right.parkingSpotName == null
+        right.parkingSpotDisplayName == null
+        right.parkingSpotZoneId == null
+        right.subjectId == null
+        right.subjectLabel == null
+        !right.isVisitor()
     }
 
     def """
@@ -182,7 +189,14 @@ class WebhookMessageSpec extends Specification {
             "granted": a boolean
             "attributes": {
                 "reason": a valid reason,
-                "id": a valid uuid
+                "id": a valid uuid,
+                "parkingSpotId": a valid uuid,
+                "parkingSpotName": a valid name,
+                "parkingSpotDisplayName": a valid name,
+                "parkingSpotZoneId": a valid uuid,
+                "subjectId": a valid uuid,
+                "subjectLabel": a valid string
+                "isVisitor": a valid boolean
             }
         }
         is parsed correctly
@@ -203,7 +217,14 @@ class WebhookMessageSpec extends Specification {
                       "granted": false,
                       "attributes": {
                         "reason": "none",
-                        "id": "2696420b-1a2f-42c4-b9d5-2e05c5fc877c"
+                        "id": "2696420b-1a2f-42c4-b9d5-2e05c5fc877c",
+                        "parkingSpotId": "e71a3670-d1f7-4095-8e1d-a19003141411",
+                        "parkingSpotName": "P1234",
+                        "parkingSpotDisplayName": "Zone B",
+                        "parkingSpotZoneId": "bdae073e-5c1b-4025-9739-f13f00682df0",
+                        "subjectId": "80861212-0735-426b-8a53-fc4a63fe9cee",
+                        "subjectLabel": "John Doe",
+                        "isVisitor": true
                       },
                       "startTime": "2020-12-03T00:00:00+01:00",
                       "endTime": "2020-12-04T00:00:00+01:00"
@@ -227,8 +248,16 @@ class WebhookMessageSpec extends Specification {
         !right.granted
         right.startTime == OffsetDateTime.parse("2020-12-03T00:00:00+01:00")
         right.endTime == OffsetDateTime.parse("2020-12-04T00:00:00+01:00")
-        right.attributes.size() == 2
-        right.id == UUID.fromString("2696420b-1a2f-42c4-b9d5-2e05c5fc877c")
+        right.attributes.size() == 9
+
         right.reason == NONE
+        right.id == UUID.fromString("2696420b-1a2f-42c4-b9d5-2e05c5fc877c")
+        right.parkingSpotId ==  UUID.fromString("e71a3670-d1f7-4095-8e1d-a19003141411")
+        right.parkingSpotName == "P1234"
+        right.parkingSpotDisplayName == "Zone B"
+        right.parkingSpotZoneId == UUID.fromString("bdae073e-5c1b-4025-9739-f13f00682df0")
+        right.subjectId ==  UUID.fromString("80861212-0735-426b-8a53-fc4a63fe9cee")
+        right.subjectLabel == "John Doe"
+        right.isVisitor()
     }
 }

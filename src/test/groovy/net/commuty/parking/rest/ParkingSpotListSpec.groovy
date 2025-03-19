@@ -60,7 +60,8 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
                       "visitorSpot": false,
                       "forCarpoolersOnly": false,
                       "forDisabled": false,
-                      "large": false
+                      "large": false,
+                      "zoneId": "4fcc53d1-01db-4cea-ada5-6f4ec91b4100"
                     },
                     {
                       "id": "869f4520-943e-40de-a38d-5b3d7be5bdb3",
@@ -70,7 +71,8 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
                       "visitorSpot": false,
                       "forCarpoolersOnly": false,
                       "forDisabled": true,
-                      "large": false
+                      "large": false,
+                      "zoneId": "4fcc53d1-01db-4cea-ada5-6f4ec91b4100"
                     },
                     {
                       "id": "87437c97-ff2e-44cb-948f-46570ea0d63f",
@@ -80,7 +82,8 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
                       "visitorSpot": true,
                       "forCarpoolersOnly": true,
                       "forDisabled": false,
-                      "large": true
+                      "large": true,
+                      "zoneId": "5fcc53d1-01db-4cea-ada5-6f4ec91b4100"
                     }
                 ]
             }
@@ -101,6 +104,7 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
             !forCarpoolersOnly
             !forDisabled
             !large
+            zoneId == UUID.fromString("4fcc53d1-01db-4cea-ada5-6f4ec91b4100")
         }
         with(spots.get(1)) {
             id == UUID.fromString("869f4520-943e-40de-a38d-5b3d7be5bdb3")
@@ -111,6 +115,7 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
             !forCarpoolersOnly
             forDisabled
             !large
+            zoneId == UUID.fromString("4fcc53d1-01db-4cea-ada5-6f4ec91b4100")
         }
         with(spots.get(2)) {
             id == UUID.fromString("87437c97-ff2e-44cb-948f-46570ea0d63f")
@@ -121,6 +126,7 @@ class ParkingSpotListSpec extends RestWithAuthSpec {
             forCarpoolersOnly
             !forDisabled
             large
+            zoneId == UUID.fromString("5fcc53d1-01db-4cea-ada5-6f4ec91b4100")
         }
     }
 }
