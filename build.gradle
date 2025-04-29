@@ -11,7 +11,7 @@ plugins {
 }
 
 group "net.commuty"
-version "2.8.0"
+version "2.8.1"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8

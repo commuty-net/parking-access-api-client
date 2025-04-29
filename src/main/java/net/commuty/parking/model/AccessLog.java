@@ -32,6 +32,8 @@ public class AccessLog {
 
     private final String reason;
 
+    private final Object attributes;
+
     @JsonCreator
     AccessLog(@JsonProperty("userId") String userId,
               @JsonProperty("userIdType") UserIdType userIdType,
@@ -40,7 +42,8 @@ public class AccessLog {
               @JsonProperty("granted") boolean granted,
               @JsonProperty("identificationMethod") String identificationMethod,
               @JsonProperty("identificationValue") String identificationValue,
-              @JsonProperty("reason") String reason) {
+              @JsonProperty("reason") String reason,
+              @JsonProperty("attributes") Object attributes) {
         if (at == null) {
             throw new IllegalArgumentException("Log date cannot be null");
         }
@@ -52,13 +55,14 @@ public class AccessLog {
         this.identificationMethod = identificationMethod;
         this.identificationValue = identificationValue;
         this.reason = reason;
+        this.attributes = attributes;
     }
 
     AccessLog(String userId,
               UserIdType userIdType,
               AccessDirection way,
               LocalDateTime at) {
-        this(userId, userIdType, way, at, true, null, null, null);
+        this(userId, userIdType, way, at, true, null, null, null, null);
     }
 
     /**
@@ -68,7 +72,7 @@ public class AccessLog {
      * @return the {@link AccessLog} entity.
      */
     public static AccessLog createInAccessLog(UserId userId, LocalDateTime at) {
-        return createInAccessLog(userId, at, true, null, null, null);
+        return createInAccessLog(userId, at, true, null, null, null, null);
     }
 
     /**
@@ -78,7 +82,7 @@ public class AccessLog {
      * @return the {@link AccessLog} entity.
      */
     public static AccessLog createOutAccessLog(UserId userId, LocalDateTime at) {
-        return createOutAccessLog(userId, at, true, null, null, null);
+        return createOutAccessLog(userId, at, true, null, null, null, null);
     }
 
     /**
@@ -89,13 +93,14 @@ public class AccessLog {
      * @param identificationMethod Defines how a person or vehicle is identified when entering or exiting a parking facility. This attribute records the method through which the system recognizes or verifies the identity of the individual or vehicle to grant access. This attribute plays a critical role in tracking the method of identification for logging purposes and can help differentiate between various access mechanisms, such as license plate recognition, badge scans, or QR code usage. For example: "qr-code", "nedap-nvite", "anpr", "badge", etc. This can be null.
      * @param identificationValue Defines the specific value used in conjunction with the 'identificationMethod' to identify a person or vehicle during entry or exit. This value captures the actual data used by the system to verify the identity, such as a license plate number, badge ID, or QR code. This attribute serves as a log for the value that was processed during identification and is useful for logging, auditing, and debugging purposes. It does not store personal information or indicate who the person is, but it logs the data recognized by the system.
      * @param reason reason to specify why the user has been authorized (or not) to enter. This also can be used as a free-text field for ad-hoc comments.
+     * @param attributes additional attributes providing supplementary details about the access log. This property will be serialized as a JSON object.
      * @return the {@link AccessLog} entity.
      */
-    public static AccessLog createInAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason) {
+    public static AccessLog createInAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason, Object attributes) {
         if (userId == null) {
             throw new IllegalArgumentException("UserId cannot be null");
         }
-        return new AccessLog(userId.getId(), userId.getType(), IN, at, granted, identificationMethod, identificationValue, reason);
+        return new AccessLog(userId.getId(), userId.getType(), IN, at, granted, identificationMethod, identificationValue, reason, attributes);
     }
 
     /**
@@ -106,13 +111,14 @@ public class AccessLog {
      * @param identificationMethod Defines how a person or vehicle is identified when entering or exiting a parking facility. This attribute records the method through which the system recognizes or verifies the identity of the individual or vehicle to grant access. This attribute plays a critical role in tracking the method of identification for logging purposes and can help differentiate between various access mechanisms, such as license plate recognition, badge scans, or QR code usage. For example: "qr-code", "nedap-nvite", "anpr", "badge", etc. This can be null.
      * @param identificationValue Defines the specific value used in conjunction with the 'identificationMethod' to identify a person or vehicle during entry or exit. This value captures the actual data used by the system to verify the identity, such as a license plate number, badge ID, or QR code. This attribute serves as a log for the value that was processed during identification and is useful for logging, auditing, and debugging purposes. It does not store personal information or indicate who the person is, but it logs the data recognized by the system.
      * @param reason reason to specify why the user has been authorized (or not) to exit. This also can be used as a free-text field for ad-hoc comments.
+     * @param attributes additional attributes providing supplementary details about the access log. This property will be serialized as a JSON object.
      * @return the {@link AccessLog} entity.
      */
-    public static AccessLog createOutAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason) {
+    public static AccessLog createOutAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason, Object attributes) {
         if (userId == null) {
             throw new IllegalArgumentException("UserId cannot be null");
         }
-        return new AccessLog(userId.getId(), userId.getType(), OUT, at, granted, identificationMethod, identificationValue, reason);
+        return new AccessLog(userId.getId(), userId.getType(), OUT, at, granted, identificationMethod, identificationValue, reason, attributes);
     }
 
     /**
@@ -236,6 +242,15 @@ public class AccessLog {
     @JsonProperty("identificationValue")
     public String getIdentificationValue() {
         return identificationValue;
+    }
+
+    /**
+     * Represent additional attributes of an Access Log. It provides a flexible mechanism for including additional information, metadata, or contextual details.
+     * It serves as an extensible container for supplementary data, allowing developers to enrich the access log with structured information that enhances its comprehensiveness.
+     * This is optional.
+     */
+    public Object getAttributes() {
+        return attributes;
     }
 
     @Override

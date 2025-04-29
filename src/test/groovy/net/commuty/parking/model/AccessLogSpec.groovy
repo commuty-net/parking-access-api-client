@@ -136,7 +136,7 @@ class AccessLogSpec extends Specification {
 
 
     def """
-        createOutAccessLog(valid userId, valid at, valid granted, valid identificationMethod, valid reason)
+        createOutAccessLog(valid userId, valid at, valid granted, valid identificationMethod, valid reason, null attributes)
         is parsed correctly
         """() {
         given:
@@ -148,7 +148,7 @@ class AccessLogSpec extends Specification {
         def reason = "That person was allowed by ANPR"
 
         when:
-        def accessLogString = mapper.write(AccessLog.createOutAccessLog(userId, date, granted, identificationMethod, identificationValue, reason))
+        def accessLogString = mapper.write(AccessLog.createOutAccessLog(userId, date, granted, identificationMethod, identificationValue, reason, null))
 
         then:
         accessLogString != null
@@ -160,5 +160,62 @@ class AccessLogSpec extends Specification {
         parsed.identificationMethod == identificationMethod
         parsed.identificationValue == identificationValue
         parsed.reason == reason
+        parsed.attributes == null
+    }
+
+    def """
+        createOutAccessLog(valid userId, valid at, valid granted, valid identificationMethod, valid reason, valid attributes)
+        is parsed correctly
+        """() {
+        given:
+        def userId = UserId.fromBadgeNumber("1234")
+        def date = LocalDateTime.of(2019, 12, 25, 13, 37, 0)
+        def granted = true
+        def identificationMethod = "anpr"
+        def identificationValue = "3-ARD-789"
+        def reason = "That person was allowed by ANPR"
+        def attributes = new AttributesContainer("ENTRANCE-1", 1, true, [1,2,3], new PersonContainer("John"))
+
+        when:
+        def accessLogString = mapper.write(AccessLog.createOutAccessLog(userId, date, granted, identificationMethod, identificationValue, reason, attributes))
+
+        then:
+        accessLogString != null
+        def parsed = reader.parseText(accessLogString)
+        parsed.userId == userId.id
+        parsed.userIdType == "badgeNumber"
+        parsed.at == "2019-12-25T13:37:00"
+        parsed.way == "out"
+        parsed.identificationMethod == identificationMethod
+        parsed.identificationValue == identificationValue
+        parsed.reason == reason
+        parsed.attributes.readerName == "ENTRANCE-1"
+        parsed.attributes.readerId == 1
+        parsed.attributes.valid == true
+        parsed.attributes.numbers == [1,2,3]
+        parsed.attributes.person.name == "John"
+    }
+
+    class AttributesContainer {
+        String readerName
+        Integer readerId
+        Boolean valid
+        List<Integer> numbers
+        PersonContainer person
+
+        AttributesContainer(String readerName, Integer readerId, Boolean valid, List<Integer> numbers, PersonContainer person) {
+            this.readerName = readerName
+            this.readerId = readerId
+            this.valid = valid
+            this.numbers = numbers
+            this.person = person
+        }
+    }
+
+    class PersonContainer {
+        String name
+        PersonContainer(String name) {
+            this.name = name
+        }
     }
 }
