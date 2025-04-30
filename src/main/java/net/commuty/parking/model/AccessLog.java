@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import static net.commuty.parking.model.AccessDirection.IN;
 import static net.commuty.parking.model.AccessDirection.OUT;
@@ -32,7 +33,7 @@ public class AccessLog {
 
     private final String reason;
 
-    private final Object attributes;
+    private final Map<String, Object> attributes;
 
     @JsonCreator
     AccessLog(@JsonProperty("userId") String userId,
@@ -43,7 +44,7 @@ public class AccessLog {
               @JsonProperty("identificationMethod") String identificationMethod,
               @JsonProperty("identificationValue") String identificationValue,
               @JsonProperty("reason") String reason,
-              @JsonProperty("attributes") Object attributes) {
+              @JsonProperty("attributes") Map<String, Object> attributes) {
         if (at == null) {
             throw new IllegalArgumentException("Log date cannot be null");
         }
@@ -58,10 +59,10 @@ public class AccessLog {
         this.attributes = attributes;
     }
 
-    AccessLog(String userId,
-              UserIdType userIdType,
-              AccessDirection way,
-              LocalDateTime at) {
+    public AccessLog(String userId,
+                     UserIdType userIdType,
+                     AccessDirection way,
+                     LocalDateTime at) {
         this(userId, userIdType, way, at, true, null, null, null, null);
     }
 
@@ -96,7 +97,7 @@ public class AccessLog {
      * @param attributes additional attributes providing supplementary details about the access log. This property will be serialized as a JSON object.
      * @return the {@link AccessLog} entity.
      */
-    public static AccessLog createInAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason, Object attributes) {
+    public static AccessLog createInAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason, Map<String, Object> attributes) {
         if (userId == null) {
             throw new IllegalArgumentException("UserId cannot be null");
         }
@@ -114,7 +115,7 @@ public class AccessLog {
      * @param attributes additional attributes providing supplementary details about the access log. This property will be serialized as a JSON object.
      * @return the {@link AccessLog} entity.
      */
-    public static AccessLog createOutAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason, Object attributes) {
+    public static AccessLog createOutAccessLog(UserId userId, LocalDateTime at, boolean granted, String identificationMethod, String identificationValue, String reason, Map<String, Object> attributes) {
         if (userId == null) {
             throw new IllegalArgumentException("UserId cannot be null");
         }
@@ -249,7 +250,7 @@ public class AccessLog {
      * It serves as an extensible container for supplementary data, allowing developers to enrich the access log with structured information that enhances its comprehensiveness.
      * This is optional.
      */
-    public Object getAttributes() {
+    public Map<String, Object> getAttributes() {
         return attributes;
     }
 

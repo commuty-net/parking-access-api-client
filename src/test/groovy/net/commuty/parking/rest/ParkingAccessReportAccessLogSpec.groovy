@@ -88,7 +88,7 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
         def reason = "QR Code read properly"
         def identificationMethod = "qr-Code"
         def identificationValue = "TEXT-UEYRU-789"
-        def attributes = new AttributesContainer("ENTRANCE-1", 1, true)
+        def attributes = [readerName: "ENTRANCE-1", readerId: 1, valid: true]
         def accessLog = AccessLog.createInAccessLog(UserId.fromLicensePlate("1-ABC-000"), LocalDateTime.of(2019, 10, 10, 13, 37, 0), true, identificationMethod, identificationValue, reason, attributes)
         Collection<AccessLog> accesses = Collections.singletonList(accessLog)
 
@@ -223,17 +223,5 @@ class ParkingAccessReportAccessLogSpec extends RestWithAuthSpec {
 
         then:
         thrown(HttpClientException)
-    }
-
-    class AttributesContainer {
-        String readerName
-        Integer readerId
-        Boolean valid
-
-        AttributesContainer(String readerName, Integer readerId, Boolean valid) {
-            this.readerName = readerName
-            this.readerId = readerId
-            this.valid = valid
-        }
     }
 }

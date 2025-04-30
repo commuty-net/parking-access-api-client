@@ -174,7 +174,7 @@ class AccessLogSpec extends Specification {
         def identificationMethod = "anpr"
         def identificationValue = "3-ARD-789"
         def reason = "That person was allowed by ANPR"
-        def attributes = new AttributesContainer("ENTRANCE-1", 1, true, [1,2,3], new PersonContainer("John"))
+        def attributes = [readerName: "ENTRANCE-1", readerId: 1, valid: true, numbers: [1,2,3], person: new PersonContainer("John")]
 
         when:
         def accessLogString = mapper.write(AccessLog.createOutAccessLog(userId, date, granted, identificationMethod, identificationValue, reason, attributes))
@@ -194,22 +194,6 @@ class AccessLogSpec extends Specification {
         parsed.attributes.valid == true
         parsed.attributes.numbers == [1,2,3]
         parsed.attributes.person.name == "John"
-    }
-
-    class AttributesContainer {
-        String readerName
-        Integer readerId
-        Boolean valid
-        List<Integer> numbers
-        PersonContainer person
-
-        AttributesContainer(String readerName, Integer readerId, Boolean valid, List<Integer> numbers, PersonContainer person) {
-            this.readerName = readerName
-            this.readerId = readerId
-            this.valid = valid
-            this.numbers = numbers
-            this.person = person
-        }
     }
 
     class PersonContainer {
