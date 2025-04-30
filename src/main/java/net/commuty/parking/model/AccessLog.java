@@ -36,15 +36,15 @@ public class AccessLog {
     private final Map<String, Object> attributes;
 
     @JsonCreator
-    AccessLog(@JsonProperty("userId") String userId,
-              @JsonProperty("userIdType") UserIdType userIdType,
-              @JsonProperty("way") AccessDirection way,
-              @JsonProperty("at") LocalDateTime at,
-              @JsonProperty("granted") boolean granted,
-              @JsonProperty("identificationMethod") String identificationMethod,
-              @JsonProperty("identificationValue") String identificationValue,
-              @JsonProperty("reason") String reason,
-              @JsonProperty("attributes") Map<String, Object> attributes) {
+    public AccessLog(@JsonProperty("userId") String userId,
+                     @JsonProperty("userIdType") UserIdType userIdType,
+                     @JsonProperty("way") AccessDirection way,
+                     @JsonProperty("at") LocalDateTime at,
+                     @JsonProperty("granted") boolean granted,
+                     @JsonProperty("identificationMethod") String identificationMethod,
+                     @JsonProperty("identificationValue") String identificationValue,
+                     @JsonProperty("reason") String reason,
+                     @JsonProperty("attributes") Map<String, Object> attributes) {
         if (at == null) {
             throw new IllegalArgumentException("Log date cannot be null");
         }
