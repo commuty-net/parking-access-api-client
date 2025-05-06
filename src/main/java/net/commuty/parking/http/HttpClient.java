@@ -6,9 +6,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -19,7 +21,7 @@ public class HttpClient {
     private static final String GET = "GET";
     private static final String POST = "GET";
     private static final String CONTENT_TYPE = "Content-Type";
-    private static final String APPLICATION_JSON = "application/json";
+    private static final String APPLICATION_JSON = "application/json; charset=UTF-8";
     private static final String ACCEPT = "Accept";
     private static final String AUTHORIZATION = "Authorization";
     private static final String TOKEN_TEMPLATE = "Bearer %s";
@@ -68,7 +70,7 @@ public class HttpClient {
 
     private void writeRequestBody(Object body, HttpURLConnection connection) throws HttpClientException {
         try (DataOutputStream payloadStream = new DataOutputStream(connection.getOutputStream())) {
-            payloadStream.writeBytes(mapper.write(body));
+            payloadStream.write(mapper.write(body).getBytes(UTF_8));
         } catch (IOException e) {
             LOG.trace("Unrecoverable issue when creating a message body for the HTTP Client", e);
             throw new HttpClientException(e);
