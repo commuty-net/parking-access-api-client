@@ -5,6 +5,9 @@ import net.commuty.parking.rest.JsonMapperTest
 import spock.lang.Specification
 
 import static java.nio.charset.Charset.defaultCharset
+import static net.commuty.parking.model.ParkingSpotVehicleType.BICYCLE
+import static net.commuty.parking.model.ParkingSpotVehicleType.CAR
+import static net.commuty.parking.model.ParkingSpotVehicleType.MOTORCYCLE
 import static org.apache.commons.io.IOUtils.toInputStream
 
 class ParkingSpotSpec extends Specification {
@@ -24,7 +27,8 @@ class ParkingSpotSpec extends Specification {
                       "zoneId": "4fcc53d1-01db-4cea-ada5-6f4ec91b4100",
                       "forCarpoolersOnly": false,
                       "forDisabled": true,
-                      "large": true
+                      "large": true,
+                      "vehicleType": "car"
                     },
                     {
                       "id": "869f4520-943e-40de-a38d-5b3d7be5bdb3",
@@ -35,7 +39,8 @@ class ParkingSpotSpec extends Specification {
                       "zoneId": "4fcc53d1-01db-4cea-ada5-6f4ec91b4100",
                       "forCarpoolersOnly": true,
                       "forDisabled": false,
-                      "large": true
+                      "large": true,
+                      "vehicleType": "motorcycle"
                     },
                     {
                       "id": "87437c97-ff2e-44cb-948f-46570ea0d63f",
@@ -46,7 +51,8 @@ class ParkingSpotSpec extends Specification {
                       "zoneId": "ccd93770-da4c-49d3-bc68-a196f96c1e41",
                       "forCarpoolersOnly": false,
                       "forDisabled": false,
-                      "large": false
+                      "large": false,
+                      "vehicleType": "bicycle"
                     }
                 ]
         """
@@ -67,6 +73,7 @@ class ParkingSpotSpec extends Specification {
             !forCarpoolersOnly
             forDisabled
             large
+            vehicleType == CAR
         }
         with(spots.get(1)) {
             id == UUID.fromString("869f4520-943e-40de-a38d-5b3d7be5bdb3")
@@ -78,6 +85,7 @@ class ParkingSpotSpec extends Specification {
             forCarpoolersOnly
             !forDisabled
             large
+            vehicleType == MOTORCYCLE
         }
         with(spots.get(2)) {
             id == UUID.fromString("87437c97-ff2e-44cb-948f-46570ea0d63f")
@@ -89,6 +97,7 @@ class ParkingSpotSpec extends Specification {
             !forCarpoolersOnly
             !forDisabled
             !large
+            vehicleType == BICYCLE
         }
     }
 }

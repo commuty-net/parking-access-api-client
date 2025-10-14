@@ -8,6 +8,7 @@ import java.time.OffsetDateTime
 import static java.nio.charset.Charset.defaultCharset
 import static net.commuty.parking.model.AccessRightReason.NONE
 import static net.commuty.parking.model.AccessRightReason.PERMANENT_ACCESS
+import static net.commuty.parking.model.ParkingSpotVehicleType.CAR
 import static net.commuty.parking.model.UserIdType.*
 import static org.apache.commons.io.IOUtils.toInputStream
 
@@ -219,7 +220,9 @@ class AccessRightSpec extends Specification {
                         "parkingSpotZoneId": "bdae073e-5c1b-4025-9739-f13f00682df0",
                         "isVisitor": false,
                         "subjectId": "a3d076e2-83dc-47aa-91b4-eaa1cad723dd",
-                        "subjectLabel": "John Doe"
+                        "subjectLabel": "John Doe",
+                        "parkingSpotIsEquippedWithChargingPoint": true,
+                        "parkingSpotVehicleType": "car"
                     }
                 }"""
         when:
@@ -234,7 +237,7 @@ class AccessRightSpec extends Specification {
         right.granted
         right.startTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
         right.endTime == OffsetDateTime.parse("2021-07-29T00:00:00+02:00")
-        right.attributes.size() == 9
+        right.attributes.size() == 11
         right.id == UUID.fromString("4850b369-729a-4623-89ab-be1a61b15920")
         right.reason == PERMANENT_ACCESS
         right.parkingSpotId == UUID.fromString("e71a3670-d1f7-4095-8e1d-a19003141411")
@@ -244,6 +247,8 @@ class AccessRightSpec extends Specification {
         !right.isVisitor()
         right.subjectId == UUID.fromString("a3d076e2-83dc-47aa-91b4-eaa1cad723dd")
         right.subjectLabel == "John Doe"
+        right.isParkingSpotEquippedWithChargingPoint() == true
+        right.parkingSpotVehicleType == CAR
     }
 
 

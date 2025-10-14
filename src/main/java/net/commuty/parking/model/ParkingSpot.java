@@ -19,6 +19,7 @@ public class ParkingSpot {
     private final boolean forCarpoolersOnly;
     private final boolean forDisabled;
     private final boolean large;
+    private final ParkingSpotVehicleType vehicleType;
 
     @JsonCreator
     public ParkingSpot(@JsonProperty("id") UUID id,
@@ -29,7 +30,8 @@ public class ParkingSpot {
                        @JsonProperty("visitorSpot") boolean visitorSpot,
                        @JsonProperty("forCarpoolersOnly") boolean forCarpoolersOnly,
                        @JsonProperty("forDisabled") boolean forDisabled,
-                       @JsonProperty("large") boolean large) {
+                       @JsonProperty("large") boolean large,
+                       @JsonProperty("vehicleType") ParkingSpotVehicleType vehicleType) {
         this.id = id;
         this.name = name;
         this.zoneId = zoneId;
@@ -39,6 +41,7 @@ public class ParkingSpot {
         this.forCarpoolersOnly = forCarpoolersOnly;
         this.forDisabled = forDisabled;
         this.large = large;
+        this.vehicleType = vehicleType;
     }
 
     @JsonProperty("id")
@@ -110,6 +113,14 @@ public class ParkingSpot {
         return large;
     }
 
+    /**
+     * @return the type of vehicle the parking spot is for.
+     */
+    @JsonProperty("vehicleType")
+    public ParkingSpotVehicleType getVehicleType() {
+        return vehicleType;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -138,6 +149,7 @@ public class ParkingSpot {
                 ", forCarpoolersOnly=" + forCarpoolersOnly +
                 ", forDisabled=" + forDisabled +
                 ", large=" + large +
+                ", vehicleType=" + vehicleType +
                 '}';
     }
 }

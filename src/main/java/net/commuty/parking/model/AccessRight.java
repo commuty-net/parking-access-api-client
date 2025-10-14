@@ -186,6 +186,28 @@ public class AccessRight {
     }
 
     /**
+     * When an access right is granted for a specific parking spot, this value represents whether the parking spot is equipped with a charging point or not.
+     */
+    @JsonIgnore
+    public Boolean isParkingSpotEquippedWithChargingPoint() {
+        return of(attributes)
+                .map(attr -> attr.get(PARKING_SPOT_IS_EQUIPPED_WITH_CHARGING_POINT))
+                .map(Boolean::parseBoolean)
+                .orElse(null);
+    }
+
+    /**
+     * When an access right is granted for a specific parking spot, this value represents the {@link ParkingSpotVehicleType} of the parking spot.
+     */
+    @JsonIgnore
+    public ParkingSpotVehicleType getParkingSpotVehicleType() {
+        return of(attributes)
+                .map(attr -> attr.get(PARKING_SPOT_VEHICLE_TYPE))
+                .map(ParkingSpotVehicleType::findByName)
+                .orElse(null);
+    }
+
+    /**
      * <code>true</code> when this access right is granted for a visitor. <code>false</code> otherwise.
      * The boolean value is <code>null</code> when this attribute is not requested.
      */
