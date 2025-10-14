@@ -47,6 +47,18 @@ public enum AccessRightAttributeName {
     PARKING_SPOT_ZONE_ID("parkingSpotZoneId"),
 
     /**
+     * When an access right is granted for a specific parking spot, this value represents whether the parking spot is equipped with a charging point or not.
+     */
+    @JsonProperty("parkingSpotIsEquippedWithChargingPoint")
+    PARKING_SPOT_IS_EQUIPPED_WITH_CHARGING_POINT("parkingSpotIsEquippedWithChargingPoint"),
+
+    /**
+     * When an access right is granted for a specific parking spot, this value represents the {@link ParkingSpotVehicleType} of the parking spot.
+     */
+    @JsonProperty("parkingSpotVehicleType")
+    PARKING_SPOT_VEHICLE_TYPE("parkingSpotVehicleType"),
+
+    /**
      * <code>true</code> when this access right is granted for a visitor. <code>false</code> otherwise.
      */
     @JsonProperty("isVisitor")

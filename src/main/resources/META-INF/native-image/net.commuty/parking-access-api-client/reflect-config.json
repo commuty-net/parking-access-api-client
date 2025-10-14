@@ -56,6 +56,14 @@
     "allDeclaredFields" : true,
     "allPublicFields" : true
   },{
+    "name" : "net.commuty.parking.model.ParkingSpotVehicleType",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },{
     "name" : "net.commuty.parking.model.AccessDirection",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
